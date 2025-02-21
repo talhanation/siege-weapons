@@ -389,7 +389,8 @@ public abstract class AbstractVehicleEntity extends Entity {
     }
 
     public Vec3 getDismountLocationForPassenger(LivingEntity passenger) {
-        return getDriverPosition();
+        Vec3 vec = getDriverPosition();
+        return new Vec3(this.getX() + vec.x, this.getY(), this.getZ() + vec.z);
     }
 
     public abstract Vec3 getDriverPosition();
