@@ -6,6 +6,7 @@ import com.talhanation.siegeweapons.init.ModEntityTypes;
 import com.talhanation.siegeweapons.init.ModItems;
 import com.talhanation.siegeweapons.init.ModMenus;
 import com.talhanation.siegeweapons.init.*;
+import com.talhanation.siegeweapons.network.MessageLoadAndShootWeapon;
 import com.talhanation.siegeweapons.network.MessageUpdateVehicleControl;
 import de.maxhenkel.corelib.CommonRegistry;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -70,8 +71,8 @@ public class Main {
 
         Class[] messages = {
                 MessageUpdateVehicleControl.class,
+                MessageLoadAndShootWeapon.class
         };
-
 
         for (int i = 0; i < messages.length; i++){
             CommonRegistry.registerMessage(SIMPLE_CHANNEL, i, messages[i]);

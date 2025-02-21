@@ -4,10 +4,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -34,13 +37,17 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
 
     }
 
-    public void setHealth(float x) {
+    public void setRange(float x) {
+        if(x > 100) x = 100;
+        if(x < 0) x = 0;
+
         entityData.set(RANGE, x);
     }
 
-    public float getHealth(){
+    public float getRange(){
         return entityData.get(RANGE);
     }
+
 
     @Override
     public boolean itemInteraction(Player player, InteractionHand interactionHand) {
@@ -83,8 +90,39 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
         }
     }
 
-    public void shoot(){
+    @Override
+    public void shootWeapon() {
+        Vec3 forward = this.getForward();
+        double speed = 1.0F + getRange() * 0.1F;
+        double accuracy = 5F;// 0 = 100%
+        double yShootVec = forward.y() + 45F/40F;
+
+        this.shoot(forward, yShootVec, this.getControllingPassenger(), speed, accuracy);
+    }
+
+
+    /*
+     * Method Important for reflection
+     */
+    public void shoot(Vec3 shootVec, double yShootVec, LivingEntity driverEntity, double speed, double accuracy){
+        //TODO: getter for projectile type
+
+        //Testing with arrow
+        Arrow arrow = new Arrow(this.getCommandSenderWorld(), driverEntity);
+
+
+        arrow.shoot(shootVec.x(), yShootVec, shootVec.z(), (float) speed, (float) accuracy);
+
+        this.getCommandSenderWorld().addFreshEntity(arrow);
+
+        this.playShootSound();
+        //this.consumeProjectile();
 
     }
 
+    @Override
+    public void playShootSound() {
+        //TODO: add real catapult sound
+        this.playSound(SoundEvents.ARROW_SHOOT, 1.0F, 1.0F / (this.random.nextFloat() * 0.4F + 0.8F));
+    }
 }

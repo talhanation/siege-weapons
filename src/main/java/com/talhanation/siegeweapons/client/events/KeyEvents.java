@@ -3,6 +3,7 @@ package com.talhanation.siegeweapons.client.events;
 import com.talhanation.siegeweapons.Main;
 import com.talhanation.siegeweapons.entities.AbstractVehicleEntity;
 import com.talhanation.siegeweapons.entities.IShootingWeapon;
+import com.talhanation.siegeweapons.network.MessageLoadAndShootWeapon;
 import com.talhanation.siegeweapons.network.MessageUpdateVehicleControl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -29,7 +30,7 @@ public class KeyEvents {
             Main.SIMPLE_CHANNEL.sendToServer(new MessageUpdateVehicleControl(forwardKey, backwardKey, leftKey, rightKey, clientPlayerEntity.getUUID()));
 
             if (pressedJumpKey) {
-                //Main.SIMPLE_CHANNEL.sendToServer(new MessageLoadAndShootWeapon(vehicle.getUUID()));
+                Main.SIMPLE_CHANNEL.sendToServer(new MessageLoadAndShootWeapon());
             }
         }
 
