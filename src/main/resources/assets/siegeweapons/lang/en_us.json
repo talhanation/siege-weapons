@@ -1,0 +1,6 @@
+{
+  "entity.siegeweapons.catapult" : "Catapult",
+  "entity.siegeweapons.cart" : "Cart",
+  "entity.siegeweapons.transportCart" : "Transport Cart",
+  "entity.siegeweapons.balista" : "Balista"
+}

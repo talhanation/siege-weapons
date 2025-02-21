@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.talhanation.siegeweapons.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "mixins.siegeweapons.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

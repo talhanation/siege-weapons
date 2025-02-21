@@ -1,0 +1,160 @@
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = 'https://repo.spongepowered.org/maven' }
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '6.+', changing: true
+        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
+    }
+}
+// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+
+plugins {
+    id "com.matthewprenger.cursegradle" version "1.4.0"
+    id "com.github.johnrengelman.shadow" version "7.1.0"
+}
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'idea'
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'org.spongepowered.mixin'
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+mixin{
+    add sourceSets.main, 'mixins.siegeweapons.refmap.json'
+    config 'mixins.siegeweapons.json'
+
+    disableTargetValidator = true
+    overwriteErrorLevel = 'error'
+}
+
+version = '0.1.0'
+
+group = 'com.talhanation.siegeweapons'
+archivesBaseName = 'siegeweapons-1.20.1'
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+minecraft {
+    mappings channel: 'official', version: '1.20.1'
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
+
+    runs {
+        client {
+
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+
+            property 'forge.enabledGameTestNamespaces', 'siegeweapons'
+
+            Random rnd = new Random()
+
+            args = ['--username', 'talhanation']
+
+            mods {
+                'siegeweapons' {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+			property 'forge.enabledGameTestNamespaces', 'siegeweapons'
+
+
+            mods {
+                'siegeweapons' {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+
+            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
+            args '--mod', 'siegeweapons', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+
+            mods {
+                'siegeweapons' {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+repositories {
+    maven {
+        name = "henkelmax.public"
+        url = 'https://maven.maxhenkel.de/repository/public'
+    }
+    mavenLocal()
+    maven {
+
+        url "https://www.cursemaven.com"
+    }
+}
+
+dependencies {
+
+    minecraft 'net.minecraftforge:forge:1.20.1-47.3.0'
+    shadow fg.deobf("de.maxhenkel.corelib:corelib:1.20.1-1.0.0:api")
+    runtimeOnly fg.deobf("de.maxhenkel.corelib:corelib:1.20.1-1.0.0")
+    runtimeOnly fg.deobf("de.maxhenkel.corelib:corelib:1.20.1-1.0.0:javadoc")
+    //Implementation
+
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+
+    //implementation fg.deobf("curse.maven:corpse-316582:5157034")
+    
+    //implementation fg.deobf("curse.maven:epic-knights-armor-and-weapons-509041:5254836")
+    //implementation fg.deobf("curse.maven:architectury-api-419699:5137938")
+    //implementation fg.deobf("curse.maven:cloth-config-348521:4973441")
+
+    //implementation fg.deobf("curse.maven:ewewukeks-musket-mod-354562:5779561")
+    //implementation fg.deobf("curse.maven:worldedit-225608:4586218")
+    //implementation fg.deobf("curse.maven:small-ships-450659:5566900")
+
+    //implementation fg.deobf("curse.maven:rpgz-404828:5549878")
+}
+
+// Example for how to get properties into the manifest for reading at runtime.
+jar {
+
+}
+
+jar.finalizedBy('reobfJar')
+
+artifacts {
+    archives shadowJar
+}
+
+shadowJar {
+    project.configurations.shadow.setTransitive(true)
+    configurations = [project.configurations.shadow]
+    //classifier = ""
+    relocate 'de.maxhenkel.corelib', "de.maxhenkel.siegeweapons.corelib"
+}
+
+reobf {
+    shadowJar {}
+}
