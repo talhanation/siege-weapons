@@ -1,14 +1,18 @@
 package com.talhanation.siegeweapons;
 import com.talhanation.siegeweapons.client.events.KeyEvents;
+import com.talhanation.siegeweapons.client.gui.SiegeTableScreen;
 import com.talhanation.siegeweapons.config.SiegeWeaponsServerConfig;
 import com.talhanation.siegeweapons.init.ModBlocks;
 import com.talhanation.siegeweapons.init.ModEntityTypes;
 import com.talhanation.siegeweapons.init.ModItems;
 import com.talhanation.siegeweapons.init.ModMenus;
 import com.talhanation.siegeweapons.init.*;
+import com.talhanation.siegeweapons.inventory.SiegeTableMenu;
 import com.talhanation.siegeweapons.network.MessageLoadAndShootWeapon;
 import com.talhanation.siegeweapons.network.MessageUpdateVehicleControl;
+import de.maxhenkel.corelib.ClientRegistry;
 import de.maxhenkel.corelib.CommonRegistry;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -53,6 +57,7 @@ public class Main {
         ModMenus.MENU_TYPES.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
         ModEntityTypes.ENTITY_TYPES.register(modEventBus);
+        ModBlockEntityTypes.BLOCK_ENTITIES.register(modEventBus);
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::addCreativeTabs);
 
@@ -85,6 +90,8 @@ public class Main {
     public void clientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(ModMenus::registerMenus);
         MinecraftForge.EVENT_BUS.register(new KeyEvents());
+
+        MenuScreens.register(ModMenus.SIEGE_TABLE_CONTAINER.get(), SiegeTableScreen::new);
     }
 
     private void addCreativeTabs(BuildCreativeModeTabContentsEvent event) {
@@ -93,7 +100,7 @@ public class Main {
         }
 
         if (event.getTabKey().equals(CreativeModeTabs.FUNCTIONAL_BLOCKS)){
-            //event.accept(ModBlocks.RECRUIT_BLOCK.get());
+            event.accept(ModBlocks.SIEGE_TABLE_BLOCK.get());
         }
     }
 }

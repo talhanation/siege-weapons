@@ -26,6 +26,7 @@ public class ClientEvent {
         EntityRenderers.register(ModEntityTypes.CATAPULT.get(), CatapultRenderer::new);
 
     }
+
     @Nullable
     public static Entity getEntityByLooking() {
         HitResult hit = Minecraft.getInstance().hitResult;
