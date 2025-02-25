@@ -5,13 +5,8 @@ import com.talhanation.siegeweapons.Main;
 import com.talhanation.siegeweapons.SiegeWeapons;
 import com.talhanation.siegeweapons.blocks.SiegeTableBlockEntity;
 import com.talhanation.siegeweapons.client.EntityInScreenRenderer;
-import com.talhanation.siegeweapons.entities.AbstractVehicleEntity;
-import com.talhanation.siegeweapons.entities.CatapultEntity;
-import com.talhanation.siegeweapons.init.ModEntityTypes;
 import com.talhanation.siegeweapons.inventory.SiegeTableMenu;
-import com.talhanation.siegeweapons.world.SiegeTableRecipe;
 import de.maxhenkel.corelib.inventory.ScreenBase;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -38,7 +33,7 @@ public class SiegeTableScreen extends ScreenBase<SiegeTableMenu> {
         this.tableEntity = container.getEntity();
         this.playerInventory = playerInventory;
         this.player = playerInventory.player;
-
+        this.menu.setScreen(this);
         imageWidth = 176;
         imageHeight = 223;
     }
@@ -89,6 +84,9 @@ public class SiegeTableScreen extends ScreenBase<SiegeTableMenu> {
         }
     }
 
+    public void onPlayerInventoryChanged(){
+        if(craftButton != null) this.craftButton.active = selection.getRecipe().hasRequiredMaterials(playerInventory);
+    }
 
 
 }
