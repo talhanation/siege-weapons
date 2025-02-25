@@ -29,12 +29,12 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
 
     public void addAdditionalSaveData(CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
-        compoundTag.putFloat("range", this.getHealth());
+        compoundTag.putFloat("range", this.getRange());
     }
 
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-
+        this.setRange(compoundTag.getInt("range"));
     }
 
     public void setRange(float x) {
