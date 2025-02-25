@@ -26,7 +26,7 @@ public class VehicleInventoryMenu extends ContainerBase {
 
     @Override
     public int getInvOffset() {
-        return 56;
+        return 0;
     }
 
     public void addVehicleInventorySlots() {

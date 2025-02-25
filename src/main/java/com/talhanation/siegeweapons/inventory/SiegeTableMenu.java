@@ -25,7 +25,7 @@ public class SiegeTableMenu extends ContainerBase {
 
     @Override
     public int getInvOffset() {
-        return 56;
+        return 0;
     }
 
 }

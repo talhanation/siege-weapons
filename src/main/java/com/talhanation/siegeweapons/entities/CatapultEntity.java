@@ -70,12 +70,12 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
 
     @Override
     public int getMaxSpeedInKmH() {
-        return 7;
+        return 7;//TODO: CONFIG
     }
 
     @Override
     public float getMaxHealth() {
-        return 300;
+        return 300;//TODO: CONFIG
     }
 
     @Override
@@ -93,13 +93,12 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
     @Override
     public void shootWeapon() {
         Vec3 forward = this.getForward();
-        double speed = 1.0F + getRange() * 0.1F;
+        double speed = 1.0F + getRange() * 0.05F;
         double accuracy = 5F;// 0 = 100%
         double yShootVec = forward.y() + 45F/40F;
 
         this.shoot(forward, yShootVec, this.getControllingPassenger(), speed, accuracy);
     }
-
 
     /*
      * Method Important for reflection
