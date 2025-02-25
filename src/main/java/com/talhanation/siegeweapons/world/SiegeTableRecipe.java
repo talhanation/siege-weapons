@@ -10,10 +10,33 @@ public class SiegeTableRecipe {
 
     public static final SiegeTableRecipe CATAPULT_RECIPE = new SiegeTableRecipe(Map.of(
             Items.OAK_LOG, 16,
-            Items.OAK_PLANKS, 32,
-            Items.STRING, 16,
+            Items.OAK_PLANKS, 64,
+            Items.STRING, 32,
             Items.LEAD, 4,
             Items.IRON_INGOT, 10,
+            Items.IRON_NUGGET, 16
+    ));
+
+    public static final SiegeTableRecipe BALLISTA_RECIPE = new SiegeTableRecipe(Map.of(
+            Items.OAK_PLANKS, 16,
+            Items.STRING, 16,
+            Items.LEAD, 4,
+            Items.IRON_NUGGET, 16
+    ));
+
+    public static final SiegeTableRecipe TRANSPORT_CART_RECIPE = new SiegeTableRecipe(Map.of(
+            Items.CHEST, 2,
+            Items.OAK_LOG, 8,
+            Items.OAK_PLANKS, 32,
+            Items.LEAD, 4,
+            Items.IRON_NUGGET, 16
+    ));
+
+    public static final SiegeTableRecipe CART_RECIPE = new SiegeTableRecipe(Map.of(
+            Items.CHEST, 1,
+            Items.OAK_LOG, 4,
+            Items.OAK_PLANKS, 16,
+            Items.LEAD, 1,
             Items.IRON_NUGGET, 16
     ));
 
