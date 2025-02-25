@@ -17,6 +17,7 @@ public class SiegeTableRecipe {
             Items.IRON_NUGGET, 16
     ));
 
+
     public static final SiegeTableRecipe BALLISTA_RECIPE = new SiegeTableRecipe(Map.of(
             Items.OAK_PLANKS, 16,
             Items.STRING, 16,
@@ -39,6 +40,7 @@ public class SiegeTableRecipe {
             Items.LEAD, 1,
             Items.IRON_NUGGET, 16
     ));
+
 
     private final Map<Item, Integer> requiredMaterials;
 

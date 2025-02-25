@@ -3,12 +3,11 @@ package com.talhanation.siegeweapons.client.events;
 
 import com.talhanation.siegeweapons.Main;
 import com.talhanation.siegeweapons.client.render.CatapultRenderer;
+import com.talhanation.siegeweapons.client.render.TransportCartRenderer;
 import com.talhanation.siegeweapons.init.ModEntityTypes;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
@@ -16,7 +15,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.joml.Quaternionf;
 
 import javax.annotation.Nullable;
 
@@ -27,7 +25,7 @@ public class ClientEvent {
     @OnlyIn(Dist.CLIENT)
     public static void entityRenderersEvent(EntityRenderersEvent.RegisterRenderers event){
         EntityRenderers.register(ModEntityTypes.CATAPULT.get(), CatapultRenderer::new);
-
+        EntityRenderers.register(ModEntityTypes.TRANSPORT_CART.get(), TransportCartRenderer::new);
     }
 
     @Nullable
