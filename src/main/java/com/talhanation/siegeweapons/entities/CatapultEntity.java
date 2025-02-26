@@ -58,8 +58,8 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
 
     @Override
     public Vec3 getDriverPosition() {
-        double f = -2F;
-        double d = -0.75F;
+        double f = -2.5F;
+        double d = -1.0F;
         return (new Vec3(f, 0.0D, 0.0D + d)).yRot(-this.getYRot() * ((float)Math.PI / 180F) - ((float)Math.PI / 2F));
     }
 
