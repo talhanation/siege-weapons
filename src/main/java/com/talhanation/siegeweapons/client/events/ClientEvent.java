@@ -2,8 +2,10 @@ package com.talhanation.siegeweapons.client.events;
 
 
 import com.talhanation.siegeweapons.Main;
+import com.talhanation.siegeweapons.client.render.CatapultProjectileRenderer;
 import com.talhanation.siegeweapons.client.render.CatapultRenderer;
 import com.talhanation.siegeweapons.client.render.TransportCartRenderer;
+import com.talhanation.siegeweapons.entities.projectile.CatapultProjectile;
 import com.talhanation.siegeweapons.init.ModEntityTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderers;
@@ -26,6 +28,7 @@ public class ClientEvent {
     public static void entityRenderersEvent(EntityRenderersEvent.RegisterRenderers event){
         EntityRenderers.register(ModEntityTypes.CATAPULT.get(), CatapultRenderer::new);
         EntityRenderers.register(ModEntityTypes.TRANSPORT_CART.get(), TransportCartRenderer::new);
+        EntityRenderers.register(ModEntityTypes.CATAPULT_PROJECTILE.get(), CatapultProjectileRenderer::new);
     }
 
     @Nullable

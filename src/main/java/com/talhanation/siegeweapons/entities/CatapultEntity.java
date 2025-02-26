@@ -1,5 +1,7 @@
 package com.talhanation.siegeweapons.entities;
 
+import com.talhanation.siegeweapons.client.render.CatapultRenderer;
+import com.talhanation.siegeweapons.entities.projectile.CatapultProjectile;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -93,8 +95,9 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
     @Override
     public void shootWeapon() {
         Vec3 forward = this.getForward();
-        double speed = 1.0F + getRange() * 0.05F;
-        double accuracy = 5F;// 0 = 100%
+        float range = getRange();
+        double speed = 3.0F + range * 0.1F;
+        double accuracy = 8F;// 0 = 100%
         double yShootVec = forward.y() + 45F/40F;
 
         this.shoot(forward, yShootVec, this.getControllingPassenger(), speed, accuracy);
@@ -106,13 +109,9 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
     public void shoot(Vec3 shootVec, double yShootVec, LivingEntity driverEntity, double speed, double accuracy){
         //TODO: getter for projectile type
 
-        //Testing with arrow
-        Arrow arrow = new Arrow(this.getCommandSenderWorld(), driverEntity);
-
-
-        arrow.shoot(shootVec.x(), yShootVec, shootVec.z(), (float) speed, (float) accuracy);
-
-        this.getCommandSenderWorld().addFreshEntity(arrow);
+        CatapultProjectile projectile = new CatapultProjectile(this.getCommandSenderWorld(), driverEntity, this.getX(), this.getY() + 1, this.getZ());
+        projectile.shoot(shootVec.x(), yShootVec, shootVec.z(), (float) speed, (float) accuracy);
+        this.getCommandSenderWorld().addFreshEntity(projectile);
 
         this.playShootSound();
         //this.consumeProjectile();
@@ -122,6 +121,6 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
     @Override
     public void playShootSound() {
         //TODO: add real catapult sound
-        this.playSound(SoundEvents.ARROW_SHOOT, 1.0F, 1.0F / (this.random.nextFloat() * 0.4F + 0.8F));
+        this.playSound(SoundEvents.TRIDENT_THROW, 1.0F, 1.0F / (this.random.nextFloat() * 0.4F + 0.8F));
     }
 }
