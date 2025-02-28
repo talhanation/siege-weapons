@@ -1,8 +1,10 @@
 package com.talhanation.siegeweapons.entities.projectile;
 
 import com.talhanation.siegeweapons.init.ModEntityTypes;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -15,6 +17,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -26,7 +30,10 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
     public boolean inWater = false;
     public boolean wasShot = false;
     public int counter = 0;
-
+    public abstract float getDamage();
+    public abstract float getAreaDamage();
+    public abstract boolean getFireSpread();
+    public abstract boolean getExplode();
     protected AbstractCatapultProjectile(EntityType<? extends AbstractCatapultProjectile> type, Level world) {
         super(type, world);
     }
@@ -105,11 +112,13 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
     protected void onHitBlock(BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
         if (!this.level().isClientSide()) {
-            boolean doesSpreadFire = false;
 
-            if(!isInWater()) this.level().explode(this.getOwner(), getX(), getY(), getZ(), 1, doesSpreadFire, Level.ExplosionInteraction.MOB);
+            if(!isInWater()){
+                if(getExplode()) this.level().explode(this.getOwner(), getX(), getY(), getZ(), getAreaDamage(), getFireSpread(), Level.ExplosionInteraction.MOB);
+                else applyDirectionalDamage(this.level(), blockHitResult.getBlockPos());
+            }
+
             this.remove(RemovalReason.KILLED);
-
         }
     }
 
@@ -132,7 +141,7 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
                 this.level().playSound(null, this.getX(), this.getY() + 4 , this.getZ(), SoundEvents.GENERIC_EXPLODE, this.getSoundSource(), 3.3F, 0.8F + 0.4F * this.random.nextFloat());
             }
 
-            hitEntity.hurt(this.damageSources().thrown(this, ownerEntity), 30);//TODO: CONFIG
+            hitEntity.hurt(this.damageSources().thrown(this, ownerEntity), (float) getDamage());//TODO: CONFIG
         }
     }
 
@@ -142,8 +151,8 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
             double d1 = this.random.nextGaussian() * 0.03D;
             double d2 = this.random.nextGaussian() * 0.03D;
             double d3 = 20.0D;
-            this.level().addParticle(ParticleTypes.POOF, this.getX(1.0D) - d0 * d3, this.getRandomY() - d1 * d3, this.getRandomZ(2.0D) - d2 * d3, d0, d1, d2);
-            this.level().addParticle(ParticleTypes.LARGE_SMOKE, this.getX(1.0D) - d0 * d3, this.getRandomY() - d1 * d3, this.getRandomZ(2.0D) - d2 * d3, d0, d1, d2);
+            this.level().addParticle(ParticleTypes.ASH, this.getX(1.0D) - d0 * d3, this.getRandomY() - d1 * d3, this.getRandomZ(2.0D) - d2 * d3, d0, d1, d2);
+            this.level().addParticle(ParticleTypes.EXPLOSION, this.getX(1.0D) - d0 * d3, this.getRandomY() - d1 * d3, this.getRandomZ(2.0D) - d2 * d3, d0, d1, d2);
         }
     }
 
@@ -168,12 +177,12 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
     }
 
     public void tailParticles(){
-        for (int i = 0; i < 100; ++i) {
-            this.level().addParticle(ParticleTypes.POOF, this.getX(), this.getY(), this.getZ() , 0, 0, 0);
+        for (int i = 0; i < 50; ++i) {
+            this.level().addParticle(ParticleTypes.ASH, this.getX(), this.getY(), this.getZ() , 0, 0, 0);
         }
 
         for (int i = 0; i < 50; ++i) {
-            this.level().addParticle(ParticleTypes.FLAME, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+            this.level().addParticle(ParticleTypes.ASH, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
         }
     }
 
@@ -203,6 +212,38 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
     @Override
     protected @NotNull ParticleOptions getTrailParticle() {
         return ParticleTypes.SMOKE;
+    }
+
+    private void applyDirectionalDamage(Level level, BlockPos impactPos) {
+        BlockPos[] directions = {
+                impactPos.above(),
+                impactPos.below(),
+                impactPos.north(),
+                impactPos.south(),
+                impactPos.east(),
+                impactPos.west()
+        };
+
+        destroyBlock(level, impactPos, 100F);
+
+        for (BlockPos pos : directions) {
+            destroyBlock(level, pos, 100F);
+        }
+    }
+
+    private void destroyBlock(Level level, BlockPos pos, float chance) {
+        BlockState state = level.getBlockState(pos);
+        float hardness = state.getDestroySpeed(level, pos);
+
+        if (hardness == 0 || state.isAir()) {
+            return;
+        }
+
+
+        int adjustedChance = (int) Math.max(5, chance - (int) (hardness * 10));
+        if (level.random.nextInt(100) < adjustedChance) {
+            level.destroyBlock(pos, false);
+        }
     }
 
 

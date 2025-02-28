@@ -4,15 +4,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.talhanation.siegeweapons.entities.CatapultEntity;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
 
 public class CatapultModel<T extends CatapultEntity> extends EntityModel<T> {
-
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation("modid", "catapult"), "main");
 	private final ModelPart Catapult;
 	private final ModelPart wheelsFront;
 	private final ModelPart wheelFrontLeft;
@@ -22,6 +18,7 @@ public class CatapultModel<T extends CatapultEntity> extends EntityModel<T> {
 	private final ModelPart wheelBackRight;
 	private final ModelPart loader;
 	private final ModelPart spoon;
+	private final ModelPart cobbleProjectile;
 
 	public CatapultModel() {
 		ModelPart root = createBodyLayer().bakeRoot();
@@ -34,6 +31,7 @@ public class CatapultModel<T extends CatapultEntity> extends EntityModel<T> {
 		this.wheelBackRight = this.wheelsBack.getChild("wheelBackRight");
 		this.loader = this.Catapult.getChild("loader");
 		this.spoon = this.Catapult.getChild("spoon");
+		this.cobbleProjectile = this.spoon.getChild("cobbleProjectile");
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -100,26 +98,35 @@ public class CatapultModel<T extends CatapultEntity> extends EntityModel<T> {
 		PartDefinition cube_r17 = loader.addOrReplaceChild("cube_r17", CubeListBuilder.create().texOffs(84, 81).addBox(-8.0F, -10.7782F, -5.1213F, 16.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
 				.texOffs(68, 73).addBox(-15.0F, -9.7782F, -4.1213F, 30.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(21.0F, 4.0F, 7.0F, 0.7854F, 0.0F, 0.0F));
 
-		PartDefinition spoon = Catapult.addOrReplaceChild("spoon", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -8.0F, -2.5F, -0.576F, 0.0F, 0.0F));
+		PartDefinition spoon = Catapult.addOrReplaceChild("spoon", CubeListBuilder.create(), PartPose.offset(0.0F, -8.0F, -2.5F));
 
-		PartDefinition cube_r18 = spoon.addOrReplaceChild("cube_r18", CubeListBuilder.create().texOffs(28, 95).addBox(-6.0F, -12.7782F, -3.1213F, 2.0F, 6.0F, 8.0F, new CubeDeformation(0.0F))
-				.texOffs(28, 95).addBox(4.0F, -12.7782F, -3.1213F, 2.0F, 6.0F, 8.0F, new CubeDeformation(0.0F))
-				.texOffs(0, 95).addBox(-6.0F, -12.7782F, 4.8787F, 12.0F, 6.0F, 2.0F, new CubeDeformation(0.0F))
+		PartDefinition cube_r18 = spoon.addOrReplaceChild("cube_r18", CubeListBuilder.create().texOffs(25, 95).addBox(-6.0F, -12.7782F, -4.1213F, 1.0F, 6.0F, 10.0F, new CubeDeformation(0.0F))
+				.texOffs(26, 95).addBox(5.0F, -12.7782F, -4.1213F, 1.0F, 6.0F, 10.0F, new CubeDeformation(0.0F))
+				.texOffs(1, 96).addBox(-6.0F, -12.7782F, 5.8787F, 12.0F, 6.0F, 1.0F, new CubeDeformation(0.0F))
 				.texOffs(0, 81).addBox(-6.0F, -6.7782F, -5.1213F, 12.0F, 2.0F, 12.0F, new CubeDeformation(0.0F))
-				.texOffs(0, 95).addBox(-6.0F, -12.7782F, -5.1213F, 12.0F, 6.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -27.8198F, 40.734F, 0.7854F, 0.0F, 0.0F));
+				.texOffs(1, 96).addBox(-6.0F, -12.7782F, -5.1213F, 12.0F, 6.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -27.8198F, 40.734F, 0.7854F, 0.0F, 0.0F));
 
 		PartDefinition cube_r19 = spoon.addOrReplaceChild("cube_r19", CubeListBuilder.create().texOffs(48, 81).addBox(-2.0F, -43.0F, -2.0F, 4.0F, 40.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.5F, -0.7854F, 0.0F, 0.0F));
 
 		PartDefinition cube_r20 = spoon.addOrReplaceChild("cube_r20", CubeListBuilder.create().texOffs(84, 81).addBox(-8.0F, -10.7782F, -5.1213F, 16.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
 				.texOffs(68, 73).addBox(-15.0F, -9.7782F, -4.1213F, 30.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 4.0F, 7.5F, 0.7854F, 0.0F, 0.0F));
 
+		PartDefinition cobbleProjectile = spoon.addOrReplaceChild("cobbleProjectile", CubeListBuilder.create(), PartPose.offset(0.0F, 8.0F, 2.5F));
+
+		PartDefinition cube_r21 = cobbleProjectile.addOrReplaceChild("cube_r21", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -14.7782F, -5.1213F, 10.0F, 10.0F, 10.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.0F, -39.8198F, 35.734F, 0.7854F, 0.0F, 0.0F));
+
 		return LayerDefinition.create(meshdefinition, 256, 256);
 	}
 
 	@Override
-	public void setupAnim(CatapultEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		wheelsFront.xRot = entity.getWheelRotation(ageInTicks);
+	public void setupAnim(CatapultEntity entity, float partialTicks, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		wheelsFront.xRot = entity.getWheelRotation(partialTicks);
 		wheelsBack.xRot = wheelsFront.xRot;
+
+		loader.xRot = entity.getLoaderRotation(partialTicks);
+		spoon.xRot = entity.getAngleRotation(partialTicks);
+
+		cobbleProjectile.visible = entity.getState() == CatapultEntity.CatapultState.PROJECTILE_LOADED || entity.getState() == CatapultEntity.CatapultState.SHOOTING;
 	}
 
 	@Override

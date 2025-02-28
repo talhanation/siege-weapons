@@ -5,7 +5,6 @@ import com.talhanation.siegeweapons.Main;
 import com.talhanation.siegeweapons.client.render.CatapultProjectileRenderer;
 import com.talhanation.siegeweapons.client.render.CatapultRenderer;
 import com.talhanation.siegeweapons.client.render.TransportCartRenderer;
-import com.talhanation.siegeweapons.entities.projectile.CatapultProjectile;
 import com.talhanation.siegeweapons.init.ModEntityTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderers;

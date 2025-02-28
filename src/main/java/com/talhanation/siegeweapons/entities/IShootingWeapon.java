@@ -7,5 +7,5 @@ public interface IShootingWeapon {
 
     void shootWeapon();
     void playShootSound();
-
+    void tigger();
 }

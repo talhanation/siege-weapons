@@ -29,7 +29,8 @@ public class MessageLoadAndShootWeapon implements Message<MessageLoadAndShootWea
             return;
         }
 
-        weapon.shootWeapon();
+        weapon.tigger();
+        //weapon.shootWeapon();
     }
 
     @Override

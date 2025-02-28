@@ -160,7 +160,7 @@ public class TransportCartModel<T extends TransportCartEntity> extends EntityMod
 
 	@Override
 	public void setupAnim(TransportCartEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		wheelsFront.xRot = entity.getWheelRotation(ageInTicks);
+		wheelsFront.xRot = entity.getWheelRotation(limbSwing);
 		wheelsBack.xRot = wheelsFront.xRot;
 
 		wheelsFrontBase.yRot = entity.getYRot();
