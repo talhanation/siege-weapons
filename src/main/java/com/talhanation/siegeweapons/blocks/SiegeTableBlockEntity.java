@@ -1,9 +1,11 @@
 package com.talhanation.siegeweapons.blocks;
 
+import com.talhanation.siegeweapons.Main;
 import com.talhanation.siegeweapons.entities.CatapultEntity;
 import com.talhanation.siegeweapons.init.ModBlockEntityTypes;
 import com.talhanation.siegeweapons.init.ModEntityTypes;
 import com.talhanation.siegeweapons.inventory.SiegeTableMenu;
+import com.talhanation.siegeweapons.network.MessageToClientUpdateSiegeTableEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -12,14 +14,14 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 //
 public class SiegeTableBlockEntity extends BaseContainerBlockEntity {
-    private static final int CRAFTING_TIME = 20 * 60 * 3; // Example value in ticks
-    private int craftingTimer = 0;
+    public static final int CRAFTING_TIME = 100; //20 * 60 * 3; // Example value in ticks
+    private int craftingTimer = 1;
     private boolean isCrafting = false;
-    private ItemStack craftingResult = ItemStack.EMPTY;
 
     public SiegeTableBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntityTypes.SIEGE_TABLE_BLOCK_ENTITY.get(), pos, state);
@@ -73,28 +75,17 @@ public class SiegeTableBlockEntity extends BaseContainerBlockEntity {
     public void clearContent() {
     }
 
-    public void startCrafting(ItemStack result) {
+    public void startCrafting() {
         if (!isCrafting) {
             isCrafting = true;
-            craftingTimer = CRAFTING_TIME;
-            craftingResult = result;
         }
     }
-
-    public void serverTick() {
-        if (isCrafting) {
-            craftingTimer--;
-            if (craftingTimer <= 0) {
-                finishCrafting();
-            }
-        }
-    }
-    private void cancelCrafting() {
-        isCrafting = false;
-        craftingTimer = 0;
+    private void cancelCrafting(boolean returnItems) {
+        setCrafting(false);
+        craftingTimer = 1;
     }
     private void finishCrafting() {
-        cancelCrafting();
+        cancelCrafting(false);
         // Spawn crafted entity near the table
         if (level != null && !level.isClientSide) {
             CatapultEntity catapult = new CatapultEntity(ModEntityTypes.CATAPULT.get(), level);
@@ -102,17 +93,46 @@ public class SiegeTableBlockEntity extends BaseContainerBlockEntity {
 
             level.addFreshEntity(catapult);
         }
-        craftingResult = ItemStack.EMPTY;
+
+
+    }
+
+    public boolean getCrafting(){
+        return isCrafting;
+    }
+
+    public void setCrafting(boolean x){
+        isCrafting = x;
+    }
+
+    public int getCraftingTime(){
+        return craftingTimer;
+    }
+
+    public void setCraftingTime(int x){
+       craftingTimer = x;
+    }
+
+    public int getCraftingProgress() {
+        if (CRAFTING_TIME == 0) return 0;
+        return (int) ((craftingTimer / (float) CRAFTING_TIME) * 100);
     }
 
 
-    enum SiegeWeapons{
-        CART,
-        TRANSPORT_CART,
-        BALLISTA,
-        CATAPULT,
-        BATTERING_RAM,
+    public void serverTick() {
 
+        if (isCrafting) {
+            craftingTimer++;
+            if (craftingTimer >= CRAFTING_TIME) {
+                finishCrafting();
+            }
+        }
+        syncToClient();
+    }
 
+    public void syncToClient() {
+        if (level != null && !level.isClientSide) {
+            Main.SIMPLE_CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new MessageToClientUpdateSiegeTableEntity(this));
+        }
     }
 }

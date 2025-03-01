@@ -7,11 +7,12 @@ import net.minecraft.world.item.Items;
 
 import java.util.Map;
 public class SiegeTableRecipe {
-
+    //Max 7 entries
     public static final SiegeTableRecipe CATAPULT_RECIPE = new SiegeTableRecipe(Map.of(
             Items.OAK_LOG, 16,
             Items.OAK_PLANKS, 64,
             Items.STRING, 32,
+            Items.LEATHER, 16,
             Items.LEAD, 4,
             Items.IRON_INGOT, 10,
             Items.IRON_NUGGET, 16

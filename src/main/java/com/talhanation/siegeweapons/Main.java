@@ -7,10 +7,10 @@ import com.talhanation.siegeweapons.init.ModEntityTypes;
 import com.talhanation.siegeweapons.init.ModItems;
 import com.talhanation.siegeweapons.init.ModMenus;
 import com.talhanation.siegeweapons.init.*;
-import com.talhanation.siegeweapons.inventory.SiegeTableMenu;
 import com.talhanation.siegeweapons.network.MessageLoadAndShootWeapon;
+import com.talhanation.siegeweapons.network.MessageStartCrafting;
+import com.talhanation.siegeweapons.network.MessageToClientUpdateSiegeTableEntity;
 import com.talhanation.siegeweapons.network.MessageUpdateVehicleControl;
-import de.maxhenkel.corelib.ClientRegistry;
 import de.maxhenkel.corelib.CommonRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -76,7 +76,9 @@ public class Main {
 
         Class[] messages = {
                 MessageUpdateVehicleControl.class,
-                MessageLoadAndShootWeapon.class
+                MessageLoadAndShootWeapon.class,
+                MessageStartCrafting.class,
+                MessageToClientUpdateSiegeTableEntity.class
         };
 
         for (int i = 0; i < messages.length; i++){
