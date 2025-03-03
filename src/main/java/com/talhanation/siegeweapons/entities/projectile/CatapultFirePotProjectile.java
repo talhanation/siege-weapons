@@ -5,19 +5,19 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
-public class CatapultCobbleProjectile extends AbstractCatapultProjectile {
+public class CatapultFirePotProjectile extends AbstractCatapultProjectile {
 
-    public static CatapultCobbleProjectile factory(EntityType<? extends CatapultCobbleProjectile> entityType, Level level) {
-        return new CatapultCobbleProjectile(entityType, level);
+    public static CatapultFirePotProjectile factory(EntityType<? extends CatapultFirePotProjectile> entityType, Level level) {
+        return new CatapultFirePotProjectile(entityType, level);
     }
 
     public float getDamage(){
-        return 35F;
+        return 15F;
     }
 
     @Override
     public float getAreaDamage() {
-        return 1.15F;
+        return 0F;
     }
 
     @Override
@@ -27,12 +27,12 @@ public class CatapultCobbleProjectile extends AbstractCatapultProjectile {
 
     @Override
     public boolean getFireSpread() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean getExplode() {
-        return false;
+        return true;
     }
 
     @Override
@@ -40,11 +40,11 @@ public class CatapultCobbleProjectile extends AbstractCatapultProjectile {
         return 1; //0 = 100%
     }
 
-    public CatapultCobbleProjectile(EntityType<? extends CatapultCobbleProjectile> type, Level world) {
+    public CatapultFirePotProjectile(EntityType<? extends CatapultFirePotProjectile> type, Level world) {
         super(type, world);
     }
-    public CatapultCobbleProjectile(Level world, LivingEntity owner, double d1, double d2, double d3) {
-        super(ModEntityTypes.CATAPULT_PROJECTILE.get(), owner, d1, d2, d3, world);
+    public CatapultFirePotProjectile(Level world, LivingEntity owner, double d1, double d2, double d3) {
+        super(ModEntityTypes.CATAPULT_FIRE_POT_PROJECTILE.get(), owner, d1, d2, d3, world);
     }
 
 }

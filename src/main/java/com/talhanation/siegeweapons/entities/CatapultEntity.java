@@ -1,6 +1,10 @@
 package com.talhanation.siegeweapons.entities;
 
-import com.talhanation.siegeweapons.entities.projectile.CatapultCobbleProjectile;
+import com.talhanation.siegeweapons.Main;
+import com.talhanation.siegeweapons.SiegeWeapons;
+import com.talhanation.siegeweapons.entities.projectile.*;
+import com.talhanation.siegeweapons.init.ModEntityTypes;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -20,10 +24,8 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
     private static final EntityDataAccessor<Float> RANGE = SynchedEntityData.defineId(CatapultEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> ANGLE = SynchedEntityData.defineId(CatapultEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(CatapultEntity.class, EntityDataSerializers.INT);
-    //private static final EntityDataAccessor<Integer> PROJECTILE = SynchedEntityData.defineId(CatapultEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> PROJECTILE = SynchedEntityData.defineId(CatapultEntity.class, EntityDataSerializers.INT);
     private float loaderRotation;
-    private float loadingTime;
-    private float shootingTime;
     private LivingEntity driver;
     public CatapultEntity(EntityType<? extends AbstractInventoryVehicleEntity> entityType, Level world) {
         super(entityType, world);
@@ -34,6 +36,7 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
         this.entityData.define(RANGE, 100F);
         this.entityData.define(ANGLE, -0.65F);
         this.entityData.define(STATE, 4);
+        this.entityData.define(PROJECTILE, 0);
     }
 
     public void addAdditionalSaveData(CompoundTag compoundTag) {
@@ -41,6 +44,7 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
         compoundTag.putFloat("range", this.getRange());
         compoundTag.putInt("state", this.getState().getIndex());
         compoundTag.putFloat("angle", this.getAngle());
+        compoundTag.putInt("projectile", this.getProjectile().getIndex());
 
     }
 
@@ -49,6 +53,7 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
         this.setRange(compoundTag.getFloat("range"));
         this.setState(CatapultState.fromIndex(compoundTag.getInt("state")));
         this.setAngle(compoundTag.getFloat("angle"));
+        this.setProjectile(CatapultProjectiles.fromIndex(compoundTag.getInt("state")));
     }
 
     @Override
@@ -69,6 +74,14 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
             setState(CatapultState.SHOT);
             shootWeapon();
         }
+    }
+
+    protected boolean tryRiding(Entity entity) {
+        if(super.tryRiding(entity) && entity instanceof LivingEntity livingEntity){
+            this.driver = livingEntity;
+            return true;
+        }
+        return false;
     }
 
     public void updateLoaderRotation() {
@@ -124,6 +137,12 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
 
     public CatapultState getState(){
         return CatapultState.fromIndex(entityData.get(STATE));
+    }
+    public void setProjectile(CatapultProjectiles projectile) {
+        this.entityData.set(PROJECTILE, projectile.getIndex());
+    }
+    public CatapultProjectiles getProjectile(){
+        return CatapultProjectiles.fromIndex(entityData.get(PROJECTILE));
     }
 
     @Override
@@ -187,10 +206,10 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
         Vec3 forward = this.getForward();
         float range = getRange();
         float speed = 3.0F + range * 0.125F;
-        double accuracy = 0F;// 0 = 100%
+
         double yShootVec = forward.y() + 35F/40F;
 
-        this.shoot(forward, yShootVec, this.getControllingPassenger(), speed, accuracy);
+        this.shoot(forward, yShootVec, this.getControllingPassenger(), speed);
 
 
     }
@@ -198,20 +217,54 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
     /*
      * Method Important for reflection
      */
-    public void shoot(Vec3 shootVec, double yShootVec, LivingEntity driverEntity, float speed, double accuracy){
-        //TODO: getter for projectile type
+    public void shoot(Vec3 shootVec, double yShootVec, LivingEntity driverEntity, float speed){
+        AbstractCatapultProjectile projectile = null;
+
         if(driverEntity == null){
             if(driver == null) return;
             driverEntity = driver;
 
         }
-        CatapultCobbleProjectile projectile = new CatapultCobbleProjectile(this.getCommandSenderWorld(), driverEntity, this.getX(), this.getY() + 3.75, this.getZ());
-        projectile.shoot(shootVec.x(), yShootVec, shootVec.z(), speed, (float) accuracy);
-        this.getCommandSenderWorld().addFreshEntity(projectile);
+        switch (getProjectile()){
+            case EMPTY -> {
+                this.setProjectile(this.getProjectile().getNext());
+                return;
+            }
 
-        this.playShootSound();
-        //this.consumeProjectile();
+            case COBBLE_SHOT -> {
+                projectile = new CatapultCobbleProjectile(this.getCommandSenderWorld(), driverEntity, this.getX(), this.getY() + 3.75, this.getZ());
+            }
 
+            case FIRE_SHOT -> {
+                projectile = new CatapultFirePotProjectile(this.getCommandSenderWorld(), driverEntity, this.getX(), this.getY() + 3.75, this.getZ());
+            }
+
+            case EXPLOSION_SHOT -> {
+                projectile = new CatapultExplosionPotProjectile(this.getCommandSenderWorld(), driverEntity, this.getX(), this.getY() + 3.75, this.getZ());
+            }
+
+            case BUNDLE_SHOT -> {
+                projectile = new CatapultCobbleBundleProjectile(this.getCommandSenderWorld(), driverEntity, this.getX(), this.getY() + 3.75, this.getZ());
+                int amount = 9;
+                for(int i = 0; i< amount; i++) {
+                    projectile.shoot(shootVec.x(), yShootVec, shootVec.z(), speed, projectile.getAccuracy());
+                    this.getCommandSenderWorld().addFreshEntity(projectile);
+
+                }
+                this.playShootSound();
+                this.setProjectile(this.getProjectile().getNext());
+                return;
+            }
+        }
+
+        if(projectile != null){
+            projectile.shoot(shootVec.x(), yShootVec, shootVec.z(), speed, projectile.getAccuracy());
+            this.getCommandSenderWorld().addFreshEntity(projectile);
+            this.playShootSound();
+
+            this.setProjectile(this.getProjectile().getNext());
+            //this.consumeProjectile();
+        }
     }
 
     @Override
@@ -234,8 +287,11 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
         SHOT(4);
 
         private final int index;
+
+
         CatapultState(int index){
             this.index = index;
+
         }
 
         public int getIndex() {
@@ -258,15 +314,20 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
         COBBLE_SHOT(1),
         FIRE_SHOT(2),
         EXPLOSION_SHOT(3),
-        SPLASH_SHOT(4);
+        BUNDLE_SHOT(4);
 
         private final int index;
+
         CatapultProjectiles(int index){
             this.index = index;
-        }
 
+        }
         public int getIndex() {
             return index;
+        }
+        private static final CatapultProjectiles[] VALUES = values();
+        public CatapultProjectiles getNext() {
+            return VALUES[(this.ordinal() + 1) % VALUES.length];
         }
 
         public static CatapultProjectiles fromIndex(int x){

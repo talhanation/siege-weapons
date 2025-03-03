@@ -1,4 +1,4 @@
-package com.talhanation.siegeweapons.client.models;
+package com.talhanation.siegeweapons.client.models.projectile;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -28,10 +28,8 @@ public class CatapultProjectileModel<T extends CatapultCobbleProjectile> extends
 
     @Override
     public void setupAnim(CatapultCobbleProjectile entity, float partialTicks, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        float rotationSpeed = 1.01F;
-
-        projectile.yRot = partialTicks * 0.2F * rotationSpeed;
-        projectile.xRot = partialTicks * 0.15F * rotationSpeed;
+        projectile.xRot = entity.getProjectileRotation(partialTicks);
+        projectile.yRot = entity.getProjectileRotation(partialTicks);
     }
 
     @Override

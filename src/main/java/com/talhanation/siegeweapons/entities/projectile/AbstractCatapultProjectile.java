@@ -1,10 +1,8 @@
 package com.talhanation.siegeweapons.entities.projectile;
 
-import com.talhanation.siegeweapons.init.ModEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
-import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -17,7 +15,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -30,10 +27,13 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
     public boolean inWater = false;
     public boolean wasShot = false;
     public int counter = 0;
+    private float rotation;
     public abstract float getDamage();
     public abstract float getAreaDamage();
+    public abstract float getAreaDamageChance();
     public abstract boolean getFireSpread();
     public abstract boolean getExplode();
+    public abstract float getAccuracy();
     protected AbstractCatapultProjectile(EntityType<? extends AbstractCatapultProjectile> type, Level world) {
         super(type, world);
     }
@@ -41,6 +41,18 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
     public AbstractCatapultProjectile(EntityType<? extends AbstractCatapultProjectile> type, LivingEntity owner, double d1, double d2, double d3, Level world) {
         super(type, owner, d1, d2, d3, world);
         this.moveTo(d1, d2, d3, this.getYRot(), this.getXRot());
+    }
+
+    public float getProjectileRotation(float partialTicks){
+        return rotation + getProjectileRotationAmount() * partialTicks;
+    }
+
+    public float getProjectileRotationAmount(){
+        return 0.01F;
+    }
+
+    public void updateProjectileRotation() {
+        rotation += getProjectileRotationAmount();
     }
 
     @Override
@@ -89,6 +101,9 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
         if (isInWater() && counter > 400){
             this.discard();
         }
+
+
+        updateProjectileRotation();
     }
 
     public void setWasShot(boolean bool){
@@ -115,7 +130,7 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
 
             if(!isInWater()){
                 if(getExplode()) this.level().explode(this.getOwner(), getX(), getY(), getZ(), getAreaDamage(), getFireSpread(), Level.ExplosionInteraction.MOB);
-                else applyDirectionalDamage(this.level(), blockHitResult.getBlockPos());
+                else applyDirectionalDamage(this.level(), blockHitResult.getBlockPos(), getAreaDamageChance());
             }
 
             this.remove(RemovalReason.KILLED);
@@ -214,7 +229,7 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
         return ParticleTypes.SMOKE;
     }
 
-    private void applyDirectionalDamage(Level level, BlockPos impactPos) {
+    private void applyDirectionalDamage(Level level, BlockPos impactPos, float chance) {
         BlockPos[] directions = {
                 impactPos.above(),
                 impactPos.below(),
@@ -224,10 +239,10 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
                 impactPos.west()
         };
 
-        destroyBlock(level, impactPos, 100F);
+        destroyBlock(level, impactPos, chance);
 
         for (BlockPos pos : directions) {
-            destroyBlock(level, pos, 100F);
+            destroyBlock(level, pos, chance);
         }
     }
 
@@ -245,6 +260,5 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
             level.destroyBlock(pos, false);
         }
     }
-
 
 }

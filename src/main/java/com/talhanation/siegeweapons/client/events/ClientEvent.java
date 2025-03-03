@@ -2,9 +2,7 @@ package com.talhanation.siegeweapons.client.events;
 
 
 import com.talhanation.siegeweapons.Main;
-import com.talhanation.siegeweapons.client.render.CatapultProjectileRenderer;
-import com.talhanation.siegeweapons.client.render.CatapultRenderer;
-import com.talhanation.siegeweapons.client.render.TransportCartRenderer;
+import com.talhanation.siegeweapons.client.render.*;
 import com.talhanation.siegeweapons.init.ModEntityTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderers;
@@ -28,6 +26,10 @@ public class ClientEvent {
         EntityRenderers.register(ModEntityTypes.CATAPULT.get(), CatapultRenderer::new);
         EntityRenderers.register(ModEntityTypes.TRANSPORT_CART.get(), TransportCartRenderer::new);
         EntityRenderers.register(ModEntityTypes.CATAPULT_PROJECTILE.get(), CatapultProjectileRenderer::new);
+        EntityRenderers.register(ModEntityTypes.CATAPULT_BUNDLE_PROJECTILE.get(), CatapultBundleProjectileRenderer::new);
+        EntityRenderers.register(ModEntityTypes.CATAPULT_EXPLOSION_POT_PROJECTILE.get(), CatapultExplosionPotProjectileRenderer::new);
+        EntityRenderers.register(ModEntityTypes.CATAPULT_FIRE_POT_PROJECTILE.get(), CatapultFirePotProjectileRenderer::new);
+
     }
 
     @Nullable
