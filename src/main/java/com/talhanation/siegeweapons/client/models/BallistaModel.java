@@ -34,7 +34,7 @@ public class BallistaModel<T extends BallistaEntity> extends EntityModel<T> {
 		this.rightArm = this.unloaded.getChild("rightArm");
 		this.loader = this.crossbow.getChild("loader");
 		this.arrow = this.crossbow.getChild("arrow");
-		this.wheels = this.ballista.getChild("wheels");
+		this.wheels = this.stand.getChild("wheels");
 	}
 
 
