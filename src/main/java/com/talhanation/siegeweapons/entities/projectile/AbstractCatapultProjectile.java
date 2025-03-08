@@ -48,7 +48,7 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
     }
 
     public float getProjectileRotationAmount(){
-        return 0.01F;
+        return 0.025F;
     }
 
     public void updateProjectileRotation() {

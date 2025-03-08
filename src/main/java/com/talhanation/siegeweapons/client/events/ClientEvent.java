@@ -29,7 +29,8 @@ public class ClientEvent {
         EntityRenderers.register(ModEntityTypes.CATAPULT_BUNDLE_PROJECTILE.get(), CatapultBundleProjectileRenderer::new);
         EntityRenderers.register(ModEntityTypes.CATAPULT_EXPLOSION_POT_PROJECTILE.get(), CatapultExplosionPotProjectileRenderer::new);
         EntityRenderers.register(ModEntityTypes.CATAPULT_FIRE_POT_PROJECTILE.get(), CatapultFirePotProjectileRenderer::new);
-
+        EntityRenderers.register(ModEntityTypes.BALLISTA.get(), BallistaRenderer::new);
+        EntityRenderers.register(ModEntityTypes.BALLISTA_PROJECTILE.get(), BallistaProjectileRenderer::new);
     }
 
     @Nullable

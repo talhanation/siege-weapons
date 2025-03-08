@@ -1,16 +1,13 @@
 package com.talhanation.siegeweapons.init;
 
 import com.talhanation.siegeweapons.Main;
+import com.talhanation.siegeweapons.entities.BallistaEntity;
 import com.talhanation.siegeweapons.entities.CatapultEntity;
 import com.talhanation.siegeweapons.entities.TransportCartEntity;
-import com.talhanation.siegeweapons.entities.projectile.CatapultCobbleBundleProjectile;
-import com.talhanation.siegeweapons.entities.projectile.CatapultCobbleProjectile;
-import com.talhanation.siegeweapons.entities.projectile.CatapultExplosionPotProjectile;
-import com.talhanation.siegeweapons.entities.projectile.CatapultFirePotProjectile;
+import com.talhanation.siegeweapons.entities.projectile.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -25,6 +22,12 @@ public class ModEntityTypes {
                     .sized(4.0F, 4.0F)
                     .clientTrackingRange(10)
                     .build(new ResourceLocation(Main.MOD_ID, "catapult").toString()));
+
+    public static final RegistryObject<EntityType<BallistaEntity>> BALLISTA = ENTITY_TYPES.register("ballista",
+            () -> EntityType.Builder.of(BallistaEntity::new, MobCategory.MISC)
+                    .sized(2.0F, 2.0F)
+                    .clientTrackingRange(10)
+                    .build(new ResourceLocation(Main.MOD_ID, "ballista").toString()));
 
     public static final RegistryObject<EntityType<TransportCartEntity>> TRANSPORT_CART = ENTITY_TYPES.register("transport_cart",
             () -> EntityType.Builder.of(TransportCartEntity::new, MobCategory.MISC)
@@ -58,5 +61,11 @@ public class ModEntityTypes {
                     .clientTrackingRange(3)
                     .updateInterval(20)
                     .build(new ResourceLocation(Main.MOD_ID, "catapult_explosion_pot_projectile").toString()));
+
+    public static final RegistryObject<EntityType<BallistaProjectile>> BALLISTA_PROJECTILE = ENTITY_TYPES.register("ballista_projectile",
+            () -> EntityType.Builder.of(BallistaProjectile::factory, MobCategory.MISC)
+                    .sized(0.85F, 0.85F)
+                    .clientTrackingRange(3)
+                    .build(new ResourceLocation(Main.MOD_ID, "ballista_projectile").toString()));
 
 }
