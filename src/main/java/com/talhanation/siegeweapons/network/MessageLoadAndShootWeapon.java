@@ -11,9 +11,14 @@ import java.util.UUID;
 
 
 public class MessageLoadAndShootWeapon implements Message<MessageLoadAndShootWeapon> {
-
+    boolean trigger;
+    UUID uuid;
     public MessageLoadAndShootWeapon() {
+    }
 
+    public MessageLoadAndShootWeapon(boolean trigger, UUID uuid) {
+        this.trigger = trigger;
+        this.uuid = uuid;
     }
 
     @Override
@@ -29,17 +34,21 @@ public class MessageLoadAndShootWeapon implements Message<MessageLoadAndShootWea
             return;
         }
 
-        weapon.tigger();
+        weapon.updateTrigger(trigger, context.getSender());
         //weapon.shootWeapon();
     }
 
     @Override
     public MessageLoadAndShootWeapon fromBytes(FriendlyByteBuf buf) {
+        this.trigger = buf.readBoolean();
+        this.uuid = buf.readUUID();
         return this;
     }
 
     @Override
     public void toBytes(FriendlyByteBuf buf) {
+        buf.writeBoolean(this.trigger);
+        buf.writeUUID(this.uuid);
     }
 
 }

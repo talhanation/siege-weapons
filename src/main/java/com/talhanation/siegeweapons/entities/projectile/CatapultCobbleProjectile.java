@@ -21,23 +21,18 @@ public class CatapultCobbleProjectile extends AbstractCatapultProjectile {
     }
 
     @Override
-    public float getAreaDamageChance() {
-        return 20;
-    }
-
-    @Override
     public boolean getFireSpread() {
         return false;
     }
 
     @Override
     public boolean getExplode() {
-        return false;
+        return true;
     }
 
     @Override
     public float getAccuracy() {
-        return 1; //0 = 100%
+        return 0; //0 = 100%
     }
 
     public CatapultCobbleProjectile(EntityType<? extends CatapultCobbleProjectile> type, Level world) {

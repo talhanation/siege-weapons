@@ -1,6 +1,5 @@
 package com.talhanation.siegeweapons.entities.projectile;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
@@ -15,7 +14,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -30,7 +28,6 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
     private float rotation;
     public abstract float getDamage();
     public abstract float getAreaDamage();
-    public abstract float getAreaDamageChance();
     public abstract boolean getFireSpread();
     public abstract boolean getExplode();
     public abstract float getAccuracy();
@@ -130,7 +127,6 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
 
             if(!isInWater()){
                 if(getExplode()) this.level().explode(this.getOwner(), getX(), getY(), getZ(), getAreaDamage(), getFireSpread(), Level.ExplosionInteraction.MOB);
-                else applyDirectionalDamage(this.level(), blockHitResult.getBlockPos(), getAreaDamageChance());
             }
 
             this.remove(RemovalReason.KILLED);
@@ -227,38 +223,6 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
     @Override
     protected @NotNull ParticleOptions getTrailParticle() {
         return ParticleTypes.SMOKE;
-    }
-
-    private void applyDirectionalDamage(Level level, BlockPos impactPos, float chance) {
-        BlockPos[] directions = {
-                impactPos.above(),
-                impactPos.below(),
-                impactPos.north(),
-                impactPos.south(),
-                impactPos.east(),
-                impactPos.west()
-        };
-
-        destroyBlock(level, impactPos, chance);
-
-        for (BlockPos pos : directions) {
-            destroyBlock(level, pos, chance);
-        }
-    }
-
-    private void destroyBlock(Level level, BlockPos pos, float chance) {
-        BlockState state = level.getBlockState(pos);
-        float hardness = state.getDestroySpeed(level, pos);
-
-        if (hardness == 0 || state.isAir()) {
-            return;
-        }
-
-
-        int adjustedChance = (int) Math.max(5, chance - (int) (hardness * 10));
-        if (level.random.nextInt(100) < adjustedChance) {
-            level.destroyBlock(pos, false);
-        }
     }
 
 }

@@ -1,7 +1,9 @@
 package com.talhanation.siegeweapons.entities;
 
+import com.talhanation.siegeweapons.Main;
 import com.talhanation.siegeweapons.entities.projectile.*;
 import com.talhanation.siegeweapons.math.Kalkuel;
+import com.talhanation.siegeweapons.network.MessageLoadAndShootWeapon;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -13,12 +15,15 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 public class BallistaEntity extends AbstractInventoryVehicleEntity implements IShootingWeapon{
 
     private static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(BallistaEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> TRIGGERING = SynchedEntityData.defineId(BallistaEntity.class, EntityDataSerializers.BOOLEAN);
     private float loaderRotation;
     private LivingEntity driver;
     private int loadingTime;
@@ -29,6 +34,7 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(STATE, 0);
+        this.entityData.define(TRIGGERING, false);
     }
 
     public void addAdditionalSaveData(CompoundTag compoundTag) {
@@ -47,11 +53,14 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
     public void tick() {
         super.tick();
 
-        BallistaState state = getState();
-
-        if(state == BallistaState.LOADING && ++loadingTime >= 100){
+        if(isTriggering() && getState() == BallistaState.UNLOADED && ++loadingTime >= 100){
             loadingTime = 0;
             setState(BallistaState.LOADED);
+        }
+
+        if(this.isTriggering() && getState() == BallistaState.PROJECTILE_LOADED){
+            setState(BallistaState.UNLOADED);
+            shootWeapon();
         }
 
         updateDriverTurnControl();
@@ -91,6 +100,8 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
     protected boolean tryRiding(Entity entity) {
         if(super.tryRiding(entity) && entity instanceof LivingEntity livingEntity){
             this.driver = livingEntity;
+            this.driver.setYRot(this.getYRot());
+            this.driver.setXRot(this.getXRot());
             return true;
         }
         return false;
@@ -105,7 +116,7 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
     }
 
     public float getLoaderRotationAmount() {
-        return this.getState() == BallistaState.LOADING ? 0.13F : 0F;
+        return isTriggering() && getState() == BallistaState.UNLOADED ? 0.13F : 0F;
     }
 
     @Override
@@ -130,26 +141,14 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
 
     @Override
     public boolean itemInteraction(Player player, InteractionHand interactionHand) {
-        //TODO: add load mechanic
-        if(getState() == BallistaState.UNLOADED){
-            setState(BallistaState.LOADING);
-            return true;
-        }
+        ItemStack itemStack = player.getMainHandItem();
 
-        if(getState() == BallistaState.LOADED){
+        if(getState() == BallistaState.LOADED && itemStack.is(Items.ARROW)){
             setState(BallistaState.PROJECTILE_LOADED);
             return true;
         }
-
-        if(getState() == BallistaState.PROJECTILE_LOADED){
-            shootWeapon();
-            setState(BallistaState.UNLOADED);
-            return true;
-        }
-
         return false;
     }
-
     @Override
     public Vec3 getDriverPosition() {
         double f = -1.8F;
@@ -157,19 +156,20 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
         return (new Vec3(f, 0.0D, 0.0D + d)).yRot(-this.getYRot() * ((float)Math.PI / 180F) - ((float)Math.PI / 2F));
     }
 
-    protected void positionRider(Entity entity, Entity.MoveFunction moveFunction) {
-        if (this.hasPassenger(entity)) {
+    protected void positionRider(Entity rider, Entity.MoveFunction moveFunction) {
+        super.positionRider(rider, moveFunction);
+        if (this.hasPassenger(rider)) {
             Vec3 vec = getDriverPosition();
 
-            moveFunction.accept(entity, this.getX() + vec.x, this.getY(), this.getZ() + vec.z);
+            moveFunction.accept(rider, this.getX() + vec.x, this.getY(), this.getZ() + vec.z);
         }
     }
-    float speed = 4.0F;
+    public float projectileSpeed = 3.5F;
     @Override
     public void shootWeapon() {
         Vec3 forward = this.getForward();
         double yShootVec = forward.y();
-        this.shoot(forward, yShootVec, this.getControllingPassenger(), speed);
+        this.shoot(forward, yShootVec, this.getControllingPassenger(), projectileSpeed);
     }
 
     /*
@@ -188,10 +188,6 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
         projectile.shoot(shootVec.x(), yShootVec, shootVec.z(), speed, projectile.getAccuracy());
         this.getCommandSenderWorld().addFreshEntity(projectile);
         this.playShootSound();
-
-
-
-        //this.consumeProjectile();
     }
 
     @Override
@@ -200,23 +196,26 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
     }
 
     @Override
-    public void tigger() {
-        if(getState() == BallistaState.UNLOADED){
-            setState(BallistaState.LOADING);
-            return;
+    public void updateTrigger(boolean trigger, LivingEntity livingEntity) {
+        boolean needsUpdate = false;
+
+        if (this.isTriggering() != trigger) {
+            this.setTriggering(trigger);
+            needsUpdate = true;
         }
 
-        if(getState() == BallistaState.LOADED){
-            setState(BallistaState.PROJECTILE_LOADED);
-            return;
-        }
-
-        if(getState() == BallistaState.PROJECTILE_LOADED){
-            shootWeapon();
-            setState(BallistaState.UNLOADED);
+        if (this.getCommandSenderWorld().isClientSide && needsUpdate && livingEntity instanceof Player) {
+            Main.SIMPLE_CHANNEL.sendToServer(new MessageLoadAndShootWeapon(trigger, livingEntity.getUUID()));
         }
     }
 
+    public boolean isTriggering() {
+        return this.entityData.get(TRIGGERING);
+    }
+
+    public void setTriggering(boolean trigger) {
+        this.entityData.set(TRIGGERING, trigger);
+    }
     public enum BallistaState {
         UNLOADED(0),
         LOADING(1),

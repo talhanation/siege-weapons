@@ -4,6 +4,8 @@ import com.talhanation.siegeweapons.Main;
 import com.talhanation.siegeweapons.SiegeWeapons;
 import com.talhanation.siegeweapons.entities.projectile.*;
 import com.talhanation.siegeweapons.init.ModEntityTypes;
+import com.talhanation.siegeweapons.network.MessageLoadAndShootWeapon;
+import com.talhanation.siegeweapons.network.MessageUpdateVehicleControl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -16,8 +18,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.Tags;
 
 public class CatapultEntity extends AbstractInventoryVehicleEntity implements IShootingWeapon {
 
@@ -25,6 +31,7 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
     private static final EntityDataAccessor<Float> ANGLE = SynchedEntityData.defineId(CatapultEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(CatapultEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> PROJECTILE = SynchedEntityData.defineId(CatapultEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> TRIGGERING = SynchedEntityData.defineId(CatapultEntity.class, EntityDataSerializers.BOOLEAN);
     private float loaderRotation;
     private LivingEntity driver;
     public CatapultEntity(EntityType<? extends AbstractInventoryVehicleEntity> entityType, Level world) {
@@ -37,6 +44,7 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
         this.entityData.define(ANGLE, -0.65F);
         this.entityData.define(STATE, 4);
         this.entityData.define(PROJECTILE, 0);
+        this.entityData.define(TRIGGERING, false);
     }
 
     public void addAdditionalSaveData(CompoundTag compoundTag) {
@@ -66,8 +74,16 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
         float angle = getAngle();
         CatapultState state = getState();
 
-        if(state == CatapultState.LOADING && angle == -0.65F){
-            setState(CatapultState.LOADED);
+        if(this.isTriggering() && state == CatapultState.LOADING || state == CatapultState.SHOT){
+            if(angle == -0.65F){
+                setState(CatapultState.LOADED);
+                return;
+            }
+        }
+
+        if(this.isTriggering() && state == CatapultState.PROJECTILE_LOADED){
+            setState(CatapultState.SHOOTING);
+            return;
         }
 
         if(state == CatapultState.SHOOTING && angle == 0.65F){
@@ -93,7 +109,7 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
     }
 
     public float getLoaderRotationAmount() {
-        return this.getState() == CatapultState.LOADING ? 0.13F : 0F;
+        return this.getState() == CatapultState.LOADING || this.getState() == CatapultState.SHOT && this.isTriggering() ? 0.13F : 0F;
     }
 
     public void updateAngleRotation() {
@@ -104,7 +120,7 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
         return (float) Mth.clamp(getAngle() + getAngleRotationAmount() * partialTicks, -0.65, 0.65);
     }
     public float getAngleRotationAmount() {
-        if(getState() == CatapultState.LOADING) return -0.004F;
+        if(this.isTriggering() && this.getState() == CatapultState.SHOT || this.getState() == CatapultState.LOADING) return -0.104F; //return -0.004F;
         else if (getState() == CatapultState.SHOOTING) return 0.3F + 0.01F * getRange();
         else return 0;
     }
@@ -147,7 +163,22 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
 
     @Override
     public boolean itemInteraction(Player player, InteractionHand interactionHand) {
-        //TODO: add load mechanic
+        ItemStack itemStack = player.getMainHandItem();
+
+        if(getState() == CatapultState.LOADED){
+            if(itemStack.is(Items.COBBLESTONE)){
+                setProjectile(CatapultProjectiles.COBBLE_SHOT);
+            }
+            //TODO other projectiles
+
+            setState(CatapultState.PROJECTILE_LOADED);
+            return true;
+        }
+
+
+        //else if(itemStack.is(ModItems.BUNDLE ))
+
+        /*
         if(getState() == CatapultState.SHOT){
             setState(CatapultState.LOADING);
         }
@@ -161,6 +192,7 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
             setState(CatapultState.SHOOTING);
             return true;
         }
+        */
 
         return false;
     }
@@ -192,11 +224,11 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
 
     }
 
-    protected void positionRider(Entity entity, Entity.MoveFunction moveFunction) {
-        if (this.hasPassenger(entity)) {
+    protected void positionRider(Entity rider, Entity.MoveFunction moveFunction) {
+        if (this.hasPassenger(rider)) {
             Vec3 vec = getDriverPosition();
 
-            moveFunction.accept(entity, this.getX() + vec.x, this.getY(), this.getZ() + vec.z);
+            moveFunction.accept(rider, this.getX() + vec.x, this.getY(), this.getZ() + vec.z);
         }
     }
 
@@ -204,14 +236,11 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
     @Override
     public void shootWeapon() {
         Vec3 forward = this.getForward();
-        float range = getRange();
-        float speed = 3.0F + range * 0.125F;
+        float speed = getCalcRange();
 
         double yShootVec = forward.y() + 35F/40F;
 
         this.shoot(forward, yShootVec, this.getControllingPassenger(), speed);
-
-
     }
 
     /*
@@ -219,13 +248,13 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
      */
     public void shoot(Vec3 shootVec, double yShootVec, LivingEntity driverEntity, float speed){
         AbstractCatapultProjectile projectile = null;
-
+        CatapultProjectiles projectileCase = getProjectile();
         if(driverEntity == null){
             if(driver == null) return;
             driverEntity = driver;
 
         }
-        switch (getProjectile()){
+        switch (projectileCase){
             case EMPTY -> {
                 this.setProjectile(this.getProjectile().getNext());
                 return;
@@ -244,15 +273,15 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
             }
 
             case BUNDLE_SHOT -> {
-                projectile = new CatapultCobbleBundleProjectile(this.getCommandSenderWorld(), driverEntity, this.getX(), this.getY() + 3.75, this.getZ());
                 int amount = 9;
                 for(int i = 0; i< amount; i++) {
+                    projectile = new CatapultCobbleBundleProjectile(this.getCommandSenderWorld(), driverEntity, this.getX(), this.getY() + 3.75, this.getZ());
                     projectile.shoot(shootVec.x(), yShootVec, shootVec.z(), speed, projectile.getAccuracy());
                     this.getCommandSenderWorld().addFreshEntity(projectile);
 
                 }
                 this.playShootSound();
-                this.setProjectile(this.getProjectile().getNext());
+                this.setProjectile(CatapultProjectiles.EMPTY);
                 return;
             }
         }
@@ -263,7 +292,6 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
             this.playShootSound();
 
             this.setProjectile(this.getProjectile().getNext());
-            //this.consumeProjectile();
         }
     }
 
@@ -274,8 +302,30 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
     }
 
     @Override
-    public void tigger() {
-        setState(CatapultState.LOADING);
+    public void updateTrigger(boolean trigger, LivingEntity livingEntity) {
+        boolean needsUpdate = false;
+
+        if (this.isTriggering() != trigger) {
+            this.setTriggering(trigger);
+            needsUpdate = true;
+        }
+
+        if (this.getCommandSenderWorld().isClientSide && needsUpdate && livingEntity instanceof Player) {
+            Main.SIMPLE_CHANNEL.sendToServer(new MessageLoadAndShootWeapon(trigger, livingEntity.getUUID()));
+        }
+    }
+
+    public boolean isTriggering() {
+        return this.entityData.get(TRIGGERING);
+    }
+
+    public void setTriggering(boolean trigger) {
+        this.entityData.set(TRIGGERING, trigger);
+    }
+
+    public float getCalcRange() {
+        float range = getRange();
+        return 1.5F + 1.5F * range * 0.01F;
     }
 
 

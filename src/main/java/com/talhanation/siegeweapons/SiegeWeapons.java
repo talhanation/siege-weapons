@@ -9,7 +9,8 @@ import net.minecraft.client.Minecraft;
 
 public enum SiegeWeapons {
     CATAPULT(0, new CatapultEntity(ModEntityTypes.CATAPULT.get(), Minecraft.getInstance().level), SiegeTableRecipe.CATAPULT_RECIPE),
-    TRANSPORT_CART(1, new TransportCartEntity(ModEntityTypes.TRANSPORT_CART.get(), Minecraft.getInstance().level), SiegeTableRecipe.TRANSPORT_CART_RECIPE);
+    //TRANSPORT_CART(1, new TransportCartEntity(ModEntityTypes.TRANSPORT_CART.get(), Minecraft.getInstance().level), SiegeTableRecipe.TRANSPORT_CART_RECIPE);
+    BALLISTA(1, new TransportCartEntity(ModEntityTypes.BALLISTA.get(), Minecraft.getInstance().level), SiegeTableRecipe.BALLISTA_RECIPE);
 
     private static final SiegeWeapons[] VALUES = values();
     private final AbstractVehicleEntity entity;

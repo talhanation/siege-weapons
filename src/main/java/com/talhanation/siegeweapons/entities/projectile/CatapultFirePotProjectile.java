@@ -21,11 +21,6 @@ public class CatapultFirePotProjectile extends AbstractCatapultProjectile {
     }
 
     @Override
-    public float getAreaDamageChance() {
-        return 20;
-    }
-
-    @Override
     public boolean getFireSpread() {
         return true;
     }

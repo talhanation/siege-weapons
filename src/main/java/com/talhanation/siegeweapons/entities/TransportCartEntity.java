@@ -65,11 +65,11 @@ public class TransportCartEntity extends AbstractInventoryVehicleEntity {
 
     }
 
-    protected void positionRider(Entity entity, MoveFunction moveFunction) {
-        if (this.hasPassenger(entity)) {
+    protected void positionRider(Entity rider, MoveFunction moveFunction) {
+        if (this.hasPassenger(rider)) {
             Vec3 vec = getDriverPosition();
 
-            moveFunction.accept(entity, this.getX() + vec.x, this.getY(), this.getZ() + vec.z);
+            moveFunction.accept(rider, this.getX() + vec.x, this.getY(), this.getZ() + vec.z);
         }
     }
 }

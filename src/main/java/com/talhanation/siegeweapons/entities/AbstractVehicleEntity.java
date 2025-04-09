@@ -18,6 +18,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -140,7 +141,7 @@ public abstract class AbstractVehicleEntity extends Entity {
                 ++deltaRotation;
             }
 
-            float newYRot = yRot + this.deltaRotation;
+            float newYRot = yRot + this.deltaRotation * 0.25F;
 
             this.setXRot(xRot);
             this.setYRot(newYRot);

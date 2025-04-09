@@ -1,16 +1,29 @@
 package com.talhanation.siegeweapons.client.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import com.talhanation.siegeweapons.Main;
 import com.talhanation.siegeweapons.client.models.BallistaModel;
 import com.talhanation.siegeweapons.entities.BallistaEntity;
+import com.talhanation.siegeweapons.math.Kalkuel;
+import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.debug.DebugRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BallistaRenderer extends EntityRenderer<BallistaEntity> {
 
@@ -33,21 +46,72 @@ public class BallistaRenderer extends EntityRenderer<BallistaEntity> {
     public void render(BallistaEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight) {
         poseStack.pushPose();
 
+        // Transformations for the ballista model
         poseStack.mulPose(Axis.YN.rotationDegrees(180));
-
         poseStack.scale(-1.0F, -1.0F, 1.0F);
+        poseStack.translate(0.0D, translation, 0.0D);
 
-        poseStack.translate(0.0D, translation,0.0D);
-
+        // Update the ballista model's rotation
         float pitch = entity.xRotO + partialTicks * (entity.getXRot() - entity.xRotO);
         this.model.setCrossBowRotation(entity.isForward() || entity.isBackward(), pitch, entityYaw);
-
         this.model.setupAnim(entity, partialTicks, 0.0F, -0.1F, 0.0F, 0.0F);
 
+        // Render the ballista model
         VertexConsumer ivertexbuilder = multiBufferSource.getBuffer(this.model.renderType(getTextureLocation(entity)));
         this.model.renderToBuffer(poseStack, ivertexbuilder, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 
-        poseStack.popPose();
+        Vec3 forward = new Vec3(Math.sin(Math.toRadians(entity.getYRot())), 0, Math.cos(Math.toRadians(entity.getYRot())));
 
+        List<Vec3> trajectory = calculateTrajectory(forward, -Math.toRadians(entity.getXRot()), entity.projectileSpeed, 150, 0);
+        // Render the trajectory line
+        VertexConsumer lineVertexConsumer = multiBufferSource.getBuffer(RenderType.LINES);
+        renderBallistaTrajectory(poseStack, lineVertexConsumer, trajectory, 1.0f, 0.0f, 0.0f, 100.0f); // Red line
+
+        poseStack.popPose();
     }
+    public static List<Vec3> calculateTrajectory(Vec3 forward, double yShootVec, float initialVelocity, int steps, double heightOffset) {
+        List<Vec3> trajectory = new ArrayList<>();
+        double timeStep = 1.0;
+        double gravityValue = -0.071;
+        Vec3 vec3 = new Vec3(forward.x, yShootVec, forward.z).reverse();
+
+        for (int i = 2; i < steps; i++) {
+            double t = i * timeStep;
+
+            double dx = vec3.x * initialVelocity * t;
+            double dy = vec3.y * initialVelocity * t;
+            double dz = vec3.z * initialVelocity * t;
+
+            double yOffset = 0.5 * gravityValue * t * t;
+
+
+            Vec3 point = new Vec3(dx, dy - yOffset + heightOffset, dz);
+
+            trajectory.add(point);
+        }
+
+        return trajectory;
+    }
+
+
+    public static void renderBallistaTrajectory(PoseStack poseStack, VertexConsumer vertexConsumer, List<Vec3> points, float r, float g, float b, float alpha) {
+        PoseStack.Pose pose = poseStack.last();
+
+        for (int i = 0; i < points.size() - 1; i++) {
+            Vec3 p1 = points.get(i);
+            Vec3 p2 = points.get(i + 1);
+
+            vertexConsumer.vertex(pose.pose(), (float) p1.x, (float) p1.y, (float) p1.z)
+                    .color(r, g, b, alpha)
+                    .normal(pose.normal(), 0.0F, 1.0F, 0.0F) // Richtung normalisieren
+                    .endVertex();
+
+            vertexConsumer.vertex(pose.pose(), (float) p2.x, (float) p2.y, (float) p2.z)
+                    .color(r, g, b, alpha)
+                    .normal(pose.normal(), 0.0F, 1.0F, 0.0F)
+                    .endVertex();
+        }
+    }
+
+
 }
