@@ -41,22 +41,22 @@ public class ModEntityTypes {
                     .clientTrackingRange(3)
                     .build(new ResourceLocation(Main.MOD_ID, "catapult_projectile").toString()));
 
-    public static final RegistryObject<EntityType<CatapultCobbleBundleProjectile>> CATAPULT_BUNDLE_PROJECTILE = ENTITY_TYPES.register("catapult_bundle_projectile",
+    public static final RegistryObject<EntityType<CatapultCobbleBundleProjectile>> COBBLE_BUNDLE_PROJECTILE = ENTITY_TYPES.register("catapult_bundle_projectile",
             () -> EntityType.Builder.of(CatapultCobbleBundleProjectile::factory, MobCategory.MISC)
                     .sized(0.5F, 0.5F)
                     .clientTrackingRange(3)
                     .updateInterval(20)
                     .build(new ResourceLocation(Main.MOD_ID, "catapult_bundle_projectile").toString()));
 
-    public static final RegistryObject<EntityType<CatapultFirePotProjectile>> CATAPULT_FIRE_POT_PROJECTILE = ENTITY_TYPES.register("catapult_fire_pot_projectile",
-            () -> EntityType.Builder.of(CatapultFirePotProjectile::factory, MobCategory.MISC)
+    public static final RegistryObject<EntityType<FirePotProjectile>> FIRE_POT_PROJECTILE = ENTITY_TYPES.register("catapult_fire_pot_projectile",
+            () -> EntityType.Builder.of(FirePotProjectile::factory, MobCategory.MISC)
                     .sized(0.85F, 0.85F)
                     .clientTrackingRange(3)
                     .updateInterval(20)
                     .build(new ResourceLocation(Main.MOD_ID, "catapult_fire_pot_projectile").toString()));
 
-    public static final RegistryObject<EntityType<CatapultExplosionPotProjectile>> CATAPULT_EXPLOSION_POT_PROJECTILE = ENTITY_TYPES.register("catapult_explosion_pot_projectile",
-            () -> EntityType.Builder.of(CatapultExplosionPotProjectile::factory, MobCategory.MISC)
+    public static final RegistryObject<EntityType<ExplosionPotProjectile>> EXPLOSION_POT_PROJECTILE = ENTITY_TYPES.register("catapult_explosion_pot_projectile",
+            () -> EntityType.Builder.of(ExplosionPotProjectile::factory, MobCategory.MISC)
                     .sized(0.85F, 0.85F)
                     .clientTrackingRange(3)
                     .updateInterval(20)

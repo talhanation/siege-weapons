@@ -2,9 +2,12 @@
   "entity.siegeweapons.catapult" : "Catapult",
   "entity.siegeweapons.cart" : "Cart",
   "entity.siegeweapons.transportCart" : "Transport Cart",
-  "entity.siegeweapons.balista" : "Balista",
+  "entity.siegeweapons.ballista" : "Ballista",
 
-  "text.siegeweapons.catapult_controls": "Press Shift to dismount the Catapult\nPress W, A, S, D to move\nPress Space to shoot\nPress Mouse-Right to show Trajectory\nPress Mouse-Scroll to change the range",
-  "text.siegeweapons.ballista_controls": "Press Shift to dismount the Ballista\nPress W, A, S, D to move\nPress Space to shoot\nPress Mouse-Right to show Trajectory"
-
+  "item.siegeweapons.ballista_item" : "Ballista Item",
+  "item.siegeweapons.catapult_item" : "Catapult Item",
+  "item.siegeweapons.ballista_projectile_item" : "Ballista Bolt",
+  "item.siegeweapons.explosion_pot_item" : "Explosion Pot",
+  "item.siegeweapons.fire_pot_item" : "Fire Pot",
+  "item.siegeweapons.cobble_bundle_item" : "Cobble Bundle"
 }

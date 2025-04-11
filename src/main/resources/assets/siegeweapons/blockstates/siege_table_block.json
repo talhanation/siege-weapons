@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "recruits:block/siege_table_block"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "siegeweapons:block/siege_table_side",
+    "north": "siegeweapons:block/siege_table_side",
+    "south": "siegeweapons:block/siege_table_side",
+    "east": "siegeweapons:block/siege_table_side",
+    "west": "siegeweapons:block/siege_table_side",
+    "up": "siegeweapons:block/siege_table_top",
+    "down": "siegeweapons:block/siege_table_bottom"
+  }
+}

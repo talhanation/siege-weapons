@@ -35,7 +35,7 @@ public class BallistaProjectile extends AbstractArrow {
     public float getAccuracy(){
         return 0F;
     };
-    protected BallistaProjectile(EntityType<? extends BallistaProjectile> type, Level world) {
+    public BallistaProjectile(EntityType<? extends BallistaProjectile> type, Level world) {
         super(type, world);
     }
 

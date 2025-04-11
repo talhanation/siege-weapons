@@ -4,30 +4,30 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.talhanation.siegeweapons.Main;
 import com.talhanation.siegeweapons.client.models.projectile.CatapultFirePotProjectileModel;
-import com.talhanation.siegeweapons.entities.projectile.CatapultFirePotProjectile;
+import com.talhanation.siegeweapons.entities.projectile.FirePotProjectile;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 
-public class CatapultFirePotProjectileRenderer extends EntityRenderer<CatapultFirePotProjectile> {
+public class FirePotProjectileRenderer extends EntityRenderer<FirePotProjectile> {
 
     private static final ResourceLocation[] TEXTURE = {
-            new ResourceLocation(Main.MOD_ID,"textures/entity/fire_projectile.png")
+            new ResourceLocation(Main.MOD_ID,"textures/entity/fire_pot.png")
     };
-    public CatapultFirePotProjectileRenderer(EntityRendererProvider.Context context) {
+    public FirePotProjectileRenderer(EntityRendererProvider.Context context) {
         super(context);
         this.shadowRadius = 1.5F;
     }
 
     @Override
-    public ResourceLocation getTextureLocation(CatapultFirePotProjectile entity) {
+    public ResourceLocation getTextureLocation(FirePotProjectile entity) {
         return TEXTURE[0];
     }
     private final CatapultFirePotProjectileModel model = new CatapultFirePotProjectileModel();
     @Override
-    public void render(CatapultFirePotProjectile entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight) {
+    public void render(FirePotProjectile entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight) {
         poseStack.pushPose();
         poseStack.translate(0.0D, -0.0D, 0.0D);
 

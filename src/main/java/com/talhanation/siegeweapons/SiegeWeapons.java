@@ -1,6 +1,7 @@
 package com.talhanation.siegeweapons;
 
 import com.talhanation.siegeweapons.entities.AbstractVehicleEntity;
+import com.talhanation.siegeweapons.entities.BallistaEntity;
 import com.talhanation.siegeweapons.entities.CatapultEntity;
 import com.talhanation.siegeweapons.entities.TransportCartEntity;
 import com.talhanation.siegeweapons.init.ModEntityTypes;
@@ -10,7 +11,7 @@ import net.minecraft.client.Minecraft;
 public enum SiegeWeapons {
     CATAPULT(0, new CatapultEntity(ModEntityTypes.CATAPULT.get(), Minecraft.getInstance().level), SiegeTableRecipe.CATAPULT_RECIPE),
     //TRANSPORT_CART(1, new TransportCartEntity(ModEntityTypes.TRANSPORT_CART.get(), Minecraft.getInstance().level), SiegeTableRecipe.TRANSPORT_CART_RECIPE);
-    BALLISTA(1, new TransportCartEntity(ModEntityTypes.BALLISTA.get(), Minecraft.getInstance().level), SiegeTableRecipe.BALLISTA_RECIPE);
+    BALLISTA(1, new BallistaEntity(ModEntityTypes.BALLISTA.get(), Minecraft.getInstance().level), SiegeTableRecipe.BALLISTA_RECIPE);
 
     private static final SiegeWeapons[] VALUES = values();
     private final AbstractVehicleEntity entity;

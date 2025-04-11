@@ -60,12 +60,14 @@ public class BallistaRenderer extends EntityRenderer<BallistaEntity> {
         VertexConsumer ivertexbuilder = multiBufferSource.getBuffer(this.model.renderType(getTextureLocation(entity)));
         this.model.renderToBuffer(poseStack, ivertexbuilder, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 
-        Vec3 forward = new Vec3(Math.sin(Math.toRadians(entity.getYRot())), 0, Math.cos(Math.toRadians(entity.getYRot())));
+        if(entity.getShowTrajectory()){
+            Vec3 forward = new Vec3(Math.sin(Math.toRadians(entity.getYRot())), 0, Math.cos(Math.toRadians(entity.getYRot())));
 
-        List<Vec3> trajectory = calculateTrajectory(forward, -Math.toRadians(entity.getXRot()), entity.projectileSpeed, 150, 0);
-        // Render the trajectory line
-        VertexConsumer lineVertexConsumer = multiBufferSource.getBuffer(RenderType.LINES);
-        renderBallistaTrajectory(poseStack, lineVertexConsumer, trajectory, 1.0f, 0.0f, 0.0f, 100.0f); // Red line
+            List<Vec3> trajectory = calculateTrajectory(forward, -Math.toRadians(entity.getXRot()), entity.projectileSpeed, 150, 0);
+            // Render the trajectory line
+            VertexConsumer lineVertexConsumer = multiBufferSource.getBuffer(RenderType.LINES);
+            renderBallistaTrajectory(poseStack, lineVertexConsumer, trajectory, 1.0f, 0.0f, 0.0f, 100.0f); // Red line
+        }
 
         poseStack.popPose();
     }

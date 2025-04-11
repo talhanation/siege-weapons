@@ -7,15 +7,15 @@ import net.minecraft.world.item.Items;
 
 import java.util.Map;
 public class SiegeTableRecipe {
-    //Max 7 entries
+    //Max 7 entries per recipe
     public static final SiegeTableRecipe CATAPULT_RECIPE = new SiegeTableRecipe(Map.of(
             Items.OAK_LOG, 16,
             Items.OAK_PLANKS, 64,
             Items.STRING, 32,
             Items.LEATHER, 16,
             Items.LEAD, 4,
-            Items.IRON_INGOT, 10,
-            Items.IRON_NUGGET, 16
+            Items.IRON_INGOT, 16,
+            Items.IRON_NUGGET, 8
     ));
 
 
@@ -23,7 +23,20 @@ public class SiegeTableRecipe {
             Items.OAK_PLANKS, 16,
             Items.STRING, 16,
             Items.LEAD, 4,
-            Items.IRON_NUGGET, 16
+            Items.IRON_INGOT, 16,
+            Items.IRON_NUGGET, 8
+    ));
+
+    public static final SiegeTableRecipe BALLISTA_PROJECTILE = new SiegeTableRecipe(Map.of(
+            Items.OAK_PLANKS, 3,
+            Items.FEATHER, 1,
+            Items.IRON_INGOT, 1
+    ));
+
+    public static final SiegeTableRecipe FIRE_POT = new SiegeTableRecipe(Map.of(
+            Items.DECORATED_POT, 1,
+            Items.GUNPOWDER, 1,
+            Items.WHEAT, 9
     ));
 
     public static final SiegeTableRecipe TRANSPORT_CART_RECIPE = new SiegeTableRecipe(Map.of(

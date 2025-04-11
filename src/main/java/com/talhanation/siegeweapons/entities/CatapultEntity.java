@@ -2,6 +2,7 @@ package com.talhanation.siegeweapons.entities;
 
 import com.talhanation.siegeweapons.Main;
 import com.talhanation.siegeweapons.entities.projectile.*;
+import com.talhanation.siegeweapons.init.ModItems;
 import com.talhanation.siegeweapons.init.ModSounds;
 import com.talhanation.siegeweapons.network.MessageLoadAndShootWeapon;
 import net.minecraft.nbt.CompoundTag;
@@ -183,31 +184,22 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
             if(itemStack.is(Items.COBBLESTONE)){
                 setProjectile(CatapultProjectiles.COBBLE_SHOT);
             }
-            //TODO other projectiles
+            else if(itemStack.is(ModItems.COBBLE_BUNDLE_ITEM.get())){
+                setProjectile(CatapultProjectiles.BUNDLE_SHOT);
+            }
+            else if(itemStack.is(ModItems.FIRE_POT_ITEM.get())){
+                setProjectile(CatapultProjectiles.FIRE_SHOT);
+            }
+            else if(itemStack.is(ModItems.EXPLOSION_POT_ITEM.get())){
+                setProjectile(CatapultProjectiles.EXPLOSION_SHOT);
+            }
+            else{
+                return false;
+            }
 
             setState(CatapultState.PROJECTILE_LOADED);
             return true;
         }
-
-
-        //else if(itemStack.is(ModItems.BUNDLE ))
-
-        /*
-        if(getState() == CatapultState.SHOT){
-            setState(CatapultState.LOADING);
-        }
-
-        if(getState() == CatapultState.LOADED){
-            setState(CatapultState.PROJECTILE_LOADED);
-            return true;
-        }
-
-        if(getState() == CatapultState.PROJECTILE_LOADED){
-            setState(CatapultState.SHOOTING);
-            return true;
-        }
-        */
-
         return false;
     }
 
@@ -279,11 +271,11 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
             }
 
             case FIRE_SHOT -> {
-                projectile = new CatapultFirePotProjectile(this.getCommandSenderWorld(), driverEntity, this.getX(), this.getY() + 3.75, this.getZ());
+                projectile = new FirePotProjectile(this.getCommandSenderWorld(), driverEntity, this.getX(), this.getY() + 3.75, this.getZ());
             }
 
             case EXPLOSION_SHOT -> {
-                projectile = new CatapultExplosionPotProjectile(this.getCommandSenderWorld(), driverEntity, this.getX(), this.getY() + 3.75, this.getZ());
+                projectile = new ExplosionPotProjectile(this.getCommandSenderWorld(), driverEntity, this.getX(), this.getY() + 3.75, this.getZ());
             }
 
             case BUNDLE_SHOT -> {
@@ -323,8 +315,8 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
                 case 1 -> ModSounds.CATAPULT_DRAW_1.get();
                 case 2 -> ModSounds.CATAPULT_DRAW_2.get();
                 case 3 -> ModSounds.CATAPULT_DRAW_3.get();
-                case 4 -> ModSounds.CATAPULT_DRAW_4.get();
-                case 5, 6, 7, 8, 9 -> ModSounds.CATAPULT_DRAW_5.get();
+                case 4, 5, 6 -> ModSounds.CATAPULT_DRAW_4.get();
+                case 7, 8, 9 -> ModSounds.CATAPULT_DRAW_5.get();
                 case 10 -> ModSounds.CATAPULT_DRAW_6.get();
                 case 11 -> ModSounds.CATAPULT_DRAW_7.get();
                 case 12 -> ModSounds.CATAPULT_DRAW_8.get();

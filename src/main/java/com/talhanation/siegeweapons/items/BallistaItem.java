@@ -1,11 +1,8 @@
 package com.talhanation.siegeweapons.items;
 
-import com.talhanation.siegeweapons.client.render.item.CatapultItemRenderer;
-import com.talhanation.siegeweapons.entities.CatapultEntity;
+import com.talhanation.siegeweapons.client.render.item.BallistaItemRenderer;
+import com.talhanation.siegeweapons.entities.BallistaEntity;
 import com.talhanation.siegeweapons.init.ModEntityTypes;
-import net.minecraft.world.entity.vehicle.Boat;
-import net.minecraft.world.item.BoatItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.stats.Stats;
@@ -14,6 +11,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -24,10 +22,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-public class CatapultItem extends Item {
+
+public class BallistaItem extends Item {
     private static final Predicate<Entity> X = EntitySelector.NO_SPECTATORS.and(Entity::canBeCollidedWith);
 
-    public CatapultItem(Item.Properties properties) {
+    public BallistaItem(Properties properties) {
         super(properties);
     }
 
@@ -36,14 +35,14 @@ public class CatapultItem extends Item {
         consumer.accept(new IClientItemExtensions() {
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return new CatapultItemRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
+                return new BallistaItemRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
             }
         });
     }
 
-    public CatapultEntity getEntity(Level world) {
-        CatapultEntity entity = new CatapultEntity(ModEntityTypes.CATAPULT.get(), world);
-        entity.setState(CatapultEntity.CatapultState.LOADED);
+    public BallistaEntity getEntity(Level world) {
+        BallistaEntity entity = new BallistaEntity(ModEntityTypes.BALLISTA.get(), world);
+        entity.setState(BallistaEntity.BallistaState.LOADED);
         return entity;
     }
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand interactionHand) {
@@ -54,8 +53,8 @@ public class CatapultItem extends Item {
         } else {
             if (hitresult.getType() == HitResult.Type.BLOCK) {
 
-                CatapultEntity entity = new CatapultEntity(ModEntityTypes.CATAPULT.get(), level);
-                entity.setState(CatapultEntity.CatapultState.LOADED);
+                BallistaEntity entity = new BallistaEntity(ModEntityTypes.CATAPULT.get(), level);
+                entity.setState(BallistaEntity.BallistaState.LOADED);
                 entity.setYRot(player.getYRot() + 90F);
                 entity.setPos(hitresult.getLocation().add(0,1,0));
 

@@ -89,12 +89,11 @@ public class SiegeTableBlockEntity extends BaseContainerBlockEntity {
         // Spawn crafted entity near the table
         if (level != null && !level.isClientSide) {
             CatapultEntity catapult = new CatapultEntity(ModEntityTypes.CATAPULT.get(), level);
+            catapult.setState(CatapultEntity.CatapultState.LOADED);
             catapult.setPos(this.getBlockPos().above(2).getCenter());
 
             level.addFreshEntity(catapult);
         }
-
-
     }
 
     public boolean getCrafting(){

@@ -5,10 +5,10 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
-public class CatapultFirePotProjectile extends AbstractCatapultProjectile {
+public class FirePotProjectile extends AbstractCatapultProjectile {
 
-    public static CatapultFirePotProjectile factory(EntityType<? extends CatapultFirePotProjectile> entityType, Level level) {
-        return new CatapultFirePotProjectile(entityType, level);
+    public static FirePotProjectile factory(EntityType<? extends FirePotProjectile> entityType, Level level) {
+        return new FirePotProjectile(entityType, level);
     }
 
     public float getDamage(){
@@ -35,11 +35,11 @@ public class CatapultFirePotProjectile extends AbstractCatapultProjectile {
         return 1; //0 = 100%
     }
 
-    public CatapultFirePotProjectile(EntityType<? extends CatapultFirePotProjectile> type, Level world) {
+    public FirePotProjectile(EntityType<? extends FirePotProjectile> type, Level world) {
         super(type, world);
     }
-    public CatapultFirePotProjectile(Level world, LivingEntity owner, double d1, double d2, double d3) {
-        super(ModEntityTypes.CATAPULT_FIRE_POT_PROJECTILE.get(), owner, d1, d2, d3, world);
+    public FirePotProjectile(Level world, LivingEntity owner, double d1, double d2, double d3) {
+        super(ModEntityTypes.FIRE_POT_PROJECTILE.get(), owner, d1, d2, d3, world);
     }
 
 }

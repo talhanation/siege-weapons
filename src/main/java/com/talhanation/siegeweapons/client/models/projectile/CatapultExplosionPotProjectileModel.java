@@ -2,15 +2,14 @@ package com.talhanation.siegeweapons.client.models.projectile;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.talhanation.siegeweapons.entities.projectile.CatapultCobbleProjectile;
-import com.talhanation.siegeweapons.entities.projectile.CatapultExplosionPotProjectile;
+import com.talhanation.siegeweapons.entities.projectile.ExplosionPotProjectile;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 
 
-public class CatapultExplosionPotProjectileModel<T extends CatapultExplosionPotProjectile> extends EntityModel<T> {
+public class CatapultExplosionPotProjectileModel<T extends ExplosionPotProjectile> extends EntityModel<T> {
 
     private final ModelPart pot_projectile;
 
@@ -31,7 +30,7 @@ public class CatapultExplosionPotProjectileModel<T extends CatapultExplosionPotP
     }
 
     @Override
-    public void setupAnim(CatapultExplosionPotProjectile entity, float partialTicks, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setupAnim(ExplosionPotProjectile entity, float partialTicks, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         pot_projectile.xRot = entity.getProjectileRotation(partialTicks);
         pot_projectile.yRot = entity.getProjectileRotation(partialTicks);
     }

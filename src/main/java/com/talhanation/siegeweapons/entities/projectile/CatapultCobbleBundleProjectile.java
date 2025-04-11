@@ -38,7 +38,7 @@ public class CatapultCobbleBundleProjectile extends AbstractCatapultProjectile {
         super(type, world);
     }
     public CatapultCobbleBundleProjectile(Level world, LivingEntity owner, double d1, double d2, double d3) {
-        super(ModEntityTypes.CATAPULT_BUNDLE_PROJECTILE.get(), owner, d1, d2, d3, world);
+        super(ModEntityTypes.COBBLE_BUNDLE_PROJECTILE.get(), owner, d1, d2, d3, world);
     }
 
 }

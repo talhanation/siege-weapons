@@ -3,31 +3,31 @@ package com.talhanation.siegeweapons.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.talhanation.siegeweapons.Main;
-import com.talhanation.siegeweapons.client.models.projectile.CatapultExplosionPotProjectileModel;
-import com.talhanation.siegeweapons.entities.projectile.CatapultExplosionPotProjectile;
+import com.talhanation.siegeweapons.client.models.projectile.CatapultBundleProjectileModel;
+import com.talhanation.siegeweapons.entities.projectile.CatapultCobbleBundleProjectile;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 
-public class CatapultExplosionPotProjectileRenderer extends EntityRenderer<CatapultExplosionPotProjectile> {
+public class CobbleBundleProjectileRenderer extends EntityRenderer<CatapultCobbleBundleProjectile> {
 
     private static final ResourceLocation[] TEXTURE = {
-            new ResourceLocation(Main.MOD_ID,"textures/entity/explosion_projectile.png")
+            new ResourceLocation(Main.MOD_ID,"textures/entity/cobble_projectile.png")
     };
-    public CatapultExplosionPotProjectileRenderer(EntityRendererProvider.Context context) {
+    public CobbleBundleProjectileRenderer(EntityRendererProvider.Context context) {
         super(context);
-        this.shadowRadius = 1.5F;
+        this.shadowRadius = 0.5F;
     }
 
     @Override
-    public ResourceLocation getTextureLocation(CatapultExplosionPotProjectile entity) {
+    public ResourceLocation getTextureLocation(CatapultCobbleBundleProjectile entity) {
         return TEXTURE[0];
     }
-    private final CatapultExplosionPotProjectileModel model = new CatapultExplosionPotProjectileModel();
+    private final CatapultBundleProjectileModel model = new CatapultBundleProjectileModel();
     @Override
-    public void render(CatapultExplosionPotProjectile entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight) {
+    public void render(CatapultCobbleBundleProjectile entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight) {
         poseStack.pushPose();
         poseStack.translate(0.0D, -0.0D, 0.0D);
 
