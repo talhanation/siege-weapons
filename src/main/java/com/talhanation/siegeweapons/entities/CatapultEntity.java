@@ -1,29 +1,24 @@
 package com.talhanation.siegeweapons.entities;
 
 import com.talhanation.siegeweapons.Main;
-import com.talhanation.siegeweapons.SiegeWeapons;
 import com.talhanation.siegeweapons.entities.projectile.*;
-import com.talhanation.siegeweapons.init.ModEntityTypes;
+import com.talhanation.siegeweapons.init.ModSounds;
 import com.talhanation.siegeweapons.network.MessageLoadAndShootWeapon;
-import com.talhanation.siegeweapons.network.MessageUpdateVehicleControl;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.Tags;
 
 public class CatapultEntity extends AbstractInventoryVehicleEntity implements IShootingWeapon {
 
@@ -34,6 +29,9 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
     private static final EntityDataAccessor<Boolean> TRIGGERING = SynchedEntityData.defineId(CatapultEntity.class, EntityDataSerializers.BOOLEAN);
     private float loaderRotation;
     private LivingEntity driver;
+    private boolean showTrajectory;
+    private int loadingTime;
+
     public CatapultEntity(EntityType<? extends AbstractInventoryVehicleEntity> entityType, Level world) {
         super(entityType, world);
     }
@@ -52,7 +50,8 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
         compoundTag.putFloat("range", this.getRange());
         compoundTag.putInt("state", this.getState().getIndex());
         compoundTag.putFloat("angle", this.getAngle());
-        compoundTag.putInt("projectile", this.getProjectile().getIndex());
+        compoundTag.putInt("projectile", this.getProjectile().getIndex()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     );
+        compoundTag.putInt("loadingTime", loadingTime);
 
     }
 
@@ -62,6 +61,12 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
         this.setState(CatapultState.fromIndex(compoundTag.getInt("state")));
         this.setAngle(compoundTag.getFloat("angle"));
         this.setProjectile(CatapultProjectiles.fromIndex(compoundTag.getInt("state")));
+        if(compoundTag.contains("loadingTime")){
+            this.loadingTime = compoundTag.getInt("loadingTime");
+        }
+        else{
+            this.loadingTime = -1;
+        }
     }
 
     @Override
@@ -73,22 +78,31 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
 
         float angle = getAngle();
         CatapultState state = getState();
+        boolean trigger = this.isTriggering();
 
-        if(this.isTriggering() && state == CatapultState.LOADING || state == CatapultState.SHOT){
+        if(trigger && (state == CatapultState.LOADING || state == CatapultState.SHOT)){
+            if(state == CatapultState.SHOT){
+                loadingTime++;
+                this.playLoadSound();
+            }
+
             if(angle == -0.65F){
                 setState(CatapultState.LOADED);
                 return;
             }
         }
 
-        if(this.isTriggering() && state == CatapultState.PROJECTILE_LOADED){
+        if(trigger && state == CatapultState.PROJECTILE_LOADED){
             setState(CatapultState.SHOOTING);
+            this.playShootSound();
+
             return;
         }
 
         if(state == CatapultState.SHOOTING && angle == 0.65F){
             setState(CatapultState.SHOT);
             shootWeapon();
+            loadingTime = -1;
         }
     }
 
@@ -120,7 +134,7 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
         return (float) Mth.clamp(getAngle() + getAngleRotationAmount() * partialTicks, -0.65, 0.65);
     }
     public float getAngleRotationAmount() {
-        if(this.isTriggering() && this.getState() == CatapultState.SHOT || this.getState() == CatapultState.LOADING) return -0.104F; //return -0.004F;
+        if(this.isTriggering() && this.getState() == CatapultState.SHOT || this.getState() == CatapultState.LOADING) return -0.004F; // return -0.104F;debug
         else if (getState() == CatapultState.SHOOTING) return 0.3F + 0.01F * getRange();
         else return 0;
     }
@@ -280,7 +294,6 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
                     this.getCommandSenderWorld().addFreshEntity(projectile);
 
                 }
-                this.playShootSound();
                 this.setProjectile(CatapultProjectiles.EMPTY);
                 return;
             }
@@ -289,16 +302,44 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
         if(projectile != null){
             projectile.shoot(shootVec.x(), yShootVec, shootVec.z(), speed, projectile.getAccuracy());
             this.getCommandSenderWorld().addFreshEntity(projectile);
-            this.playShootSound();
-
             this.setProjectile(this.getProjectile().getNext());
         }
     }
 
     @Override
     public void playShootSound() {
-        //TODO: add real catapult sound
-        this.playSound(SoundEvents.TRIDENT_THROW, 1.0F, 1.0F / (this.random.nextFloat() * 0.4F + 0.8F));
+        this.playSound(ModSounds.CATAPULT_SHOT.get(), 20F, 0.8F + 0.4F * this.random.nextFloat());
+    }
+
+
+    private int lastPlayedPhase = -1;
+
+    public void playLoadSound() {
+        int phase = loadingTime / 20;
+
+        if (phase != lastPlayedPhase) {
+            SoundEvent loadingSound = switch (phase) {
+                case 0 -> ModSounds.CATAPULT_DRAW_0.get();
+                case 1 -> ModSounds.CATAPULT_DRAW_1.get();
+                case 2 -> ModSounds.CATAPULT_DRAW_2.get();
+                case 3 -> ModSounds.CATAPULT_DRAW_3.get();
+                case 4 -> ModSounds.CATAPULT_DRAW_4.get();
+                case 5, 6, 7, 8, 9 -> ModSounds.CATAPULT_DRAW_5.get();
+                case 10 -> ModSounds.CATAPULT_DRAW_6.get();
+                case 11 -> ModSounds.CATAPULT_DRAW_7.get();
+                case 12 -> ModSounds.CATAPULT_DRAW_8.get();
+                case 13 -> ModSounds.CATAPULT_DRAW_9.get();
+                case 14 -> ModSounds.CATAPULT_DRAW_10.get();
+                case 15 -> ModSounds.CATAPULT_DRAW_11.get();
+                default -> null;
+            };
+
+            if (loadingSound != null) {
+                this.level().playSound(null, this.getX(), this.getY() + 4, this.getZ(),
+                        loadingSound, this.getSoundSource(), 5.3F, 0.8F + 0.4F * this.random.nextFloat());
+                lastPlayedPhase = phase;
+            }
+        }
     }
 
     @Override
@@ -313,6 +354,16 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
         if (this.getCommandSenderWorld().isClientSide && needsUpdate && livingEntity instanceof Player) {
             Main.SIMPLE_CHANNEL.sendToServer(new MessageLoadAndShootWeapon(trigger, livingEntity.getUUID()));
         }
+    }
+
+    @Override
+    public void setShowTrajectory(boolean rightClickKey) {
+        this.showTrajectory = rightClickKey;
+    }
+
+    @Override
+    public boolean getShowTrajectory() {
+        return showTrajectory;
     }
 
     public boolean isTriggering() {

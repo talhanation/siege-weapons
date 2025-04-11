@@ -1,0 +1,130 @@
+{
+  "catapult_draw_0": {
+    "subtitle": "subtitles.siegeweapons.catapult_draw_0",
+    "sounds": [
+      {
+        "name": "siegeweapons:entity/siegeweapons/catapult_draw_0"
+      }
+    ]
+  },
+  "catapult_draw_1": {
+    "subtitle": "subtitles.siegeweapons.catapult_draw_1",
+    "sounds": [
+      {
+        "name": "siegeweapons:entity/siegeweapons/catapult_draw_1"
+      }
+    ]
+  },
+  "catapult_draw_2": {
+    "subtitle": "subtitles.siegeweapons.catapult_draw_2",
+    "sounds": [
+      {
+        "name": "siegeweapons:entity/siegeweapons/catapult_draw_2"
+      }
+    ]
+  },
+  "catapult_draw_3": {
+    "subtitle": "subtitles.siegeweapons.catapult_draw_3",
+    "sounds": [
+      {
+        "name": "siegeweapons:entity/siegeweapons/catapult_draw_3"
+      }
+    ]
+  },
+  "catapult_draw_4": {
+    "subtitle": "subtitles.siegeweapons.catapult_draw_4",
+    "sounds": [
+      {
+        "name": "siegeweapons:entity/siegeweapons/catapult_draw_4"
+      }
+    ]
+  },
+  "catapult_draw_5": {
+    "subtitle": "subtitles.siegeweapons.catapult_draw_5",
+    "sounds": [
+      {
+        "name": "siegeweapons:entity/siegeweapons/catapult_draw_5"
+      }
+    ]
+  },
+  "catapult_draw_6": {
+    "subtitle": "subtitles.siegeweapons.catapult_draw_6",
+    "sounds": [
+      {
+        "name": "siegeweapons:entity/siegeweapons/catapult_draw_6"
+      }
+    ]
+  },
+  "catapult_draw_7": {
+    "subtitle": "subtitles.siegeweapons.catapult_draw_7",
+    "sounds": [
+      {
+        "name": "siegeweapons:entity/siegeweapons/catapult_draw_7"
+      }
+    ]
+  },
+  "catapult_draw_8": {
+    "subtitle": "subtitles.siegeweapons.catapult_draw_8",
+    "sounds": [
+      {
+        "name": "siegeweapons:entity/siegeweapons/catapult_draw_8"
+      }
+    ]
+  },
+  "catapult_draw_9": {
+    "subtitle": "subtitles.siegeweapons.catapult_draw_9",
+    "sounds": [
+      {
+        "name": "siegeweapons:entity/siegeweapons/catapult_draw_9"
+      }
+    ]
+  },
+  "catapult_draw_10": {
+    "subtitle": "subtitles.siegeweapons.catapult_draw_10",
+    "sounds": [
+      {
+        "name": "siegeweapons:entity/siegeweapons/catapult_draw_10"
+      }
+    ]
+  },
+  "catapult_draw_11": {
+    "subtitle": "subtitles.siegeweapons.catapult_draw_11",
+    "sounds": [
+      {
+        "name": "siegeweapons:entity/siegeweapons/catapult_draw_11"
+      }
+    ]
+  },
+  "catapult_shot":{
+    "subtitle": "subtitles.siegeweapons.catapult_shot",
+    "sounds": [
+      {
+        "name": "siegeweapons:entity/siegeweapons/catapult_shot"
+      }
+    ]
+  },
+  "ballista_draw":{
+    "subtitle": "subtitles.siegeweapons.ballista_draw",
+    "sounds": [
+      {
+        "name": "siegeweapons:entity/siegeweapons/ballista_draw"
+      }
+    ]
+  },
+  "ballista_shot":{
+    "subtitle": "subtitles.siegeweapons.ballista_shot",
+    "sounds": [
+      {
+        "name": "siegeweapons:entity/siegeweapons/ballista_shot"
+      }
+    ]
+  },
+  "siegeweapon_hit":{
+    "subtitle": "subtitles.siegeweapons.siegeweapon_hit",
+    "sounds": [
+      {
+        "name": "siegeweapons:entity/siegeweapons/siegeweapon_hit"
+      }
+    ]
+  }
+}

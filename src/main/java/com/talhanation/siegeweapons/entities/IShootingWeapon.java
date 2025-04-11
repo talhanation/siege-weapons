@@ -8,4 +8,7 @@ public interface IShootingWeapon {
     void playShootSound();
 
     void updateTrigger(boolean trigger, LivingEntity livingEntity);
+
+    void setShowTrajectory(boolean rightClickKey);
+    boolean getShowTrajectory();
 }

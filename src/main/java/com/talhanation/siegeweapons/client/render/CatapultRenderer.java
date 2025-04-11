@@ -48,13 +48,14 @@ public class CatapultRenderer extends EntityRenderer<CatapultEntity> {
         VertexConsumer ivertexbuilder = multiBufferSource.getBuffer(this.model.renderType(getTextureLocation(entity)));
         this.model.renderToBuffer(poseStack, ivertexbuilder, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 
+        if(entity.getShowTrajectory()){
+            Vec3 forward = new Vec3(Math.sin(Math.toRadians(entity.getXRot())), 0, Math.cos(Math.toRadians(entity.getXRot())));
+            double yShootVec = forward.y() + 35F/40F;
 
-        Vec3 forward = new Vec3(Math.sin(Math.toRadians(entity.getXRot())), 0, Math.cos(Math.toRadians(entity.getXRot())));
-        double yShootVec = forward.y() + 35F/40F;
-
-        List<Vec3> trajectory = calculateTrajectory(forward, yShootVec, entity.getCalcRange(), 150, -2.2);
-        VertexConsumer lineVertexConsumer = multiBufferSource.getBuffer(RenderType.LINES);
-        renderBallistaTrajectory(poseStack, lineVertexConsumer, trajectory, 1.0f, 0.0f, 0.0f, 100.0f); // Red line
+            List<Vec3> trajectory = calculateTrajectory(forward, yShootVec, entity.getCalcRange(), 150, -2.2);
+            VertexConsumer lineVertexConsumer = multiBufferSource.getBuffer(RenderType.LINES);
+            renderBallistaTrajectory(poseStack, lineVertexConsumer, trajectory, 1.0f, 0.0f, 0.0f, 100.0f); // Red line
+        }
 
         poseStack.popPose();
 

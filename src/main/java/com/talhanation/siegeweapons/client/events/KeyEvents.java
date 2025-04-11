@@ -50,6 +50,10 @@ public class KeyEvents {
 
 
         if (clientPlayerEntity == null) return;
+
+        if (clientPlayerEntity.getVehicle() instanceof IShootingWeapon weapon) {
+            weapon.setShowTrajectory(rightClickKey);
+        }
     }
 
 

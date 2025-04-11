@@ -1,7 +1,12 @@
 package com.talhanation.siegeweapons.entities.projectile;
 
+import com.talhanation.siegeweapons.entities.AbstractVehicleEntity;
+import com.talhanation.siegeweapons.init.ModSounds;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -13,7 +18,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -119,14 +128,19 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
             //this.discard();
         }
     }
-
     @Override
     protected void onHitBlock(BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
         if (!this.level().isClientSide()) {
 
             if(!isInWater()){
-                if(getExplode()) this.level().explode(this.getOwner(), getX(), getY(), getZ(), getAreaDamage(), getFireSpread(), Level.ExplosionInteraction.MOB);
+                BlockPos pos = blockHitResult.getBlockPos();
+                if(getFireSpread()){
+                    igniteArea(this.level(), pos, 3, 3);
+                }
+                else if(getExplode()) {
+                    this.level().explode(this.getOwner(), pos.getX(), pos.getY(), pos.getZ(), getAreaDamage(), getFireSpread(), Level.ExplosionInteraction.MOB);
+                }
             }
 
             this.remove(RemovalReason.KILLED);
@@ -148,9 +162,17 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
 
             if (ownerEntity instanceof LivingEntity livingOwnerEntity) {
                 if(ownerEntity.getTeam() != null && ownerEntity.getTeam().isAlliedTo(hitEntity.getTeam()) && !ownerEntity.getTeam().isAllowFriendlyFire()) return;
+
                 this.doEnchantDamageEffects(livingOwnerEntity, hitEntity);
-                this.level().playSound(null, this.getX(), this.getY() + 4 , this.getZ(), SoundEvents.GENERIC_EXPLODE, this.getSoundSource(), 3.3F, 0.8F + 0.4F * this.random.nextFloat());
+
+                if(hitEntity instanceof AbstractVehicleEntity){
+                    this.level().playSound(null, this.getX(), this.getY() + 4 , this.getZ(), ModSounds.SIEGEWEAPON_HIT.get(), this.getSoundSource(), 5.3F, 0.8F + 0.4F * this.random.nextFloat());
+                }
+                else{
+                    this.level().playSound(null, this.getX(), this.getY() + 4 , this.getZ(), SoundEvents.GENERIC_EXPLODE, this.getSoundSource(), 3.3F, 0.8F + 0.4F * this.random.nextFloat());
+                }
             }
+
 
             hitEntity.hurt(this.damageSources().thrown(this, ownerEntity), (float) getDamage());//TODO: CONFIG
         }
@@ -215,14 +237,31 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
 
     }
 
-    @Override
-    protected boolean shouldBurn() {
-        return false;
+    public void igniteArea(Level level, BlockPos center, int radiusX, int radiusZ) {
+        if (!(level instanceof ServerLevel serverLevel)) return;
+
+        for (int dx = -radiusX; dx <= radiusX; dx++) {
+            for (int dz = -radiusZ; dz <= radiusZ; dz++) {
+                for (int dy = -3; dy <= 3; dy++) {
+                    BlockPos firePos = center.offset(dx, dy, dz);
+
+                    BlockPos below = firePos.below();
+                    BlockState belowState = level.getBlockState(below);
+
+                    boolean isReplaceable = level.getBlockState(firePos).isAir();
+                    boolean canPlaceFire = Blocks.FIRE.canSurvive(level.getBlockState(below), level, firePos);
+
+                    if (isReplaceable && belowState.isSolidRender(level, below) && canPlaceFire) {
+                        serverLevel.setBlockAndUpdate(firePos, Blocks.FIRE.defaultBlockState());
+                    }
+                }
+
+            }
+        }
     }
 
     @Override
     protected @NotNull ParticleOptions getTrailParticle() {
         return ParticleTypes.SMOKE;
     }
-
 }

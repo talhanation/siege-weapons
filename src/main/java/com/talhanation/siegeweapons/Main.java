@@ -48,6 +48,7 @@ public class Main {
         );
 
         modEventBus.addListener(this::setup);
+        ModSounds.SOUNDS.register(modEventBus);
         ModBlocks.BLOCKS.register(modEventBus);
         ModPois.POIS.register(modEventBus);
         //ModProfessions.PROFESSIONS.register(modEventBus);
@@ -58,7 +59,6 @@ public class Main {
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::addCreativeTabs);
 
-        //ModSounds.SOUNDS.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
     }
 

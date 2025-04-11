@@ -2,5 +2,9 @@
   "entity.siegeweapons.catapult" : "Catapult",
   "entity.siegeweapons.cart" : "Cart",
   "entity.siegeweapons.transportCart" : "Transport Cart",
-  "entity.siegeweapons.balista" : "Balista"
+  "entity.siegeweapons.balista" : "Balista",
+
+  "text.siegeweapons.catapult_controls": "Press Shift to dismount the Catapult\nPress W, A, S, D to move\nPress Space to shoot\nPress Mouse-Right to show Trajectory\nPress Mouse-Scroll to change the range",
+  "text.siegeweapons.ballista_controls": "Press Shift to dismount the Ballista\nPress W, A, S, D to move\nPress Space to shoot\nPress Mouse-Right to show Trajectory"
+
 }

@@ -2,6 +2,7 @@ package com.talhanation.siegeweapons.entities;
 
 import com.talhanation.siegeweapons.Main;
 import com.talhanation.siegeweapons.entities.projectile.*;
+import com.talhanation.siegeweapons.init.ModSounds;
 import com.talhanation.siegeweapons.math.Kalkuel;
 import com.talhanation.siegeweapons.network.MessageLoadAndShootWeapon;
 import net.minecraft.nbt.CompoundTag;
@@ -27,6 +28,8 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
     private float loaderRotation;
     private LivingEntity driver;
     private int loadingTime;
+    private boolean showTrajectory;
+
     public BallistaEntity(EntityType<? extends AbstractInventoryVehicleEntity> entityType, Level world) {
         super(entityType, world);
     }
@@ -192,7 +195,7 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
 
     @Override
     public void playShootSound() {
-        this.playSound(SoundEvents.CROSSBOW_SHOOT, 1.0F, 1.0F / (this.random.nextFloat() * 0.4F + 0.8F));
+        this.playSound(ModSounds.BALLISTA_SHOT.get(), 1.0F, 1.0F / (this.random.nextFloat() * 0.4F + 0.8F));
     }
 
     @Override
@@ -207,6 +210,16 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
         if (this.getCommandSenderWorld().isClientSide && needsUpdate && livingEntity instanceof Player) {
             Main.SIMPLE_CHANNEL.sendToServer(new MessageLoadAndShootWeapon(trigger, livingEntity.getUUID()));
         }
+    }
+
+    @Override
+    public void setShowTrajectory(boolean rightClickKey) {
+        this.showTrajectory = rightClickKey;
+    }
+
+    @Override
+    public boolean getShowTrajectory() {
+        return showTrajectory;
     }
 
     public boolean isTriggering() {
