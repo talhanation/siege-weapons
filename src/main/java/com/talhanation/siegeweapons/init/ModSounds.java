@@ -16,9 +16,10 @@ public class ModSounds {
             () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Main.MOD_ID,"trebuchet_shot")));
     public static final RegistryObject<SoundEvent> BALLISTA_SHOT = SOUNDS.register("ballista_shot",
             () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Main.MOD_ID,"ballista_shot")));
-    public static final RegistryObject<SoundEvent> BALLISTA_DRAW = SOUNDS.register("ballista_draw",
-            () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Main.MOD_ID,"ballista_draw")));
-
+    public static final RegistryObject<SoundEvent> CATAPULT_LOADED = SOUNDS.register("catapult_loaded",
+            () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Main.MOD_ID,"catapult_loaded")));
+    public static final RegistryObject<SoundEvent> BALLISTA_LOADED= SOUNDS.register("ballista_loaded",
+            () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Main.MOD_ID,"ballista_loaded")));
     public static final RegistryObject<SoundEvent> SIEGEWEAPON_HIT = SOUNDS.register("siegeweapon_hit",
             () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Main.MOD_ID,"siegeweapon_hit")));
 
@@ -46,5 +47,18 @@ public class ModSounds {
             () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Main.MOD_ID, "catapult_draw_10")));
     public static final RegistryObject<SoundEvent> CATAPULT_DRAW_11 = SOUNDS.register("catapult_draw_11",
             () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Main.MOD_ID, "catapult_draw_11")));
+
+    public static final RegistryObject<SoundEvent> BALLISTA_DRAW_0 = SOUNDS.register("ballista_draw_0",
+            () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Main.MOD_ID, "ballista_draw_0")));
+    public static final RegistryObject<SoundEvent> BALLISTA_DRAW_1 = SOUNDS.register("ballista_draw_1",
+            () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Main.MOD_ID, "ballista_draw_1")));
+    public static final RegistryObject<SoundEvent> BALLISTA_DRAW_2 = SOUNDS.register("ballista_draw_2",
+            () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Main.MOD_ID, "ballista_draw_2")));
+    public static final RegistryObject<SoundEvent> BALLISTA_DRAW_3 = SOUNDS.register("ballista_draw_3",
+            () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Main.MOD_ID, "ballista_draw_3")));
+    public static final RegistryObject<SoundEvent> BALLISTA_DRAW_4 = SOUNDS.register("ballista_draw_4",
+            () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Main.MOD_ID, "ballista_draw_4")));
+    public static final RegistryObject<SoundEvent> BALLISTA_DRAW_5 = SOUNDS.register("ballista_draw_5",
+            () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Main.MOD_ID, "ballista_draw_5")));
 
 }

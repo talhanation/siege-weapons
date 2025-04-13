@@ -32,6 +32,7 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
     private LivingEntity driver;
     private boolean showTrajectory;
     private int loadingTime;
+    private int shootCoolDown;
 
     public CatapultEntity(EntityType<? extends AbstractInventoryVehicleEntity> entityType, Level world) {
         super(entityType, world);
@@ -73,7 +74,7 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
     @Override
     public void tick() {
         super.tick();
-
+        if(--shootCoolDown > 0) return;
         updateLoaderRotation();
         updateAngleRotation();
 
@@ -81,10 +82,12 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
         CatapultState state = getState();
         boolean trigger = this.isTriggering();
 
+
+
         if(trigger && (state == CatapultState.LOADING || state == CatapultState.SHOT)){
             if(state == CatapultState.SHOT){
                 loadingTime++;
-                this.playLoadSound();
+                this.playLoadingSound();
             }
 
             if(angle == -0.65F){
@@ -198,6 +201,8 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
             }
 
             setState(CatapultState.PROJECTILE_LOADED);
+            playLoadedSound();
+            itemStack.shrink(1);
             return true;
         }
         return false;
@@ -222,12 +227,17 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
 
     @Override
     public float getMaxHealth() {
-        return 300;//TODO: CONFIG
+        return 600;//TODO: CONFIG
     }
 
     @Override
     public void openGUI(Player player) {
 
+    }
+
+    @Override
+    public ItemStack getPickResult() {
+        return new ItemStack(ModItems.CATAPULT_ITEM.get());
     }
 
     protected void positionRider(Entity rider, Entity.MoveFunction moveFunction) {
@@ -247,6 +257,7 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
         double yShootVec = forward.y() + 35F/40F;
 
         this.shoot(forward, yShootVec, this.getControllingPassenger(), speed);
+        shootCoolDown = 60;
     }
 
     /*
@@ -300,13 +311,15 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
 
     @Override
     public void playShootSound() {
-        this.playSound(ModSounds.CATAPULT_SHOT.get(), 20F, 0.8F + 0.4F * this.random.nextFloat());
+        this.playSound(ModSounds.CATAPULT_SHOT.get(), 5F, 0.8F + 0.4F * this.random.nextFloat());
     }
 
 
     private int lastPlayedPhase = -1;
-
-    public void playLoadSound() {
+    public void playLoadedSound() {
+        this.playSound(ModSounds.CATAPULT_LOADED.get(), 5F, 0.8F + 0.4F * this.random.nextFloat());
+    }
+    public void playLoadingSound() {
         int phase = loadingTime / 20;
 
         if (phase != lastPlayedPhase) {
@@ -327,7 +340,7 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
             };
 
             if (loadingSound != null) {
-                this.level().playSound(null, this.getX(), this.getY() + 4, this.getZ(),
+                this.getCommandSenderWorld().playSound(null, this.getX(), this.getY() + 4, this.getZ(),
                         loadingSound, this.getSoundSource(), 5.3F, 0.8F + 0.4F * this.random.nextFloat());
                 lastPlayedPhase = phase;
             }

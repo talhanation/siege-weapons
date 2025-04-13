@@ -81,11 +81,11 @@ public class SiegeTableScreen extends ScreenBase<SiegeTableMenu> {
 
         this.craftButton = new ExtendedButton(leftPos + 79, topPos + 50, 71, 20, Component.literal("Craft"),
                 button -> {
-                    //selection.getRecipe().consumeMaterials(playerInventory);
+                    selection.getRecipe().consumeMaterials(playerInventory);
 
                     Main.SIMPLE_CHANNEL.sendToServer(new MessageStartCrafting(blockPos));
                 });
-        this.craftButton.active = tableEntity != null && !tableEntity.getCrafting();// selection.getRecipe().hasRequiredMaterials(playerInventory);
+        this.craftButton.active = selection.getRecipe().hasRequiredMaterials(playerInventory);//tableEntity != null && !tableEntity.getCrafting();//
         addRenderableWidget(this.craftButton);
     }
 
@@ -106,8 +106,8 @@ public class SiegeTableScreen extends ScreenBase<SiegeTableMenu> {
            int progress = tableEntity.getCraftingProgress();
 
             int progressX = leftPos + 61;
-            int progressY = topPos + 50;
-            int width = 100;
+            int progressY = topPos + 40;
+            int width = 110;
             int height = 5;
 
             guiGraphics.fill(progressX, progressY, progressX + width, progressY + height, 0xFF555555);

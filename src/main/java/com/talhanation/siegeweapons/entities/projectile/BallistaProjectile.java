@@ -1,6 +1,7 @@
 package com.talhanation.siegeweapons.entities.projectile;
 
 import com.talhanation.siegeweapons.init.ModEntityTypes;
+import com.talhanation.siegeweapons.init.ModItems;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -76,7 +77,7 @@ public class BallistaProjectile extends AbstractArrow {
 
     @Override
     protected ItemStack getPickupItem() {
-        return Items.ARROW.getDefaultInstance();
+        return ModItems.BALLISTA_PROJECTILE_ITEM.get().getDefaultInstance();
     }
 
     @Override

@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "recruits:block/siege_table_block"
+      "model": "siegeweapons:block/siege_table_block"
     }
   }
 }

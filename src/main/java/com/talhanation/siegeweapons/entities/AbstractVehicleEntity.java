@@ -1,6 +1,7 @@
 package com.talhanation.siegeweapons.entities;
 
 import com.talhanation.siegeweapons.Main;
+import com.talhanation.siegeweapons.init.ModItems;
 import com.talhanation.siegeweapons.math.Kalkuel;
 import com.talhanation.siegeweapons.network.MessageUpdateVehicleControl;
 import net.minecraft.nbt.CompoundTag;
@@ -20,6 +21,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
@@ -99,7 +101,7 @@ public abstract class AbstractVehicleEntity extends Entity {
 
     @Override
     public float maxUpStep() {
-        return 0.6F;
+        return 1.0F;
     }
 
     @Override
@@ -354,25 +356,24 @@ public abstract class AbstractVehicleEntity extends Entity {
     }
 
     public abstract boolean itemInteraction(Player player, InteractionHand interactionHand);
-/*
-    @Override
-    public ItemStack getPickResult() {
-        return new ItemStack(ModItems.CATAPULT);
-    }
-*/
+
     @Override
     public boolean hurt(DamageSource damageSource, float f) {
         if (this.isInvulnerableTo(damageSource)) {
             return false;
         }
         else if (!this.getCommandSenderWorld().isClientSide() && !this.isRemoved()) {
-            this.setHealth(this.getHealth() - f);
+            float health = this.getHealth();
+            float newHealth = health - f;
+              this.setHealth(newHealth);
+
             this.markHurt();
             this.gameEvent(GameEvent.ENTITY_DAMAGE, damageSource.getEntity());
 
             boolean bl = damageSource.getEntity() instanceof Player player && player.getAbilities().instabuild && player.isCrouching();
 
-            if (this.getHealth() <= this.getMaxHealth()) {
+
+            if (this.getHealth() <= 0) {
                 kill();
             }
             if(bl){

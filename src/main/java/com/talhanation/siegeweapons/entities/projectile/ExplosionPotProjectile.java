@@ -17,7 +17,7 @@ public class ExplosionPotProjectile extends AbstractCatapultProjectile {
 
     @Override
     public float getAreaDamage() {
-        return 3.0F;
+        return 3.5F;
     }
 
     @Override

@@ -53,7 +53,7 @@ public class BallistaItem extends Item {
         } else {
             if (hitresult.getType() == HitResult.Type.BLOCK) {
 
-                BallistaEntity entity = new BallistaEntity(ModEntityTypes.CATAPULT.get(), level);
+                BallistaEntity entity = new BallistaEntity(ModEntityTypes.BALLISTA.get(), level);
                 entity.setState(BallistaEntity.BallistaState.LOADED);
                 entity.setYRot(player.getYRot() + 90F);
                 entity.setPos(hitresult.getLocation().add(0,1,0));

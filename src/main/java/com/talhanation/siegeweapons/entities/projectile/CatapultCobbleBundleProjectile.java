@@ -17,7 +17,7 @@ public class CatapultCobbleBundleProjectile extends AbstractCatapultProjectile {
 
     @Override
     public float getAreaDamage() {
-        return 0.85F;
+        return 1.0F;
     }
     @Override
     public boolean getFireSpread() {

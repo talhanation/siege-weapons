@@ -2,6 +2,7 @@ package com.talhanation.siegeweapons.entities;
 
 import com.talhanation.siegeweapons.Main;
 import com.talhanation.siegeweapons.entities.projectile.*;
+import com.talhanation.siegeweapons.init.ModItems;
 import com.talhanation.siegeweapons.init.ModSounds;
 import com.talhanation.siegeweapons.math.Kalkuel;
 import com.talhanation.siegeweapons.network.MessageLoadAndShootWeapon;
@@ -9,7 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -17,7 +18,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -29,7 +29,7 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
     private LivingEntity driver;
     private int loadingTime;
     private boolean showTrajectory;
-
+    private int shootCoolDown;
     public BallistaEntity(EntityType<? extends AbstractInventoryVehicleEntity> entityType, Level world) {
         super(entityType, world);
     }
@@ -55,15 +55,20 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
     @Override
     public void tick() {
         super.tick();
-
-        if(isTriggering() && getState() == BallistaState.UNLOADED && ++loadingTime >= 100){
-            loadingTime = 0;
-            setState(BallistaState.LOADED);
+        if(--shootCoolDown > 0) return;
+        if(isTriggering() && getState() == BallistaState.UNLOADED){
+            playLoadingSound();
+            if(++loadingTime >= 100){
+                loadingTime = 0;
+                setState(BallistaState.LOADED);
+                return;
+            }
         }
 
         if(this.isTriggering() && getState() == BallistaState.PROJECTILE_LOADED){
             setState(BallistaState.UNLOADED);
             shootWeapon();
+            return;
         }
 
         updateDriverTurnControl();
@@ -86,7 +91,6 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
 
             setDeltaMovement(Kalkuel.calculateMotionX(this.getSpeed(), this.getYRot()), getDeltaMovement().y, Kalkuel.calculateMotionZ(this.getSpeed(), this.getYRot()));
         }
-
     }
 
     public void setState(BallistaState state) {
@@ -139,15 +143,22 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
 
     @Override
     public float getMaxHealth() {
-        return 200;
+        return 300;
+    }
+
+    @Override
+    public ItemStack getPickResult() {
+        return new ItemStack(ModItems.BALLISTA_ITEM.get());
     }
 
     @Override
     public boolean itemInteraction(Player player, InteractionHand interactionHand) {
         ItemStack itemStack = player.getMainHandItem();
-
-        if(getState() == BallistaState.LOADED && itemStack.is(Items.ARROW)){
+        BallistaState state = getState();
+        if(state == BallistaState.LOADED && itemStack.getItem() == ModItems.BALLISTA_PROJECTILE_ITEM.get()){
+            playLoadedSound();
             setState(BallistaState.PROJECTILE_LOADED);
+            itemStack.shrink(1);
             return true;
         }
         return false;
@@ -173,6 +184,7 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
         Vec3 forward = this.getForward();
         double yShootVec = forward.y();
         this.shoot(forward, yShootVec, this.getControllingPassenger(), projectileSpeed);
+        this.shootCoolDown = 60;
     }
 
     /*
@@ -195,7 +207,33 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
 
     @Override
     public void playShootSound() {
-        this.playSound(ModSounds.BALLISTA_SHOT.get(), 1.0F, 1.0F / (this.random.nextFloat() * 0.4F + 0.8F));
+        this.playSound(ModSounds.BALLISTA_SHOT.get(), 3.0F, 1.0F / (this.random.nextFloat() * 0.4F + 0.8F));
+    }
+
+    private int lastPlayedPhase = -1;
+    public void playLoadedSound() {
+        this.playSound(ModSounds.BALLISTA_LOADED.get(), 3.0F, 1.0F / (this.random.nextFloat() * 0.4F + 0.8F));
+    }
+    public void playLoadingSound() {
+        int phase = loadingTime / 20;
+
+        if (phase != lastPlayedPhase) {
+            SoundEvent loadingSound = switch (phase) {
+                case 0 -> ModSounds.BALLISTA_DRAW_0.get();
+                case 1 -> ModSounds.BALLISTA_DRAW_1.get();
+                case 2 -> ModSounds.BALLISTA_DRAW_2.get();
+                case 3 -> ModSounds.BALLISTA_DRAW_3.get();
+                case 4 -> ModSounds.BALLISTA_DRAW_4.get();
+                case 5 -> ModSounds.BALLISTA_DRAW_5.get();
+                default -> null;
+            };
+
+            if (loadingSound != null) {
+                this.getCommandSenderWorld().playSound(null, this.getX(), this.getY() + 4, this.getZ(),
+                        loadingSound, this.getSoundSource(), 5.3F, 0.8F + 0.4F * this.random.nextFloat());
+                lastPlayedPhase = phase;
+            }
+        }
     }
 
     @Override

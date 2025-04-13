@@ -1,6 +1,6 @@
 package com.talhanation.siegeweapons.items;
 
-import com.talhanation.siegeweapons.client.render.item.BallistaProjectileItemRenderer;
+import com.talhanation.siegeweapons.client.render.item.CobbleBundleItemRenderer;
 import com.talhanation.siegeweapons.entities.projectile.CatapultCobbleBundleProjectile;
 import com.talhanation.siegeweapons.init.ModEntityTypes;
 import net.minecraft.client.Minecraft;
@@ -26,7 +26,7 @@ public class CobbleBundleItem extends Item {
         consumer.accept(new IClientItemExtensions() {
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return new BallistaProjectileItemRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
+                return new CobbleBundleItemRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
             }
         });
     }

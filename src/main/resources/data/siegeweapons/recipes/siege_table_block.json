@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "lll",
+    "lxl",
+    "bbb"
+  ],
+  "key": {
+    "l": {
+      "item": "minecraft:iron_block"
+    },
+    "x": {
+      "tag": "forge:chests/wooden"
+    },
+    "b": {
+      "item": "minecraft:crafting_table"
+    }
+  },
+  "result": {
+    "item": "siegeweapons:siege_table_block"
+  }
+}

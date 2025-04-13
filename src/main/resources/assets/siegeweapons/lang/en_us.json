@@ -9,5 +9,6 @@
   "item.siegeweapons.ballista_projectile_item" : "Ballista Bolt",
   "item.siegeweapons.explosion_pot_item" : "Explosion Pot",
   "item.siegeweapons.fire_pot_item" : "Fire Pot",
-  "item.siegeweapons.cobble_bundle_item" : "Cobble Bundle"
+  "item.siegeweapons.cobble_bundle_item" : "Cobble Bundle",
+  "block.siegeweapons.siege_table_block" : "Siege Table"
 }

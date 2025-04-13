@@ -6,6 +6,7 @@ public interface IShootingWeapon {
 
     void shootWeapon();
     void playShootSound();
+    void playLoadingSound();
 
     void updateTrigger(boolean trigger, LivingEntity livingEntity);
 
