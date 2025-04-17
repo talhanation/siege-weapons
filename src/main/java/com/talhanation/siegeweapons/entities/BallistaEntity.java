@@ -4,22 +4,30 @@ import com.talhanation.siegeweapons.Main;
 import com.talhanation.siegeweapons.entities.projectile.*;
 import com.talhanation.siegeweapons.init.ModItems;
 import com.talhanation.siegeweapons.init.ModSounds;
+import com.talhanation.siegeweapons.inventory.VehicleInventoryMenu;
 import com.talhanation.siegeweapons.math.Kalkuel;
 import com.talhanation.siegeweapons.network.MessageLoadAndShootWeapon;
+import com.talhanation.siegeweapons.network.MessageOpenGUI;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.network.NetworkHooks;
 
 public class BallistaEntity extends AbstractInventoryVehicleEntity implements IShootingWeapon{
 
@@ -128,7 +136,22 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
 
     @Override
     public void openGUI(Player player) {
+        if (player instanceof ServerPlayer) {
+            NetworkHooks.openScreen((ServerPlayer) player, new MenuProvider() {
+                @Override
+                public Component getDisplayName() {
+                    return this.getDisplayName();
+                }
 
+                @Override
+                public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player playerEntity) {
+                    return new VehicleInventoryMenu(i, BallistaEntity.this, playerInventory);
+                }
+            }, packetBuffer -> {packetBuffer.writeUUID(BallistaEntity.this.getUUID());
+            });
+        } else {
+            Main.SIMPLE_CHANNEL.sendToServer(new MessageOpenGUI(BallistaEntity.this));
+        }
     }
 
     @Override

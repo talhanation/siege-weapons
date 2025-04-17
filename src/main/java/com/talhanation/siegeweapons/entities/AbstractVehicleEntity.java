@@ -1,9 +1,9 @@
 package com.talhanation.siegeweapons.entities;
 
 import com.talhanation.siegeweapons.Main;
-import com.talhanation.siegeweapons.init.ModItems;
 import com.talhanation.siegeweapons.math.Kalkuel;
 import com.talhanation.siegeweapons.network.MessageUpdateVehicleControl;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -19,9 +19,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
@@ -88,15 +86,22 @@ public abstract class AbstractVehicleEntity extends Entity {
         }
         super.tick();
         tickLerp();
-
+        this.updateSmokeWhenLowHealth();
         this.updateGravity();
-
         float xRot = this.getXRot();
         float yRot = this.getYRot();
         final LivingEntity driver = this.getControllingPassenger();
         this.control(driver, xRot, yRot);
         move(MoverType.SELF, getDeltaMovement());
         updateWheelRotation();
+    }
+
+    private void updateSmokeWhenLowHealth() {
+        if(this.getCommandSenderWorld().isClientSide()){
+            if (getHealth() < getMaxHealth() * 0.5F) {
+                this.getCommandSenderWorld().addParticle(ParticleTypes.LARGE_SMOKE, this.getRandomX(0.5D), this.getY() + 1.0D, this.getRandomZ(0.5D), 0.0D, 0.0D, 0.0D);
+            }
+        }
     }
 
     @Override
