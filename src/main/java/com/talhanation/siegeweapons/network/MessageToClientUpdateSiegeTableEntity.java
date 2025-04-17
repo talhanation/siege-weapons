@@ -8,8 +8,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
-
 public class MessageToClientUpdateSiegeTableEntity implements Message<MessageToClientUpdateSiegeTableEntity> {
 
     private BlockPos pos;
@@ -30,6 +30,7 @@ public class MessageToClientUpdateSiegeTableEntity implements Message<MessageToC
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void executeClientSide(NetworkEvent.Context context) {
         Level world = Minecraft.getInstance().level;
         if (world != null) {
