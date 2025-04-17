@@ -50,9 +50,10 @@ public class CatapultRenderer extends EntityRenderer<CatapultEntity> {
 
         if(entity.getShowTrajectory()){
             Vec3 forward = new Vec3(Math.sin(Math.toRadians(entity.getXRot())), 0, Math.cos(Math.toRadians(entity.getXRot())));
-            double yShootVec = forward.y() + 35F/40F;
 
-            List<Vec3> trajectory = calculateTrajectory(forward, yShootVec, entity.getCalcRange()/2.2F, 3000, -2.2);
+            double yShootVec = forward.y() + 35F / 40F;
+            List<Vec3> trajectory = calculateTrajectory(forward, yShootVec, entity.getCalcRange()/2F, 3000, -2.2);
+
             VertexConsumer lineVertexConsumer = multiBufferSource.getBuffer(RenderType.LINES);
             renderBallistaTrajectory(poseStack, lineVertexConsumer, trajectory, 1.0f, 0.0f, 0.0f, 100.0f); // Red line
         }
@@ -60,11 +61,11 @@ public class CatapultRenderer extends EntityRenderer<CatapultEntity> {
         poseStack.popPose();
 
     }
-
     public static List<Vec3> calculateTrajectory(Vec3 forward, double yShootVec, float initialVelocity, int steps, double heightOffset) {
         List<Vec3> trajectory = new ArrayList<>();
         double timeStep = 1.0/20.0;
         double gravityValue = -0.05;
+        double drag = 0.98d;
         Vec3 vec3 = new Vec3(forward.x, yShootVec, forward.z).reverse();
 
         for (int i = 0; i < steps; i++) {
@@ -77,7 +78,7 @@ public class CatapultRenderer extends EntityRenderer<CatapultEntity> {
             double yOffset = 0.5 * gravityValue * t * t;
 
 
-            Vec3 point = new Vec3(dx, dy - yOffset + heightOffset, dz);
+            Vec3 point = new Vec3(dx, dy - yOffset + heightOffset, dz).multiply(drag, drag, drag);
 
             trajectory.add(point);
         }
