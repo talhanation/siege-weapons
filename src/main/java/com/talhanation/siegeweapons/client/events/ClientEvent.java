@@ -25,9 +25,9 @@ public class ClientEvent {
     public static void entityRenderersEvent(EntityRenderersEvent.RegisterRenderers event){
         EntityRenderers.register(ModEntityTypes.CATAPULT.get(), (ctx) -> {context = ctx;  return new CatapultRenderer(ctx);});
         EntityRenderers.register(ModEntityTypes.CATAPULT_PROJECTILE.get(),  (ctx) -> {context = ctx;  return new CatapultProjectileRenderer(ctx);});
-        EntityRenderers.register(ModEntityTypes.COBBLE_BUNDLE_PROJECTILE.get(),  (ctx) -> {context = ctx;  return new CobbleBundleProjectileRenderer(ctx);});
-        EntityRenderers.register(ModEntityTypes.EXPLOSION_POT_PROJECTILE.get(),  (ctx) -> {context = ctx;  return new ExplosionPotProjectileRenderer(ctx);});
-        EntityRenderers.register(ModEntityTypes.FIRE_POT_PROJECTILE.get(),  (ctx) -> {context = ctx;  return new FirePotProjectileRenderer(ctx);});
+        EntityRenderers.register(ModEntityTypes.COBBLE_CLUSTER_PROJECTILE.get(),  (ctx) -> {context = ctx;  return new CobbleClusterProjectileRenderer(ctx, false);});
+        EntityRenderers.register(ModEntityTypes.EXPLOSION_POT_PROJECTILE.get(),  (ctx) -> {context = ctx;  return new ExplosionPotProjectileRenderer(ctx, false);});
+        EntityRenderers.register(ModEntityTypes.FIRE_POT_PROJECTILE.get(),  (ctx) -> {context = ctx;  return new FirePotProjectileRenderer(ctx, false);});
         EntityRenderers.register(ModEntityTypes.BALLISTA.get(), (ctx) -> {context = ctx;  return new BallistaRenderer(ctx);});
         EntityRenderers.register(ModEntityTypes.BALLISTA_PROJECTILE.get(), (ctx) -> {context = ctx;  return new BallistaProjectileRenderer(ctx);});
     }

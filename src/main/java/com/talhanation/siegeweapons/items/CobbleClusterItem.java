@@ -1,7 +1,7 @@
 package com.talhanation.siegeweapons.items;
 
-import com.talhanation.siegeweapons.client.render.item.CobbleBundleItemRenderer;
-import com.talhanation.siegeweapons.entities.projectile.CatapultCobbleBundleProjectile;
+import com.talhanation.siegeweapons.client.render.item.CobbleClusterItemRenderer;
+import com.talhanation.siegeweapons.entities.projectile.CatapultCobbleClusterProjectile;
 import com.talhanation.siegeweapons.init.ModEntityTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -14,10 +14,10 @@ import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class CobbleBundleItem extends Item {
+public class CobbleClusterItem extends Item {
     private static final Predicate<Entity> X = EntitySelector.NO_SPECTATORS.and(Entity::canBeCollidedWith);
 
-    public CobbleBundleItem(Properties properties) {
+    public CobbleClusterItem(Properties properties) {
         super(properties);
     }
 
@@ -26,12 +26,12 @@ public class CobbleBundleItem extends Item {
         consumer.accept(new IClientItemExtensions() {
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return new CobbleBundleItemRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
+                return new CobbleClusterItemRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
             }
         });
     }
 
-    public CatapultCobbleBundleProjectile getEntity(Level world) {
-        return new CatapultCobbleBundleProjectile(ModEntityTypes.COBBLE_BUNDLE_PROJECTILE.get(), world);
+    public CatapultCobbleClusterProjectile getEntity(Level world) {
+        return new CatapultCobbleClusterProjectile(ModEntityTypes.COBBLE_CLUSTER_PROJECTILE.get(), world);
     }
 }

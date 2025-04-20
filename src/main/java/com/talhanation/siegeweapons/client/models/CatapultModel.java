@@ -50,7 +50,8 @@ public class CatapultModel<T extends CatapultEntity> extends EntityModel<T> {
 				.texOffs(110, 105).addBox(15.0F, -10.5F, -32.0F, 5.0F, 5.0F, 68.0F, new CubeDeformation(0.0F))
 				.texOffs(0, 0).addBox(-20.0F, -10.5F, -32.0F, 5.0F, 5.0F, 68.0F, new CubeDeformation(0.0F))
 				.texOffs(64, 81).addBox(15.0F, -42.5F, -5.0F, 5.0F, 32.0F, 5.0F, new CubeDeformation(0.0F))
-				.texOffs(64, 81).addBox(-20.0F, -42.5F, -5.0F, 5.0F, 32.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
+				.texOffs(64, 81).addBox(-20.0F, -42.5F, -5.0F, 5.0F, 32.0F, 5.0F, new CubeDeformation(0.0F))
+				.texOffs(68, 73).addBox(-15.0F, -9.9782F, -31.1213F, 30.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
 
 		PartDefinition cube_r1 = Catapult.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(84, 93).addBox(15.5F, 0.6709F, -3.1669F, 4.0F, 25.0F, 4.0F, new CubeDeformation(0.0F))
 				.texOffs(84, 93).addBox(-19.5F, 0.6709F, -3.1669F, 4.0F, 25.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -26.25F, -2.25F, 0.8727F, 0.0F, 0.0F));
@@ -124,22 +125,22 @@ public class CatapultModel<T extends CatapultEntity> extends EntityModel<T> {
 
 		PartDefinition cobbleBundleProjectile = spoon.addOrReplaceChild("cobbleBundleProjectile", CubeListBuilder.create(), PartPose.offset(0.0F, 8.0F, 2.5F));
 
-		PartDefinition cube_r22 = cobbleBundleProjectile.addOrReplaceChild("cube_r22", CubeListBuilder.create().texOffs(11, 5).addBox(2.0F, -8.7782F, -5.1213F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-6.0F, -39.8198F, 40.734F, 0.7854F, 0.0F, 0.0F));
+		PartDefinition cube_r22 = cobbleBundleProjectile.addOrReplaceChild("cube_r22", CubeListBuilder.create().texOffs(12, 6).addBox(2.0F, -8.7782F, -5.1213F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-6.0F, -39.8198F, 40.734F, 0.7854F, 0.0F, 0.0F));
 
-		PartDefinition cube_r23 = cobbleBundleProjectile.addOrReplaceChild("cube_r23", CubeListBuilder.create().texOffs(11, 5).addBox(2.0F, -8.7782F, -5.1213F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-5.0F, -42.8198F, 35.734F, 0.7854F, 0.0F, 0.0F));
+		PartDefinition cube_r23 = cobbleBundleProjectile.addOrReplaceChild("cube_r23", CubeListBuilder.create().texOffs(12, 6).addBox(2.0F, -8.7782F, -5.1213F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-5.0F, -42.8198F, 35.734F, 0.7854F, 0.0F, 0.0F));
 
-		PartDefinition cube_r24 = cobbleBundleProjectile.addOrReplaceChild("cube_r24", CubeListBuilder.create().texOffs(11, 5).addBox(2.0F, -8.7782F, -5.1213F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F))
-				.texOffs(11, 5).addBox(7.0F, -8.7782F, -5.1213F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-6.0F, -39.8198F, 35.734F, 0.7854F, 0.0F, 0.0F));
+		PartDefinition cube_r24 = cobbleBundleProjectile.addOrReplaceChild("cube_r24", CubeListBuilder.create().texOffs(12, 6).addBox(2.0F, -8.7782F, -5.1213F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F))
+				.texOffs(12, 6).addBox(7.0F, -8.7782F, -5.1213F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-6.0F, -39.8198F, 35.734F, 0.7854F, 0.0F, 0.0F));
 
-		PartDefinition cube_r25 = cobbleBundleProjectile.addOrReplaceChild("cube_r25", CubeListBuilder.create().texOffs(11, 5).addBox(2.0F, -8.7782F, -5.1213F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-7.0F, -42.8198F, 37.734F, 0.7854F, 0.0F, 0.0F));
+		PartDefinition cube_r25 = cobbleBundleProjectile.addOrReplaceChild("cube_r25", CubeListBuilder.create().texOffs(12, 6).addBox(2.0F, -8.7782F, -5.1213F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-7.0F, -42.8198F, 37.734F, 0.7854F, 0.0F, 0.0F));
 
-		PartDefinition cube_r26 = cobbleBundleProjectile.addOrReplaceChild("cube_r26", CubeListBuilder.create().texOffs(11, 5).addBox(2.0F, -8.7782F, -5.1213F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.0F, -42.8198F, 40.734F, 0.7854F, 0.0F, 0.0F));
+		PartDefinition cube_r26 = cobbleBundleProjectile.addOrReplaceChild("cube_r26", CubeListBuilder.create().texOffs(12, 6).addBox(2.0F, -8.7782F, -5.1213F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.0F, -42.8198F, 40.734F, 0.7854F, 0.0F, 0.0F));
 
-		PartDefinition cube_r27 = cobbleBundleProjectile.addOrReplaceChild("cube_r27", CubeListBuilder.create().texOffs(11, 5).addBox(2.0F, -8.7782F, -5.1213F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.0F, -39.8198F, 39.734F, 0.7854F, 0.0F, 0.0F));
+		PartDefinition cube_r27 = cobbleBundleProjectile.addOrReplaceChild("cube_r27", CubeListBuilder.create().texOffs(12, 6).addBox(2.0F, -8.7782F, -5.1213F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.0F, -39.8198F, 39.734F, 0.7854F, 0.0F, 0.0F));
 
-		PartDefinition cube_r28 = cobbleBundleProjectile.addOrReplaceChild("cube_r28", CubeListBuilder.create().texOffs(11, 5).addBox(2.0F, -8.7782F, -5.1213F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.0F, -44.8198F, 36.734F, 0.7854F, 0.0F, 0.0F));
+		PartDefinition cube_r28 = cobbleBundleProjectile.addOrReplaceChild("cube_r28", CubeListBuilder.create().texOffs(12, 6).addBox(2.0F, -8.7782F, -5.1213F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.0F, -44.8198F, 36.734F, 0.7854F, 0.0F, 0.0F));
 
-		PartDefinition cube_r29 = cobbleBundleProjectile.addOrReplaceChild("cube_r29", CubeListBuilder.create().texOffs(11, 5).addBox(2.0F, -8.7782F, -5.1213F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-6.0F, -44.8198F, 38.734F, 0.7854F, 0.0F, 0.0F));
+		PartDefinition cube_r29 = cobbleBundleProjectile.addOrReplaceChild("cube_r29", CubeListBuilder.create().texOffs(12, 6).addBox(2.0F, -8.7782F, -5.1213F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-6.0F, -44.8198F, 38.734F, 0.7854F, 0.0F, 0.0F));
 
 		PartDefinition firePotProjectile = spoon.addOrReplaceChild("firePotProjectile", CubeListBuilder.create().texOffs(0, 20).addBox(-5.0F, 10.3333F, -4.0F, 10.0F, 10.0F, 10.0F, new CubeDeformation(0.0F))
 				.texOffs(9, 27).addBox(-2.0F, 9.3333F, -1.0F, 4.0F, 1.0F, 4.0F, new CubeDeformation(0.0F))

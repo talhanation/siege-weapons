@@ -2,9 +2,9 @@ package com.talhanation.siegeweapons.client.render.item;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.talhanation.siegeweapons.client.events.ClientEvent;
-import com.talhanation.siegeweapons.client.render.CobbleBundleProjectileRenderer;
+import com.talhanation.siegeweapons.client.render.CobbleClusterProjectileRenderer;
 import com.talhanation.siegeweapons.init.ModItems;
-import com.talhanation.siegeweapons.items.CobbleBundleItem;
+import com.talhanation.siegeweapons.items.CobbleClusterItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -14,16 +14,16 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 
-public class CobbleBundleItemRenderer extends BlockEntityWithoutLevelRenderer {
-    private final CobbleBundleProjectileRenderer renderer;
-    public CobbleBundleItemRenderer(BlockEntityRenderDispatcher renderDispatcher, EntityModelSet modelSet) {
+public class CobbleClusterItemRenderer extends BlockEntityWithoutLevelRenderer {
+    private final CobbleClusterProjectileRenderer renderer;
+    public CobbleClusterItemRenderer(BlockEntityRenderDispatcher renderDispatcher, EntityModelSet modelSet) {
         super(renderDispatcher, modelSet);
-        renderer = new CobbleBundleProjectileRenderer(ClientEvent.context);
+        renderer = new CobbleClusterProjectileRenderer(ClientEvent.context, true);
     }
 
     @Override
     public void renderByItem(ItemStack itemStack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int da) {
-        CobbleBundleItem item = ModItems.COBBLE_BUNDLE_ITEM.get();
-        renderer.render(item.getEntity(Minecraft.getInstance().level), -90F, 1F, poseStack, bufferSource, packedLight);
+        CobbleClusterItem item = ModItems.COBBLE_CLUSTER_ITEM.get();
+        renderer.render(item.getEntity(Minecraft.getInstance().level), 1, 1F, poseStack, bufferSource, packedLight);
     }
 }

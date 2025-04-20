@@ -5,10 +5,10 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
-public class CatapultCobbleBundleProjectile extends AbstractCatapultProjectile {
+public class CatapultCobbleClusterProjectile extends AbstractCatapultProjectile {
 
-    public static CatapultCobbleBundleProjectile factory(EntityType<? extends CatapultCobbleBundleProjectile> entityType, Level level) {
-        return new CatapultCobbleBundleProjectile(entityType, level);
+    public static CatapultCobbleClusterProjectile factory(EntityType<? extends CatapultCobbleClusterProjectile> entityType, Level level) {
+        return new CatapultCobbleClusterProjectile(entityType, level);
     }
 
     public float getDamage(){
@@ -34,11 +34,11 @@ public class CatapultCobbleBundleProjectile extends AbstractCatapultProjectile {
         return 7;
     }
 
-    public CatapultCobbleBundleProjectile(EntityType<? extends CatapultCobbleBundleProjectile> type, Level world) {
+    public CatapultCobbleClusterProjectile(EntityType<? extends CatapultCobbleClusterProjectile> type, Level world) {
         super(type, world);
     }
-    public CatapultCobbleBundleProjectile(Level world, LivingEntity owner, double d1, double d2, double d3) {
-        super(ModEntityTypes.COBBLE_BUNDLE_PROJECTILE.get(), owner, d1, d2, d3, world);
+    public CatapultCobbleClusterProjectile(Level world, LivingEntity owner, double d1, double d2, double d3) {
+        super(ModEntityTypes.COBBLE_CLUSTER_PROJECTILE.get(), owner, d1, d2, d3, world);
     }
 
 }

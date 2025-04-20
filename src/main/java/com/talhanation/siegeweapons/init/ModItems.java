@@ -14,7 +14,7 @@ public class ModItems {
     public static final RegistryObject<Item> SIEGE_TABLE_BLOCK = ITEMS.register("siege_table_block", () -> new BlockItem(ModBlocks.SIEGE_TABLE_BLOCK.get(), new Item.Properties()));
     public static final RegistryObject<FirePotItem> FIRE_POT_ITEM = ITEMS.register("fire_pot_item",() -> new FirePotItem(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<ExplosionPotItem> EXPLOSION_POT_ITEM = ITEMS.register("explosion_pot_item",() -> new ExplosionPotItem(new Item.Properties().stacksTo(1)));
-    public static final RegistryObject<CobbleBundleItem> COBBLE_BUNDLE_ITEM = ITEMS.register("cobble_bundle_item", () -> new CobbleBundleItem(new Item.Properties()));
+    public static final RegistryObject<CobbleClusterItem> COBBLE_CLUSTER_ITEM = ITEMS.register("cobble_cluster_item", () -> new CobbleClusterItem(new Item.Properties()));
     public static final RegistryObject<BallistaProjectileItem> BALLISTA_PROJECTILE_ITEM = ITEMS.register("ballista_projectile_item", () -> new BallistaProjectileItem(new Item.Properties()));
 
     public static final RegistryObject<CatapultItem> CATAPULT_ITEM = ITEMS.register("catapult_item", () -> new CatapultItem(new Item.Properties().stacksTo(1)));

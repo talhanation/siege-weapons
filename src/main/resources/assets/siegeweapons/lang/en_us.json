@@ -7,8 +7,12 @@
   "item.siegeweapons.ballista_item" : "Ballista Item",
   "item.siegeweapons.catapult_item" : "Catapult Item",
   "item.siegeweapons.ballista_projectile_item" : "Ballista Bolt",
-  "item.siegeweapons.explosion_pot_item" : "Explosion Pot",
-  "item.siegeweapons.fire_pot_item" : "Fire Pot",
-  "item.siegeweapons.cobble_bundle_item" : "Cobble Bundle",
-  "block.siegeweapons.siege_table_block" : "Siege Table"
+  "item.siegeweapons.explosion_pot_item" : "Explosion Pot Shot",
+  "item.siegeweapons.fire_pot_item" : "Fire Pot Shot",
+  "item.siegeweapons.cobble_cluster_item" : "Cobble Cluster Shot",
+
+  "block.siegeweapons.siege_table_block" : "Siege Table",
+
+  "gui.siegeweapons.craft" : "Craft"
+
 }

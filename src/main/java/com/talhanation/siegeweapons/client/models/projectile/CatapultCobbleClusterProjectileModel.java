@@ -2,16 +2,16 @@ package com.talhanation.siegeweapons.client.models.projectile;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.talhanation.siegeweapons.entities.projectile.CatapultCobbleBundleProjectile;
+import com.talhanation.siegeweapons.entities.projectile.CatapultCobbleClusterProjectile;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 
-public class CatapultBundleProjectileModel<T extends CatapultCobbleBundleProjectile> extends EntityModel<T> {
+public class CatapultCobbleClusterProjectileModel<T extends CatapultCobbleClusterProjectile> extends EntityModel<T> {
 	private final ModelPart bb_main;
 
-	public CatapultBundleProjectileModel() {
+	public CatapultCobbleClusterProjectileModel() {
 		ModelPart root = createBodyLayer().bakeRoot();
 		this.bb_main = root.getChild("bb_main");
 	}
@@ -26,7 +26,7 @@ public class CatapultBundleProjectileModel<T extends CatapultCobbleBundleProject
 	}
 
 	@Override
-	public void setupAnim(CatapultCobbleBundleProjectile entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+	public void setupAnim(CatapultCobbleClusterProjectile entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		 bb_main.xRot = entity.getProjectileRotation(limbSwing);
 		 bb_main.yRot = entity.getProjectileRotation(limbSwing);
 	}

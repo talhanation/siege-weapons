@@ -41,12 +41,12 @@ public class ModEntityTypes {
                     .clientTrackingRange(3)
                     .build(new ResourceLocation(Main.MOD_ID, "catapult_projectile").toString()));
 
-    public static final RegistryObject<EntityType<CatapultCobbleBundleProjectile>> COBBLE_BUNDLE_PROJECTILE = ENTITY_TYPES.register("catapult_bundle_projectile",
-            () -> EntityType.Builder.of(CatapultCobbleBundleProjectile::factory, MobCategory.MISC)
+    public static final RegistryObject<EntityType<CatapultCobbleClusterProjectile>> COBBLE_CLUSTER_PROJECTILE = ENTITY_TYPES.register("catapult_cluster_projectile",
+            () -> EntityType.Builder.of(CatapultCobbleClusterProjectile::factory, MobCategory.MISC)
                     .sized(0.5F, 0.5F)
                     .clientTrackingRange(3)
                     .updateInterval(20)
-                    .build(new ResourceLocation(Main.MOD_ID, "catapult_bundle_projectile").toString()));
+                    .build(new ResourceLocation(Main.MOD_ID, "catapult_cluster_projectile").toString()));
 
     public static final RegistryObject<EntityType<FirePotProjectile>> FIRE_POT_PROJECTILE = ENTITY_TYPES.register("catapult_fire_pot_projectile",
             () -> EntityType.Builder.of(FirePotProjectile::factory, MobCategory.MISC)
