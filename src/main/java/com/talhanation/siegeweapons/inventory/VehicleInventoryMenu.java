@@ -20,7 +20,7 @@ public class VehicleInventoryMenu extends ContainerBase {
         addVehicleInventorySlots();
     }
 
-    public AbstractInventoryVehicleEntity getInventoryEntity() {
+    public AbstractInventoryVehicleEntity getEntity() {
         return inventoryEntity;
     }
 
