@@ -18,12 +18,12 @@ public class ExplosionPotItemRenderer extends BlockEntityWithoutLevelRenderer {
     private final ExplosionPotProjectileRenderer renderer;
     public ExplosionPotItemRenderer(BlockEntityRenderDispatcher renderDispatcher, EntityModelSet modelSet) {
         super(renderDispatcher, modelSet);
-        renderer = new ExplosionPotProjectileRenderer(ClientEvent.context);
+        renderer = new ExplosionPotProjectileRenderer(ClientEvent.context, true);
     }
 
     @Override
     public void renderByItem(ItemStack itemStack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int da) {
         ExplosionPotItem item = ModItems.EXPLOSION_POT_ITEM.get();
-        renderer.render(item.getEntity(Minecraft.getInstance().level), -90F, 1F, poseStack, bufferSource, packedLight);
+        renderer.render(item.getEntity(Minecraft.getInstance().level), 0, 1F, poseStack, bufferSource, packedLight);
     }
 }
