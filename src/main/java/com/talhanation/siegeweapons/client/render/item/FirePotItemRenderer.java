@@ -18,12 +18,12 @@ public class FirePotItemRenderer extends BlockEntityWithoutLevelRenderer {
     private final FirePotProjectileRenderer renderer;
     public FirePotItemRenderer(BlockEntityRenderDispatcher renderDispatcher, EntityModelSet modelSet) {
         super(renderDispatcher, modelSet);
-        renderer = new FirePotProjectileRenderer(ClientEvent.context);
+        renderer = new FirePotProjectileRenderer(ClientEvent.context, true);
     }
 
     @Override
     public void renderByItem(ItemStack itemStack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int da) {
         FirePotItem item = ModItems.FIRE_POT_ITEM.get();
-        renderer.render(item.getEntity(Minecraft.getInstance().level), -90F, 1F, poseStack, bufferSource, packedLight);
+        renderer.render(item.getEntity(Minecraft.getInstance().level), 0, 1F, poseStack, bufferSource, packedLight);
     }
 }
