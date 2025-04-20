@@ -1,11 +1,15 @@
 package com.talhanation.siegeweapons.entities.projectile;
 
+import com.sk89q.worldedit.world.block.BlockType;
+import com.sk89q.worldedit.world.block.BlockTypes;
 import com.talhanation.siegeweapons.entities.AbstractVehicleEntity;
 import com.talhanation.siegeweapons.init.ModSounds;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderSet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
@@ -22,12 +26,14 @@ import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractCatapultProjectile extends AbstractHurtingProjectile {
@@ -140,7 +146,7 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
                     igniteArea(this.level(), pos, 3, 3);
                 }
                 else if(getExplode()) {
-                    this.level().explode(this.getOwner(), pos.getX(), pos.getY(), pos.getZ(), getAreaDamage(), getFireSpread(), Level.ExplosionInteraction.MOB);
+                    this.level().explode(this.getOwner(), this.getX(), this.getY(), this.getZ(), getAreaDamage(), getFireSpread(), Level.ExplosionInteraction.MOB);
                 }
             }
 
@@ -249,14 +255,13 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
                     BlockPos below = firePos.below();
                     BlockState belowState = level.getBlockState(below);
 
-                    boolean isReplaceable = level.getBlockState(firePos).isAir();
+                    boolean isReplaceable = level.getBlockState(firePos).isAir() || level.getBlockState(firePos).is(BlockTags.SNOW);
                     boolean canPlaceFire = Blocks.FIRE.canSurvive(level.getBlockState(below), level, firePos);
 
                     if (isReplaceable && belowState.isSolidRender(level, below) && canPlaceFire) {
                         serverLevel.setBlockAndUpdate(firePos, Blocks.FIRE.defaultBlockState());
                     }
                 }
-
             }
         }
     }
