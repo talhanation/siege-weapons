@@ -1,26 +1,24 @@
 package com.talhanation.siegeweapons.network;
 
 import com.talhanation.siegeweapons.blocks.SiegeTableBlockEntity;
-import com.talhanation.siegeweapons.entities.AbstractVehicleEntity;
 import de.maxhenkel.corelib.net.Message;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.network.NetworkEvent;
-
-import java.util.UUID;
 
 
 public class MessageStartCrafting implements Message<MessageStartCrafting> {
 
     private BlockPos pos;
+    private int craftID;
     public MessageStartCrafting() {
     }
 
-    public MessageStartCrafting(BlockPos pos) {
+    public MessageStartCrafting(BlockPos pos, int craftID) {
         this.pos = pos;
+        this.craftID = craftID;
     }
 
     @Override
@@ -36,18 +34,20 @@ public class MessageStartCrafting implements Message<MessageStartCrafting> {
             return;
         }
 
-        siegeTableBlockEntity.startCrafting();
+        siegeTableBlockEntity.startCrafting(craftID);
     }
 
     @Override
     public MessageStartCrafting fromBytes(FriendlyByteBuf buf) {
         this.pos = buf.readBlockPos();
+        this.craftID = buf.readInt();
         return this;
     }
 
     @Override
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeBlockPos(this.pos);
+        buf.writeInt(this.craftID);
 
     }
 
