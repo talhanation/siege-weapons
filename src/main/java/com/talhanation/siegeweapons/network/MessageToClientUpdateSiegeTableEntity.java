@@ -1,5 +1,6 @@
 package com.talhanation.siegeweapons.network;
 
+import com.talhanation.siegeweapons.SiegeWeapons;
 import com.talhanation.siegeweapons.blocks.SiegeTableBlockEntity;
 import de.maxhenkel.corelib.net.Message;
 import net.minecraft.client.Minecraft;
@@ -15,13 +16,22 @@ public class MessageToClientUpdateSiegeTableEntity implements Message<MessageToC
     private BlockPos pos;
     private int progress;
     private boolean crafting;
+    private int selection;
+    private int finishTime;
     public MessageToClientUpdateSiegeTableEntity() {
     }
 
     public MessageToClientUpdateSiegeTableEntity(SiegeTableBlockEntity entity) {
         this.pos = entity.getBlockPos();
-        this.progress = entity.getCraftingTime();
+        this.progress = entity.getProgressTime();
         this.crafting = entity.getCrafting();
+        this.finishTime = entity.finishTime;
+        if(entity.selection == null){
+            this.selection = -1;
+        }
+        else{
+            this.selection = entity.selection.getIndex();
+        }
     }
 
     @Override
@@ -36,8 +46,10 @@ public class MessageToClientUpdateSiegeTableEntity implements Message<MessageToC
         if (world != null) {
             BlockEntity be = world.getBlockEntity(this.pos);
             if (be instanceof SiegeTableBlockEntity entity) {
-                entity.setCraftingTime(this.progress);
+                entity.setFinishTime(this.progress);
                 entity.setCrafting(this.crafting);
+                entity.selection = SiegeWeapons.fromIndex(selection);
+                entity.finishTime = this.finishTime;
             }
         }
     }
@@ -47,6 +59,8 @@ public class MessageToClientUpdateSiegeTableEntity implements Message<MessageToC
         this.progress = buf.readInt();
         this.pos = buf.readBlockPos();
         this.crafting = buf.readBoolean();
+        this.selection = buf.readInt();
+        this.finishTime = buf.readInt();
         return this;
     }
 
@@ -55,6 +69,8 @@ public class MessageToClientUpdateSiegeTableEntity implements Message<MessageToC
         buf.writeInt(progress);
         buf.writeBlockPos(pos);
         buf.writeBoolean(crafting);
+        buf.writeInt(selection);
+        buf.writeInt(finishTime);
     }
 
 }
