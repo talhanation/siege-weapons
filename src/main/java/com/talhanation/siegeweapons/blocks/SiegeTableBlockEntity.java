@@ -1,13 +1,17 @@
 package com.talhanation.siegeweapons.blocks;
 
 import com.talhanation.siegeweapons.Main;
+import com.talhanation.siegeweapons.SiegeWeapons;
+import com.talhanation.siegeweapons.entities.BallistaEntity;
 import com.talhanation.siegeweapons.entities.CatapultEntity;
 import com.talhanation.siegeweapons.init.ModBlockEntityTypes;
-import com.talhanation.siegeweapons.init.ModEntityTypes;
 import com.talhanation.siegeweapons.inventory.SiegeTableMenu;
 import com.talhanation.siegeweapons.network.MessageToClientUpdateSiegeTableEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -19,9 +23,10 @@ import org.jetbrains.annotations.NotNull;
 
 //
 public class SiegeTableBlockEntity extends BaseContainerBlockEntity {
-    public static final int CRAFTING_TIME = 100; //20 * 60 * 3; // Example value in ticks
-    private int craftingTimer = 1;
+    public int finishTime = 1; //20 * 60 * 3; // Example value in ticks
+    private int progressTimer = 1;
     private boolean isCrafting = false;
+    public SiegeWeapons selection;
 
     public SiegeTableBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntityTypes.SIEGE_TABLE_BLOCK_ENTITY.get(), pos, state);
@@ -29,11 +34,38 @@ public class SiegeTableBlockEntity extends BaseContainerBlockEntity {
 
     @Override
     protected Component getDefaultName() {
-        return Component.translatable("container.siegetable");
+        return Component.translatable("entity.siegeweapons.siegetable");
+    }
+
+    public void load(@NotNull CompoundTag compoundTag) {
+        super.load(compoundTag);
+        if (compoundTag.contains("Selection")) {
+            this.selection = SiegeWeapons.fromIndex(compoundTag.getInt("Selection"));
+        }
+        if (compoundTag.contains("IsCrafting")) {
+            this.isCrafting = compoundTag.getBoolean("IsCrafting");
+        }
+        if (compoundTag.contains("Progress")) {
+            this.progressTimer = compoundTag.getInt("Progress");
+        }
+        if (compoundTag.contains("FinishTime")) {
+            this.finishTime = compoundTag.getInt("FinishTime");
+        }
+    }
+
+    protected void saveAdditional(@NotNull CompoundTag compoundTag) {
+        super.saveAdditional(compoundTag);
+        if (this.selection != null) {
+            compoundTag.putInt("Selection", this.selection.getIndex());
+        }
+        compoundTag.putBoolean("IsCrafting", this.isCrafting);
+        compoundTag.putInt("Progress", this.progressTimer);
+        compoundTag.putInt("FinishTime", this.finishTime);
+
     }
 
     @Override
-    protected @NotNull AbstractContainerMenu createMenu(int i, Inventory inventory) {
+    protected @NotNull AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory) {
         return new SiegeTableMenu(i, this, inventory);
     }
 
@@ -75,25 +107,40 @@ public class SiegeTableBlockEntity extends BaseContainerBlockEntity {
     public void clearContent() {
     }
 
-    public void startCrafting() {
+    public void startCrafting(int id) {
+        if(level != null && this.level.isClientSide()) return;
+
+        this.selection = SiegeWeapons.fromIndex(id);
+        this.finishTime = selection.getRecipe().getCraftingTime();
         if (!isCrafting) {
             isCrafting = true;
         }
     }
     private void cancelCrafting(boolean returnItems) {
         setCrafting(false);
-        craftingTimer = 1;
+        progressTimer = 1;
+        finishTime = 0;
     }
     private void finishCrafting() {
         cancelCrafting(false);
         // Spawn crafted entity near the table
         if (level != null && !level.isClientSide) {
-            CatapultEntity catapult = new CatapultEntity(ModEntityTypes.CATAPULT.get(), level);
-            catapult.setState(CatapultEntity.CatapultState.LOADED);
-            catapult.setPos(this.getBlockPos().above(2).getCenter());
+            Entity entity = this.selection.getEntity(level);
+            entity.setPos(this.getBlockPos().above(1).getCenter());
 
-            level.addFreshEntity(catapult);
+            if(entity instanceof ItemEntity itemEntity){
+                itemEntity.setNoPickUpDelay();
+            }
+            else if (entity instanceof CatapultEntity catapult){
+                catapult.setState(CatapultEntity.CatapultState.LOADED);
+            }
+            else if (entity instanceof BallistaEntity ballista){
+                ballista.setState(BallistaEntity.BallistaState.LOADED);
+            }
+
+            level.addFreshEntity(entity);
         }
+        this.selection = null;
     }
 
     public boolean getCrafting(){
@@ -104,25 +151,24 @@ public class SiegeTableBlockEntity extends BaseContainerBlockEntity {
         isCrafting = x;
     }
 
-    public int getCraftingTime(){
-        return craftingTimer;
+    public int getProgressTime(){
+        return progressTimer;
     }
 
-    public void setCraftingTime(int x){
-       craftingTimer = x;
+    public void setFinishTime(int x){
+       progressTimer = x;
     }
 
     public int getCraftingProgress() {
-        if (CRAFTING_TIME == 0) return 0;
-        return (int) ((craftingTimer / (float) CRAFTING_TIME) * 100);
+        if (finishTime == 0) return 0;
+        return (int) ((progressTimer / (float) finishTime) * 100);
     }
 
 
     public void serverTick() {
-
         if (isCrafting) {
-            craftingTimer++;
-            if (craftingTimer >= CRAFTING_TIME) {
+            progressTimer++;
+            if (progressTimer >= finishTime) {
                 finishCrafting();
             }
         }
