@@ -24,6 +24,6 @@ public class BallistaProjectileItemRenderer extends BlockEntityWithoutLevelRende
     @Override
     public void renderByItem(ItemStack itemStack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int da) {
         BallistaProjectileItem item = ModItems.BALLISTA_PROJECTILE_ITEM.get();
-        renderer.render(item.getEntity(Minecraft.getInstance().level), -90F, 1F, poseStack, bufferSource, packedLight);
+        renderer.render(item.getEntity(Minecraft.getInstance().level), 45F, 1F, poseStack, bufferSource, packedLight);
     }
 }
