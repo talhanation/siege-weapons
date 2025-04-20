@@ -207,7 +207,7 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
         Vec3 forward = this.getForward();
         double yShootVec = forward.y();
         this.shoot(forward, yShootVec, this.getControllingPassenger(), projectileSpeed);
-        this.shootCoolDown = 60;
+        this.shootCoolDown = 30;
     }
 
     /*
@@ -215,7 +215,7 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
      */
 
     double shootHight = 1.3D;
-    public void shoot(Vec3 shootVec, double yShootVec, LivingEntity driverEntity, float speed){
+     public void shoot(Vec3 shootVec, double yShootVec, LivingEntity driverEntity, float speed){
         if(driverEntity == null){
             if(driver == null) return;
             driverEntity = driver;
