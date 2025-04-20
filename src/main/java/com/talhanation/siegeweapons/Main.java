@@ -76,7 +76,8 @@ public class Main {
                 MessageLoadAndShootWeapon.class,
                 MessageStartCrafting.class,
                 MessageToClientUpdateSiegeTableEntity.class,
-                MessageSetCatapultRange.class
+                MessageSetCatapultRange.class,
+                MessageOpenGUI.class
         };
 
         for (int i = 0; i < messages.length; i++){
