@@ -15,8 +15,9 @@ public class SiegeTableRecipe {
             Items.LEATHER, 16,
             Items.LEAD, 4,
             Items.IRON_INGOT, 16,
-            Items.IRON_NUGGET, 8
-    ));
+            Items.IRON_NUGGET, 8),
+            7500
+    );
 
 
     public static final SiegeTableRecipe BALLISTA_RECIPE = new SiegeTableRecipe(Map.of(
@@ -24,44 +25,67 @@ public class SiegeTableRecipe {
             Items.STRING, 16,
             Items.LEAD, 4,
             Items.IRON_INGOT, 16,
-            Items.IRON_NUGGET, 8
-    ));
-
-    public static final SiegeTableRecipe BALLISTA_PROJECTILE = new SiegeTableRecipe(Map.of(
+            Items.IRON_NUGGET, 8),
+            3000
+    );
+    public static final SiegeTableRecipe BALLISTA_BOLT = new SiegeTableRecipe(Map.of(
             Items.OAK_PLANKS, 3,
             Items.FEATHER, 1,
-            Items.IRON_INGOT, 1
-    ));
+            Items.IRON_INGOT, 1),
+            40
+    );
 
     public static final SiegeTableRecipe FIRE_POT = new SiegeTableRecipe(Map.of(
             Items.DECORATED_POT, 1,
             Items.GUNPOWDER, 1,
-            Items.WHEAT, 9
-    ));
+            Items.WHEAT, 9),
+            50
+    );
+
+
+    public static final SiegeTableRecipe EXPLOSION_POT = new SiegeTableRecipe(Map.of(
+            Items.DECORATED_POT, 1,
+            Items.GUNPOWDER, 4,
+            Items.SAND, 4),
+            50
+    );
+
+
+    public static final SiegeTableRecipe COBBLE_CLUSTER = new SiegeTableRecipe(Map.of(
+            Items.COBBLESTONE, 1),
+            50
+    );
 
     public static final SiegeTableRecipe TRANSPORT_CART_RECIPE = new SiegeTableRecipe(Map.of(
             Items.CHEST, 2,
             Items.OAK_LOG, 8,
             Items.OAK_PLANKS, 32,
             Items.LEAD, 4,
-            Items.IRON_NUGGET, 16
-    ));
+            Items.IRON_NUGGET, 16),
+            1500
+    );
 
     public static final SiegeTableRecipe CART_RECIPE = new SiegeTableRecipe(Map.of(
             Items.CHEST, 1,
             Items.OAK_LOG, 4,
             Items.OAK_PLANKS, 16,
             Items.LEAD, 1,
-            Items.IRON_NUGGET, 16
-    ));
+            Items.IRON_NUGGET, 16),
+            5500
+    );
 
 
     private final Map<Item, Integer> requiredMaterials;
+    private final int time;
 
-    public SiegeTableRecipe(Map<Item, Integer> requiredMaterials) {
+    public SiegeTableRecipe(Map<Item, Integer> requiredMaterials, int time) {
         this.requiredMaterials = requiredMaterials;
+        this.time = time;
     }
 
+    public int getCraftingTime(){
+        return time;
+    }
     public Map<Item, Integer> getRequiredMaterials() {
         return requiredMaterials;
     }
