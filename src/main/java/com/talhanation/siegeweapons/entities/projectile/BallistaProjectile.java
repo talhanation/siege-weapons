@@ -1,7 +1,9 @@
 package com.talhanation.siegeweapons.entities.projectile;
 
+import com.talhanation.siegeweapons.entities.AbstractVehicleEntity;
 import com.talhanation.siegeweapons.init.ModEntityTypes;
 import com.talhanation.siegeweapons.init.ModItems;
+import com.talhanation.siegeweapons.init.ModSounds;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -95,6 +97,11 @@ public class BallistaProjectile extends AbstractArrow {
             if (ownerEntity instanceof LivingEntity) {
                 if (ownerEntity.getTeam() != null && ownerEntity.getTeam().isAlliedTo(hitEntity.getTeam()) && !ownerEntity.getTeam().isAllowFriendlyFire())
                     return;
+
+
+                if(hitEntity instanceof AbstractVehicleEntity){
+                    this.level().playSound(null, this.getX(), this.getY() + 4 , this.getZ(), ModSounds.SIEGEWEAPON_HIT.get(), this.getSoundSource(), 5.3F, 0.8F + 0.4F * this.random.nextFloat());
+                }
             }
         }
         super.onHitEntity(hitResult);
