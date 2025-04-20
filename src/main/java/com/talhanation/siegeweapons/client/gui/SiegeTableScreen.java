@@ -2,6 +2,7 @@ package com.talhanation.siegeweapons.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.talhanation.siegeweapons.Main;
+import com.talhanation.siegeweapons.ModTexts;
 import com.talhanation.siegeweapons.SiegeWeapons;
 import com.talhanation.siegeweapons.blocks.SiegeTableBlockEntity;
 import com.talhanation.siegeweapons.client.EntityInScreenRenderer;
@@ -9,6 +10,7 @@ import com.talhanation.siegeweapons.inventory.SiegeTableMenu;
 import com.talhanation.siegeweapons.network.MessageStartCrafting;
 import com.talhanation.siegeweapons.world.SiegeTableRecipe;
 import de.maxhenkel.corelib.inventory.ScreenBase;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -48,13 +50,24 @@ public class SiegeTableScreen extends ScreenBase<SiegeTableMenu> {
     @Override
     protected void init() {
         super.init();
-        this.selection = SiegeWeapons.CATAPULT;
     }
 
     @Override
     protected void containerTick() {
         super.containerTick();
-        this.tableEntity = (SiegeTableBlockEntity) player.getCommandSenderWorld().getBlockEntity(blockPos);
+
+        if(this.tableEntity == null){
+            this.tableEntity = (SiegeTableBlockEntity) player.getCommandSenderWorld().getBlockEntity(blockPos);
+        }
+
+        if(selection == null){
+            if(tableEntity != null && tableEntity.selection != null){
+                this.selection = tableEntity.selection;
+            }
+            else
+                this.selection = SiegeWeapons.CATAPULT;
+        }
+
         this.setButtons();
     }
 
@@ -79,13 +92,13 @@ public class SiegeTableScreen extends ScreenBase<SiegeTableMenu> {
 
         addRenderableWidget(this.rightButton);
 
-        this.craftButton = new ExtendedButton(leftPos + 79, topPos + 50, 71, 20, Component.literal("Craft"),
+        this.craftButton = new ExtendedButton(leftPos + 79, topPos + 50, 71, 20, ModTexts.CRAFT,
                 button -> {
                     selection.getRecipe().consumeMaterials(playerInventory);
 
-                    Main.SIMPLE_CHANNEL.sendToServer(new MessageStartCrafting(blockPos));
+                    Main.SIMPLE_CHANNEL.sendToServer(new MessageStartCrafting(blockPos, selection.getIndex()));
                 });
-        this.craftButton.active = selection.getRecipe().hasRequiredMaterials(playerInventory);//tableEntity != null && !tableEntity.getCrafting();//
+        this.craftButton.active = tableEntity != null && !tableEntity.getCrafting() && selection.getRecipe().hasRequiredMaterials(playerInventory);
         addRenderableWidget(this.craftButton);
     }
 
@@ -98,12 +111,11 @@ public class SiegeTableScreen extends ScreenBase<SiegeTableMenu> {
 
         if(selection != null) {
             this.renderRecipeItems(guiGraphics, selection.getRecipe(), x + 61, y + 15, 16);
-            EntityInScreenRenderer.renderEntityInInventoryRotating(guiGraphics,x + 30, y + 45, 5, selection.getEntity(), 1.0F);
+            EntityInScreenRenderer.renderEntityInInventoryRotating(guiGraphics,x + 30 + selection.renderXOffset(), y + 45 + selection.renderYOffset(), 5, selection.getEntity(Minecraft.getInstance().level), 0.8F, selection.getRenderScale());
         }
 
-
         if(tableEntity != null && tableEntity.getCrafting()){
-           int progress = tableEntity.getCraftingProgress();
+            int progress = tableEntity.getCraftingProgress();
 
             int progressX = leftPos + 61;
             int progressY = topPos + 40;
@@ -112,11 +124,8 @@ public class SiegeTableScreen extends ScreenBase<SiegeTableMenu> {
 
             guiGraphics.fill(progressX, progressY, progressX + width, progressY + height, 0xFF555555);
 
-            int progressWidth = (int) (width * (progress / 100.0));
-            guiGraphics.fill(progressX, progressY, progressX + progressWidth, progressY + height, 0xFF00FF00);
-
+            guiGraphics.fill(progressX, progressY, progressX + progress, progressY + height, 0xFF00FF00);
         }
-
     }
 
     public void renderRecipeItems(GuiGraphics guiGraphics, SiegeTableRecipe recipe, int startX, int startY, int spacing) {
