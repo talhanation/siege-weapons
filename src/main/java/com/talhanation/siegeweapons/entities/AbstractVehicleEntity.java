@@ -335,11 +335,11 @@ public abstract class AbstractVehicleEntity extends Entity {
 
     @Override
     public InteractionResult interact(Player player, InteractionHand interactionHand) {
-        // copied from Minecart.interact
         if (this.itemInteraction(player, interactionHand)) {
             return InteractionResult.CONSUME;
-        } else if (player.isSecondaryUseActive()) {
-            return InteractionResult.PASS;
+        } else if (player.isSecondaryUseActive() && this instanceof AbstractInventoryVehicleEntity inventoryVehicle) {
+            inventoryVehicle.openGUI(player);
+            return InteractionResult.CONSUME;
         } else if (this.getPassengers().size() == getMaxPassengerSize()) {
             return InteractionResult.PASS;
         } else if (!this.getCommandSenderWorld().isClientSide()) {
