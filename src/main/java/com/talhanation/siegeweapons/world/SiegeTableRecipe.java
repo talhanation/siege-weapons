@@ -26,20 +26,20 @@ public class SiegeTableRecipe {
             Items.LEAD, 4,
             Items.IRON_INGOT, 16,
             Items.IRON_NUGGET, 8),
-            3000
+            4000
     );
     public static final SiegeTableRecipe BALLISTA_BOLT = new SiegeTableRecipe(Map.of(
             Items.OAK_PLANKS, 3,
             Items.FEATHER, 1,
             Items.IRON_INGOT, 1),
-            40
+            100
     );
 
     public static final SiegeTableRecipe FIRE_POT = new SiegeTableRecipe(Map.of(
             Items.DECORATED_POT, 1,
             Items.GUNPOWDER, 1,
             Items.WHEAT, 9),
-            50
+            100
     );
 
 
@@ -47,13 +47,13 @@ public class SiegeTableRecipe {
             Items.DECORATED_POT, 1,
             Items.GUNPOWDER, 4,
             Items.SAND, 4),
-            50
+            100
     );
 
 
     public static final SiegeTableRecipe COBBLE_CLUSTER = new SiegeTableRecipe(Map.of(
-            Items.COBBLESTONE, 1),
-            50
+            Items.COBBLESTONE, 3),
+            100
     );
 
     public static final SiegeTableRecipe TRANSPORT_CART_RECIPE = new SiegeTableRecipe(Map.of(

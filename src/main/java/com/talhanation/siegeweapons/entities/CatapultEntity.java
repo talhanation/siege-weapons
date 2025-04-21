@@ -312,7 +312,7 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
             }
 
             case BUNDLE_SHOT -> {
-                int amount = 9;
+                int amount = 12;
                 for(int i = 0; i< amount; i++) {
                     projectile = new CatapultCobbleClusterProjectile(this.getCommandSenderWorld(), driverEntity, this.getX(), this.getY() + 3.75, this.getZ());
                     projectile.shoot(shootVec.x(), yShootVec, shootVec.z(), speed, projectile.getAccuracy());
