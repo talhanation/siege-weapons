@@ -22,31 +22,31 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
 public class SiegeTableBlock extends BaseEntityBlock {
-
     public SiegeTableBlock(BlockBehaviour.Properties properties) {
         super(properties);
+
     }
 
-    public RenderShape getRenderShape(BlockState p_50950_) {
+    public @NotNull RenderShape getRenderShape(@NotNull BlockState p_50950_) {
         return RenderShape.MODEL;
     }
 
-    public BlockEntity newBlockEntity(BlockPos p_152698_, BlockState p_152699_) {
-        return new SiegeTableBlockEntity( p_152698_, p_152699_);
+    public BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
+        return new SiegeTableBlockEntity(blockPos, blockState);
     }
 
-    public InteractionResult use(BlockState state, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+    public @NotNull InteractionResult use(@NotNull BlockState state, Level level, @NotNull BlockPos blockPos, @NotNull Player player, @NotNull InteractionHand interactionHand, @NotNull BlockHitResult blockHitResult) {
         if (level.isClientSide) {
             return InteractionResult.SUCCESS;
         } else {
             BlockEntity blockentity = level.getBlockEntity(blockPos);
             if (blockentity instanceof SiegeTableBlockEntity siegeTableBlockEntity) {
                 NetworkHooks.openScreen((ServerPlayer) player, siegeTableBlockEntity, blockPos);
-                //player.awardStat(Stats.INTERACT_WITH_BREWINGSTAND);
             }
 
             return InteractionResult.CONSUME;
@@ -75,13 +75,6 @@ public class SiegeTableBlock extends BaseEntityBlock {
 
     }
 
-    public void animateTick(BlockState blockState, Level level, BlockPos pos, RandomSource source) {
-        double d0 = (double)pos.getX() + 0.4D + (double)source.nextFloat() * 0.2D;
-        double d1 = (double)pos.getY() + 0.7D + (double)source.nextFloat() * 0.3D;
-        double d2 = (double)pos.getZ() + 0.4D + (double)source.nextFloat() * 0.2D;
-        level.addParticle(ParticleTypes.LAVA, d0, d1, d2, 0.0D, 0.0D, 0.0D);
-    }
-
     public void onRemove(BlockState state, Level level, BlockPos blockPos, BlockState blockState, boolean p_50941_) {
         if (!state.is(blockState.getBlock())) {
             BlockEntity blockentity = level.getBlockEntity(blockPos);
@@ -95,5 +88,9 @@ public class SiegeTableBlock extends BaseEntityBlock {
 
     public boolean isPathfindable(BlockState p_50921_, BlockGetter p_50922_, BlockPos p_50923_, PathComputationType p_50924_) {
         return false;
+    }
+
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+        //TODO: Particles
     }
 }
