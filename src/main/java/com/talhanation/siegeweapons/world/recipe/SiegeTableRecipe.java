@@ -1,9 +1,10 @@
-package com.talhanation.siegeweapons.world;
+package com.talhanation.siegeweapons.world.recipe;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 
 import java.util.Map;
 public class SiegeTableRecipe {
@@ -16,9 +17,8 @@ public class SiegeTableRecipe {
             Items.LEAD, 4,
             Items.IRON_INGOT, 16,
             Items.IRON_NUGGET, 8),
-            7500
+            8500
     );
-
 
     public static final SiegeTableRecipe BALLISTA_RECIPE = new SiegeTableRecipe(Map.of(
             Items.OAK_PLANKS, 16,
@@ -28,32 +28,32 @@ public class SiegeTableRecipe {
             Items.IRON_NUGGET, 8),
             4000
     );
+
     public static final SiegeTableRecipe BALLISTA_BOLT = new SiegeTableRecipe(Map.of(
             Items.OAK_PLANKS, 3,
             Items.FEATHER, 1,
             Items.IRON_INGOT, 1),
-            100
+            10
     );
 
     public static final SiegeTableRecipe FIRE_POT = new SiegeTableRecipe(Map.of(
             Items.DECORATED_POT, 1,
             Items.GUNPOWDER, 1,
-            Items.WHEAT, 9),
-            100
+            Items.WHEAT, 3,
+            Items.FIRE_CHARGE, 1),
+            30
     );
-
 
     public static final SiegeTableRecipe EXPLOSION_POT = new SiegeTableRecipe(Map.of(
             Items.DECORATED_POT, 1,
-            Items.GUNPOWDER, 4,
+            Items.GUNPOWDER, 5,
             Items.SAND, 4),
-            100
+            30
     );
-
 
     public static final SiegeTableRecipe COBBLE_CLUSTER = new SiegeTableRecipe(Map.of(
             Items.COBBLESTONE, 3),
-            100
+            10
     );
 
     public static final SiegeTableRecipe TRANSPORT_CART_RECIPE = new SiegeTableRecipe(Map.of(
@@ -62,7 +62,7 @@ public class SiegeTableRecipe {
             Items.OAK_PLANKS, 32,
             Items.LEAD, 4,
             Items.IRON_NUGGET, 16),
-            1500
+            5500
     );
 
     public static final SiegeTableRecipe CART_RECIPE = new SiegeTableRecipe(Map.of(
@@ -71,7 +71,7 @@ public class SiegeTableRecipe {
             Items.OAK_PLANKS, 16,
             Items.LEAD, 1,
             Items.IRON_NUGGET, 16),
-            5500
+            1500
     );
 
 

@@ -1,6 +1,7 @@
 package com.talhanation.siegeweapons.entities;
 
 import com.talhanation.siegeweapons.Main;
+import com.talhanation.siegeweapons.ModTexts;
 import com.talhanation.siegeweapons.entities.projectile.*;
 import com.talhanation.siegeweapons.init.ModItems;
 import com.talhanation.siegeweapons.init.ModSounds;
@@ -140,7 +141,7 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
             NetworkHooks.openScreen((ServerPlayer) player, new MenuProvider() {
                 @Override
                 public Component getDisplayName() {
-                    return this.getDisplayName();
+                    return BallistaEntity.this.getName();
                 }
 
                 @Override
@@ -172,6 +173,10 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
     @Override
     public ItemStack getPickResult() {
         return new ItemStack(ModItems.BALLISTA_ITEM.get());
+    }
+
+    public Component getVehicleTypeName(){
+        return ModTexts.BALLISTA;
     }
 
     @Override

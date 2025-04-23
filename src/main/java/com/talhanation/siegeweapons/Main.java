@@ -74,7 +74,7 @@ public class Main {
         Class[] messages = {
                 MessageUpdateVehicleControl.class,
                 MessageLoadAndShootWeapon.class,
-                MessageStartCrafting.class,
+                MessageUpdateSiegeTable.class,
                 MessageToClientUpdateSiegeTableEntity.class,
                 MessageSetCatapultRange.class,
                 MessageOpenGUI.class

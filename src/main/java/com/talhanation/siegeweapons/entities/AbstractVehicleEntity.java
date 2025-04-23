@@ -5,6 +5,7 @@ import com.talhanation.siegeweapons.math.Kalkuel;
 import com.talhanation.siegeweapons.network.MessageUpdateVehicleControl;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -52,6 +53,7 @@ public abstract class AbstractVehicleEntity extends Entity {
     public abstract int getMaxPassengerSize();
     public abstract int getMaxSpeedInKmH();
     public abstract float getMaxHealth();
+    public abstract Component getVehicleTypeName();
 
     public AbstractVehicleEntity(EntityType<?> type, Level level) {
         super(type, level);
@@ -336,16 +338,16 @@ public abstract class AbstractVehicleEntity extends Entity {
     @Override
     public InteractionResult interact(Player player, InteractionHand interactionHand) {
         if (this.itemInteraction(player, interactionHand)) {
-            return InteractionResult.CONSUME;
+            return InteractionResult.SUCCESS;
         } else if (player.isSecondaryUseActive() && this instanceof AbstractInventoryVehicleEntity inventoryVehicle) {
             inventoryVehicle.openGUI(player);
-            return InteractionResult.CONSUME;
+            return InteractionResult.SUCCESS;
         } else if (this.getPassengers().size() == getMaxPassengerSize()) {
             return InteractionResult.PASS;
         } else if (!this.getCommandSenderWorld().isClientSide()) {
-            return this.tryRiding(player) ? InteractionResult.CONSUME : InteractionResult.PASS;
+            return this.tryRiding(player) ? InteractionResult.SUCCESS : InteractionResult.PASS;
         } else {
-            return InteractionResult.SUCCESS;
+            return InteractionResult.PASS;
         }
     }
 
@@ -368,10 +370,12 @@ public abstract class AbstractVehicleEntity extends Entity {
             return false;
         }
         else if (!this.getCommandSenderWorld().isClientSide() && !this.isRemoved()) {
+            if(this.isInLava() || this.isOnFire()) f = f / 20;
+
             float health = this.getHealth();
             float newHealth = health - f;
-              this.setHealth(newHealth);
 
+            this.setHealth(newHealth);
             this.markHurt();
             this.gameEvent(GameEvent.ENTITY_DAMAGE, damageSource.getEntity());
 

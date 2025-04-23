@@ -17,7 +17,7 @@ public class VehicleInventoryMenu extends ContainerBase {
         this.vehicleInventory = inventoryEntity.getInventory();
 
         addPlayerInventorySlots();
-        addVehicleInventorySlots();
+        //addVehicleInventorySlots();
     }
 
     public AbstractInventoryVehicleEntity getEntity() {

@@ -7,10 +7,9 @@ import com.talhanation.siegeweapons.SiegeWeapons;
 import com.talhanation.siegeweapons.blocks.SiegeTableBlockEntity;
 import com.talhanation.siegeweapons.client.EntityInScreenRenderer;
 import com.talhanation.siegeweapons.inventory.SiegeTableMenu;
-import com.talhanation.siegeweapons.network.MessageStartCrafting;
-import com.talhanation.siegeweapons.world.SiegeTableRecipe;
+import com.talhanation.siegeweapons.network.MessageUpdateSiegeTable;
+import com.talhanation.siegeweapons.world.recipe.SiegeTableRecipe;
 import de.maxhenkel.corelib.inventory.ScreenBase;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -50,6 +49,8 @@ public class SiegeTableScreen extends ScreenBase<SiegeTableMenu> {
     @Override
     protected void init() {
         super.init();
+        this.leftPos = (this.width - this.imageWidth) / 2;
+        this.topPos = (this.height - this.imageHeight) / 2;
     }
 
     @Override
@@ -80,7 +81,6 @@ public class SiegeTableScreen extends ScreenBase<SiegeTableMenu> {
                     setButtons();
                 });
         this.leftButton.active = tableEntity != null && !tableEntity.getCrafting();
-
         addRenderableWidget(this.leftButton);
 
         this.rightButton = new ExtendedButton(leftPos + 45, topPos + 53, 16, 16, Component.literal(">"),
@@ -89,14 +89,13 @@ public class SiegeTableScreen extends ScreenBase<SiegeTableMenu> {
                     setButtons();
                 });
         this.rightButton.active = tableEntity != null && !tableEntity.getCrafting();
-
         addRenderableWidget(this.rightButton);
 
         this.craftButton = new ExtendedButton(leftPos + 79, topPos + 50, 71, 20, ModTexts.CRAFT,
                 button -> {
                     selection.getRecipe().consumeMaterials(playerInventory);
 
-                    Main.SIMPLE_CHANNEL.sendToServer(new MessageStartCrafting(blockPos, selection.getIndex()));
+                    Main.SIMPLE_CHANNEL.sendToServer(new MessageUpdateSiegeTable(blockPos, selection.getIndex(),true));
                 });
         this.craftButton.active = tableEntity != null && !tableEntity.getCrafting() && selection.getRecipe().hasRequiredMaterials(playerInventory);
         addRenderableWidget(this.craftButton);
@@ -104,27 +103,28 @@ public class SiegeTableScreen extends ScreenBase<SiegeTableMenu> {
 
     protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
         super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
-
+        guiGraphics.drawString(font, ModTexts.SIEGE_WEAPON_TABLE, leftPos + 5, topPos + 5, FONT_COLOR, false);
         RenderSystem.clearColor(1.0F, 1.0F, 1.0F, 1.0F);
-        int x = (this.width - this.imageWidth) / 2;
-        int y = (this.height - this.imageHeight) / 2;
+
 
         if(selection != null) {
-            this.renderRecipeItems(guiGraphics, selection.getRecipe(), x + 61, y + 15, 16);
-            EntityInScreenRenderer.renderEntityInInventoryRotating(guiGraphics,x + 30 + selection.renderXOffset(), y + 45 + selection.renderYOffset(), 5, selection.getEntity(Minecraft.getInstance().level), 0.8F, selection.getRenderScale());
-        }
+            guiGraphics.drawString(font, selection.getEntityInClient().getName(), leftPos + 62, topPos + 17, FONT_COLOR, false);
+            EntityInScreenRenderer.renderEntityInInventoryRotating(guiGraphics,leftPos + 30 + selection.renderXOffset(), topPos + 45 + selection.renderYOffset(), 5, selection.getEntityInClient(), 1.0F, selection.getRenderScale());
 
-        if(tableEntity != null && tableEntity.getCrafting()){
-            int progress = tableEntity.getCraftingProgress();
+            if(tableEntity != null && tableEntity.getCrafting()){
+                int progress = tableEntity.getCraftingProgress();
 
-            int progressX = leftPos + 61;
-            int progressY = topPos + 40;
-            int width = 110;
-            int height = 5;
+                int progressX = leftPos + 61;
+                int progressY = topPos + 40;
+                int width = 110;
+                int height = 8;
 
-            guiGraphics.fill(progressX, progressY, progressX + width, progressY + height, 0xFF555555);
-
-            guiGraphics.fill(progressX, progressY, progressX + progress, progressY + height, 0xFF00FF00);
+                guiGraphics.fill(progressX, progressY, progressX + width, progressY + height, 0xFF555555);
+                guiGraphics.fill(progressX, progressY, progressX + progress, progressY + height, 0xFF00FF00);
+            }
+            else{
+                this.renderRecipeItems(guiGraphics, selection.getRecipe(), leftPos + 61, topPos + 28, 16);
+            }
         }
     }
 
@@ -140,6 +140,14 @@ public class SiegeTableScreen extends ScreenBase<SiegeTableMenu> {
             guiGraphics.renderItemDecorations(font, stack, itemX, itemY);
 
             xOffset += spacing;
+        }
+    }
+
+    @Override
+    public void onClose() {
+        super.onClose();
+        if(this.tableEntity != null && selection != null){
+            Main.SIMPLE_CHANNEL.sendToServer(new MessageUpdateSiegeTable(blockPos, selection.getIndex(), false));
         }
     }
 

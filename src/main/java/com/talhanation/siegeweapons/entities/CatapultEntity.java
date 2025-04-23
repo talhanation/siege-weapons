@@ -238,13 +238,17 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
         return 600;//TODO: CONFIG
     }
 
+    public Component getVehicleTypeName(){
+        return ModTexts.CATAPULT;
+    }
+
     @Override
     public void openGUI(Player player) {
         if (player instanceof ServerPlayer) {
             NetworkHooks.openScreen((ServerPlayer) player, new MenuProvider() {
                 @Override
                 public Component getDisplayName() {
-                    return ModTexts.CATAPULT;
+                    return CatapultEntity.this.getName();
                 }
 
                 @Override

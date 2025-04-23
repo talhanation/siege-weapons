@@ -5,6 +5,7 @@ import com.sk89q.worldedit.world.block.BlockTypes;
 import com.talhanation.siegeweapons.entities.AbstractVehicleEntity;
 import com.talhanation.siegeweapons.init.ModSounds;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderSet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -23,12 +24,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.item.FlintAndSteelItem;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -143,9 +146,9 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
             if(!isInWater()){
                 BlockPos pos = blockHitResult.getBlockPos();
                 if(getFireSpread()){
-                    igniteArea(this.level(), pos, 3, 3);
+                    igniteArea(this.level(), pos, 2, 2);
                 }
-                else if(getExplode()) {
+                if(getExplode()) {
                     this.level().explode(this.getOwner(), this.getX(), this.getY(), this.getZ(), getAreaDamage(), getFireSpread(), Level.ExplosionInteraction.MOB);
                 }
             }
@@ -218,11 +221,11 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
 
     public void tailParticles(){
         for (int i = 0; i < 50; ++i) {
-            this.level().addParticle(ParticleTypes.ASH, this.getX(), this.getY(), this.getZ() , 0, 0, 0);
+            this.level().addParticle(ParticleTypes.SMOKE, this.getX(), this.getY(), this.getZ() , 0, 0, 0);
         }
 
         for (int i = 0; i < 50; ++i) {
-            this.level().addParticle(ParticleTypes.ASH, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+            this.level().addParticle(ParticleTypes.SMOKE, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
         }
     }
 
@@ -250,16 +253,37 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
         for (int dx = -radiusX; dx <= radiusX; dx++) {
             for (int dz = -radiusZ; dz <= radiusZ; dz++) {
                 for (int dy = -3; dy <= 3; dy++) {
-                    BlockPos firePos = center.offset(dx, dy, dz);
-
-                    BlockPos below = firePos.below();
+                    BlockPos pos = center.offset(dx, dy, dz);
+                    BlockState state = level.getBlockState(pos);
+                    BlockPos below = pos.below();
                     BlockState belowState = level.getBlockState(below);
 
-                    boolean isReplaceable = level.getBlockState(firePos).isAir() || level.getBlockState(firePos).is(BlockTags.SNOW);
-                    boolean canPlaceFire = Blocks.FIRE.canSurvive(level.getBlockState(below), level, firePos);
+                    if (CampfireBlock.canLight(state) || CandleBlock.canLight(state) || CandleCakeBlock.canLight(state)) {
+                        BlockState litState = state.setValue(BlockStateProperties.LIT, true);
+                        level.setBlock(pos, litState, 11);
+                        level.playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.4F + 0.8F);
+                        level.gameEvent(null, GameEvent.BLOCK_CHANGE, pos);
+                        continue;
+                    }
+
+                    for (Direction direction : Direction.values()) {
+                        BlockPos adjacent = pos.relative(direction);
+                        if (BaseFireBlock.canBePlacedAt(level, adjacent, direction)) {
+                            BlockState fireState = BaseFireBlock.getState(level, adjacent);
+                            level.setBlock(adjacent, fireState, 11);
+                            level.playSound(null, adjacent, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 2.0F, level.getRandom().nextFloat() * 0.4F + 0.8F);
+                            level.gameEvent(null, GameEvent.BLOCK_PLACE, adjacent);
+                            break;
+                        }
+                    }
+
+                    boolean isReplaceable = state.isAir() || state.is(BlockTags.SNOW);
+                    boolean canPlaceFire = Blocks.FIRE.canSurvive(belowState, level, pos);
 
                     if (isReplaceable && belowState.isSolidRender(level, below) && canPlaceFire) {
-                        serverLevel.setBlockAndUpdate(firePos, Blocks.FIRE.defaultBlockState());
+                        serverLevel.setBlockAndUpdate(pos, Blocks.FIRE.defaultBlockState());
+                        level.playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.4F + 0.8F);
+                        level.gameEvent(null, GameEvent.BLOCK_PLACE, pos);
                     }
                 }
             }

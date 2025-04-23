@@ -4,11 +4,13 @@ import com.talhanation.siegeweapons.entities.BallistaEntity;
 import com.talhanation.siegeweapons.entities.CatapultEntity;
 import com.talhanation.siegeweapons.init.ModEntityTypes;
 import com.talhanation.siegeweapons.init.ModItems;
-import com.talhanation.siegeweapons.world.SiegeTableRecipe;
+import com.talhanation.siegeweapons.world.recipe.SiegeTableRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.function.Function;
@@ -28,6 +30,7 @@ public enum SiegeWeapons {
     private int renderXOffset;
     private int renderYOffset;
     private int renderZOffset;
+    private Entity cachedEntity;
     private final SiegeTableRecipe siegeTableRecipe;
     SiegeWeapons(int index, Function<Level, Entity> entityFactory, SiegeTableRecipe siegeTableRecipe, float renderScale, int renderXOffset, int renderYOffset, int renderZOffset) {
         this.index = index;
@@ -38,7 +41,13 @@ public enum SiegeWeapons {
         this.renderYOffset = renderYOffset;
         this.renderZOffset = renderZOffset;
     }
-
+    @OnlyIn(Dist.CLIENT)
+    public Entity getEntityInClient() {
+        if (cachedEntity == null) {
+            cachedEntity = entityFactory.apply(Minecraft.getInstance().level);
+        }
+        return cachedEntity;
+    }
     public Entity getEntity(Level level) {
         return entityFactory.apply(level);
     }

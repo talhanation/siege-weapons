@@ -1,5 +1,6 @@
 package com.talhanation.siegeweapons.network;
 
+import com.talhanation.siegeweapons.SiegeWeapons;
 import com.talhanation.siegeweapons.blocks.SiegeTableBlockEntity;
 import de.maxhenkel.corelib.net.Message;
 import net.minecraft.core.BlockPos;
@@ -9,16 +10,18 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.network.NetworkEvent;
 
 
-public class MessageStartCrafting implements Message<MessageStartCrafting> {
+public class MessageUpdateSiegeTable implements Message<MessageUpdateSiegeTable> {
 
     private BlockPos pos;
-    private int craftID;
-    public MessageStartCrafting() {
+    private int selectionId;
+    private boolean startCrafting;
+    public MessageUpdateSiegeTable() {
     }
 
-    public MessageStartCrafting(BlockPos pos, int craftID) {
+    public MessageUpdateSiegeTable(BlockPos pos, int selectionId, boolean startCrafting) {
         this.pos = pos;
-        this.craftID = craftID;
+        this.selectionId = selectionId;
+        this.startCrafting = startCrafting;
     }
 
     @Override
@@ -33,22 +36,26 @@ public class MessageStartCrafting implements Message<MessageStartCrafting> {
         if (!(entity instanceof SiegeTableBlockEntity siegeTableBlockEntity)) {
             return;
         }
+        siegeTableBlockEntity.selection = SiegeWeapons.fromIndex(this.selectionId);
 
-        siegeTableBlockEntity.startCrafting(craftID);
+        if(startCrafting){
+            siegeTableBlockEntity.startCrafting(selectionId);
+        }
     }
 
     @Override
-    public MessageStartCrafting fromBytes(FriendlyByteBuf buf) {
+    public MessageUpdateSiegeTable fromBytes(FriendlyByteBuf buf) {
         this.pos = buf.readBlockPos();
-        this.craftID = buf.readInt();
+        this.selectionId = buf.readInt();
+        this.startCrafting = buf.readBoolean();
         return this;
     }
 
     @Override
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeBlockPos(this.pos);
-        buf.writeInt(this.craftID);
-
+        buf.writeInt(this.selectionId);
+        buf.writeBoolean(this.startCrafting);
     }
 
 }

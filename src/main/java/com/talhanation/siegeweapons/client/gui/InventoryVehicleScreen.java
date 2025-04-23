@@ -45,29 +45,25 @@ public class InventoryVehicleScreen extends ScreenBase<VehicleInventoryMenu> {
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int i, int j) {
         super.renderLabels(guiGraphics, i, j);
-        int leftPos = 160;
-        int leftPos2 = 223;
-        int topPos = 38;
+        int leftPos = 5;
+        int leftPos2 = 80;
+        int topPos = 30;
         int gap = 14;
-        int dmg = (int) (this.vehicle.getHealth() * 100 / this.vehicle.getMaxHealth());
+        int dmg = (int) (this.vehicle.getHealth() * 100 / this.vehicle.getMaxHealth()) - 100;
         String unit = "km/h";
         int maxSpeed = (Mth.ceil(Kalkuel.getKilometerPerHour(this.vehicle.getMaxSpeedInKmH())));
         int currentSpeed = (Mth.ceil(Kalkuel.getKilometerPerHour(this.vehicle.getSpeed())));
-
-        String projectiles;
-        if(this.vehicle instanceof CatapultEntity){
-            projectiles = "" + ModTexts.CATAPULT;
-        }
+        guiGraphics.drawString(font, vehicle.getName(), 5, 5, FONT_COLOR, false);
 
         guiGraphics.drawString(font, "Type:", leftPos, topPos + gap * 0, FONT_COLOR, false);
         guiGraphics.drawString(font, "Speed " + unit + ":", leftPos, topPos + gap * 1, FONT_COLOR, false);
         guiGraphics.drawString(font, "Damage:", leftPos, topPos + gap * 2, FONT_COLOR, false);
-        guiGraphics.drawString(font, "Projectiles:", leftPos, topPos + gap * 3, FONT_COLOR, false);
+        //guiGraphics.drawString(font, "Ammo:", leftPos, topPos + gap * 3, FONT_COLOR, false);
 
-        guiGraphics.drawString(font, currentSpeed + "/" + maxSpeed, leftPos2, topPos + gap * 0, FONT_COLOR, false);
+        guiGraphics.drawString(font, vehicle.getVehicleTypeName(), leftPos2, topPos + gap * 0, FONT_COLOR, false);
         guiGraphics.drawString(font, currentSpeed + "/" + maxSpeed, leftPos2, topPos + gap * 1, FONT_COLOR, false);
-        guiGraphics.drawString(font, dmg + "%", leftPos2, topPos + gap * 2, FONT_COLOR, false);
-        guiGraphics.drawString(font, dmg + "%", leftPos2, topPos + gap * 2, FONT_COLOR, false);
+        guiGraphics.drawString(font, dmg*-1 + "%", leftPos2, topPos + gap * 2, FONT_COLOR, false);
+        //guiGraphics.drawString(font, dmg + "%", leftPos2, topPos + gap * 2, FONT_COLOR, false);
     }
 
 }

@@ -71,11 +71,11 @@ public abstract class AbstractInventoryVehicleEntity extends AbstractVehicleEnti
     }
 
     public int getInventorySize() {
-        return 9;
+        return 0;
     }
 
     public int getInventoryColumns() {
-        return 3;
+        return 0;
     }
 
     ////////////////////////////////////OTHER FUNCTIONS////////////////////////////////////
