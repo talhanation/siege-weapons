@@ -1,5 +1,6 @@
 package com.talhanation.siegeweapons;
 import com.talhanation.siegeweapons.client.events.KeyEvents;
+import com.talhanation.siegeweapons.client.events.ClientRenderEvents;
 import com.talhanation.siegeweapons.client.gui.SiegeTableScreen;
 import com.talhanation.siegeweapons.config.SiegeWeaponsServerConfig;
 import com.talhanation.siegeweapons.init.ModBlocks;
@@ -91,7 +92,7 @@ public class Main {
     public void clientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(ModMenus::registerMenus);
         MinecraftForge.EVENT_BUS.register(new KeyEvents());
-
+        MinecraftForge.EVENT_BUS.register(new ClientRenderEvents());
         MenuScreens.register(ModMenus.SIEGE_TABLE_CONTAINER.get(), SiegeTableScreen::new);
     }
 

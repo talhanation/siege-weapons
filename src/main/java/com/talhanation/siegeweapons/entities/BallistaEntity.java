@@ -90,7 +90,7 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
             LivingEntity driver = getControllingPassenger();
 
             float xRot = getControllingPassenger().getXRot();
-            xRot = Mth.clamp(xRot, -90, 20);
+            xRot = Mth.clamp(xRot, -40, 40);
 
             float yRot = driver.getYRot();
 

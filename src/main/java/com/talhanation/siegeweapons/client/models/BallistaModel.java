@@ -11,32 +11,35 @@ import net.minecraft.client.model.geom.builders.*;
 public class BallistaModel<T extends BallistaEntity> extends EntityModel<T> {
 	private final ModelPart ballista;
 	private final ModelPart stand;
+	private final ModelPart wheels;
 	private final ModelPart crossbow;
 	private final ModelPart loaded;
 	private final ModelPart leftArmLoaded;
+	private final ModelPart leftRope;
 	private final ModelPart rightArmLoaded;
+	private final ModelPart rightRope;
 	private final ModelPart unloaded;
 	private final ModelPart leftArm;
 	private final ModelPart rightArm;
 	private final ModelPart loader;
 	private final ModelPart arrow;
-	private final ModelPart wheels;
 	public BallistaModel() {
 		ModelPart root = createBodyLayer().bakeRoot();
 		this.ballista = root.getChild("ballista");
 		this.stand = this.ballista.getChild("stand");
+		this.wheels = this.stand.getChild("wheels");
 		this.crossbow = this.ballista.getChild("crossbow");
 		this.loaded = this.crossbow.getChild("loaded");
 		this.leftArmLoaded = this.loaded.getChild("leftArmLoaded");
+		this.leftRope = this.leftArmLoaded.getChild("leftRope");
 		this.rightArmLoaded = this.loaded.getChild("rightArmLoaded");
+		this.rightRope = this.rightArmLoaded.getChild("rightRope");
 		this.unloaded = this.crossbow.getChild("unloaded");
 		this.leftArm = this.unloaded.getChild("leftArm");
 		this.rightArm = this.unloaded.getChild("rightArm");
 		this.loader = this.crossbow.getChild("loader");
 		this.arrow = this.crossbow.getChild("arrow");
-		this.wheels = this.stand.getChild("wheels");
 	}
-
 
 	public static LayerDefinition createBodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
@@ -83,26 +86,34 @@ public class BallistaModel<T extends BallistaEntity> extends EntityModel<T> {
 		PartDefinition cube_r7 = wheels.addOrReplaceChild("cube_r7", CubeListBuilder.create().texOffs(54, 63).addBox(-1.5F, 1.4F, -1.0F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
 				.texOffs(55, 63).addBox(-16.5F, 1.4F, -1.0F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(7.996F, 0.048F, -0.04F, 0.7854F, 0.0F, 0.0F));
 
-		PartDefinition crossbow = ballista.addOrReplaceChild("crossbow", CubeListBuilder.create().texOffs(20, 59).addBox(-3.0F, -6.9F, -12.0F, 6.0F, 3.0F, 0.0F, new CubeDeformation(0.0F))
-				.texOffs(0, 53).addBox(-5.0F, -2.0F, -20.0F, 10.0F, 0.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(0, 0).addBox(-3.0F, -3.9F, -11.0F, 6.0F, 4.0F, 29.0F, new CubeDeformation(0.0F))
-				.texOffs(0, 39).addBox(-8.0F, -3.95F, -14.0F, 16.0F, 4.05F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 2.0F, 7.0F, -0.1309F, 0.0F, 0.0F));
+		PartDefinition crossbow = ballista.addOrReplaceChild("crossbow", CubeListBuilder.create().texOffs(0, 0).addBox(-3.0F, -3.9F, -11.0F, 6.0F, 4.0F, 29.0F, new CubeDeformation(0.0F))
+				.texOffs(0, 39).addBox(-8.0F, -3.95F, -14.0F, 16.0F, 4.05F, 3.0F, new CubeDeformation(0.0F))
+				.texOffs(20, 62).addBox(2.0F, -6.0F, -15.0F, 1.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
+				.texOffs(21, 62).addBox(-3.0F, -6.0F, -15.0F, 1.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
+				.texOffs(20, 62).addBox(-3.0F, -4.0F, -15.0F, 1.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
+				.texOffs(21, 62).addBox(2.0F, -4.0F, -15.0F, 1.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
+				.texOffs(20, 62).addBox(-3.0F, -2.0F, -15.0F, 1.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
+				.texOffs(21, 62).addBox(2.0F, -2.0F, -15.0F, 1.0F, 2.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 2.0F, 7.0F, -0.1309F, 0.0F, 0.0F));
+
+		PartDefinition cube_r8 = crossbow.addOrReplaceChild("cube_r8", CubeListBuilder.create().texOffs(23, 64).addBox(0.0F, -1.0F, 1.0F, 1.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.0F, -7.0F, -15.0F, 0.0F, 0.0F, 1.5708F));
+
+		PartDefinition cube_r9 = crossbow.addOrReplaceChild("cube_r9", CubeListBuilder.create().texOffs(22, 64).addBox(-1.0F, -1.0F, 1.0F, 1.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.0F, -7.0F, -15.0F, 0.0F, 0.0F, -1.5708F));
 
 		PartDefinition loaded = crossbow.addOrReplaceChild("loaded", CubeListBuilder.create(), PartPose.offset(6.625F, -2.0F, -12.6F));
 
 		PartDefinition leftArmLoaded = loaded.addOrReplaceChild("leftArmLoaded", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -0.2618F, 0.0F));
 
-		PartDefinition cube_r8 = leftArmLoaded.addOrReplaceChild("cube_r8", CubeListBuilder.create().texOffs(39, 33).addBox(-16.4916F, -0.0991F, -1.01F, 18.0F, 0.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(8.375F, -2.0F, 10.6F, 0.0F, 0.9599F, 0.0F));
-
-		PartDefinition cube_r9 = leftArmLoaded.addOrReplaceChild("cube_r9", CubeListBuilder.create().texOffs(0, 46).addBox(0.0F, -2.0F, -2.0F, 16.0F, 4.0F, 3.0F, new CubeDeformation(0.0F))
+		PartDefinition cube_r10 = leftArmLoaded.addOrReplaceChild("cube_r10", CubeListBuilder.create().texOffs(0, 46).addBox(0.0F, -2.0F, -2.0F, 16.0F, 4.0F, 3.0F, new CubeDeformation(0.0F))
 				.texOffs(0, 59).addBox(13.0F, -2.0F, -4.0F, 3.0F, 4.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -0.1F, 0.0F, 0.0F, -0.7854F, 0.0F));
+
+		PartDefinition leftRope = leftArmLoaded.addOrReplaceChild("leftRope", CubeListBuilder.create().texOffs(39, 33).addBox(-16.4916F, -0.1991F, -1.01F, 18.0F, 0.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(8.375F, -2.0F, 10.6F, 0.0F, 0.9599F, 0.0F));
 
 		PartDefinition rightArmLoaded = loaded.addOrReplaceChild("rightArmLoaded", CubeListBuilder.create(), PartPose.offsetAndRotation(-13.225F, 0.0F, 0.0F, 0.0F, 0.2618F, 0.0F));
 
-		PartDefinition cube_r10 = rightArmLoaded.addOrReplaceChild("cube_r10", CubeListBuilder.create().texOffs(39, 33).addBox(-1.5084F, -0.0991F, -1.01F, 18.0F, 0.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-8.3F, -1.9F, 10.6F, 0.0F, -0.9599F, 0.0F));
-
 		PartDefinition cube_r11 = rightArmLoaded.addOrReplaceChild("cube_r11", CubeListBuilder.create().texOffs(10, 59).addBox(-16.0F, -2.0F, -4.0F, 3.0F, 4.0F, 2.0F, new CubeDeformation(0.0F))
 				.texOffs(38, 39).addBox(-16.0F, -2.0F, -2.0F, 16.0F, 4.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.7854F, 0.0F));
+
+		PartDefinition rightRope = rightArmLoaded.addOrReplaceChild("rightRope", CubeListBuilder.create().texOffs(39, 33).addBox(-1.5084F, -0.1991F, -1.01F, 18.0F, 0.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-8.3F, -1.9F, 10.6F, 0.0F, -0.9599F, 0.0F));
 
 		PartDefinition unloaded = crossbow.addOrReplaceChild("unloaded", CubeListBuilder.create(), PartPose.offset(6.625F, -2.0F, -12.6F));
 
@@ -118,14 +129,16 @@ public class BallistaModel<T extends BallistaEntity> extends EntityModel<T> {
 
 		PartDefinition loader = crossbow.addOrReplaceChild("loader", CubeListBuilder.create(), PartPose.offset(-4.0F, -2.0F, 15.0F));
 
-		PartDefinition cube_r14 = loader.addOrReplaceChild("cube_r14", CubeListBuilder.create().texOffs(20, 62).addBox(-1.0F, -1.0F, -4.0F, 2.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(54, 56).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 4.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(54, 56).addBox(-1.0F, -4.0F, -1.0F, 2.0F, 4.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(20, 62).addBox(-1.0F, -1.0F, 1.0F, 2.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(20, 62).addBox(7.0F, -1.0F, 1.0F, 2.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(20, 62).addBox(7.0F, -1.0F, -4.0F, 2.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(54, 56).addBox(7.0F, -4.0F, -1.0F, 2.0F, 4.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(54, 56).addBox(7.0F, 0.0F, -1.0F, 2.0F, 4.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.7854F, 0.0F, 0.0F));
+		PartDefinition cube_r14 = loader.addOrReplaceChild("cube_r14", CubeListBuilder.create().texOffs(21, 62).addBox(0.0F, -1.0F, -4.0F, 1.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
+				.texOffs(55, 56).addBox(1.0F, -1.0F, -1.0F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
+				.texOffs(55, 56).addBox(0.0F, 0.0F, -1.0F, 1.0F, 4.0F, 2.0F, new CubeDeformation(0.0F))
+				.texOffs(55, 56).addBox(0.0F, -4.0F, -1.0F, 1.0F, 4.0F, 2.0F, new CubeDeformation(0.0F))
+				.texOffs(21, 62).addBox(0.0F, -1.0F, 1.0F, 1.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
+				.texOffs(21, 62).addBox(9.0F, -1.0F, 1.0F, 1.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
+				.texOffs(21, 63).addBox(8.0F, -1.0F, -1.0F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
+				.texOffs(21, 62).addBox(9.0F, -1.0F, -4.0F, 1.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
+				.texOffs(55, 56).addBox(9.0F, -4.0F, -1.0F, 1.0F, 4.0F, 2.0F, new CubeDeformation(0.0F))
+				.texOffs(55, 56).addBox(9.0F, 0.0F, -1.0F, 1.0F, 4.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.0F, 0.0F, 0.0F, 0.7854F, 0.0F, 0.0F));
 
 		PartDefinition arrow = crossbow.addOrReplaceChild("arrow", CubeListBuilder.create().texOffs(11, 5).addBox(-0.5F, -0.5F, 0.0F, 1.0F, 1.0F, 24.0F, new CubeDeformation(0.0F)), PartPose.offset(0.1F, -4.5F, -13.6F));
 
@@ -141,6 +154,7 @@ public class BallistaModel<T extends BallistaEntity> extends EntityModel<T> {
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
+
 
 	@Override
 	public void setupAnim(BallistaEntity entity, float partialTicks, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {

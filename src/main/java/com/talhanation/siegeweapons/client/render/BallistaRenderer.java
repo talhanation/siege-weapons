@@ -63,7 +63,7 @@ public class BallistaRenderer extends EntityRenderer<BallistaEntity> {
         if(entity.getShowTrajectory()){
             Vec3 forward = new Vec3(Math.sin(Math.toRadians(entity.getYRot())), 0, Math.cos(Math.toRadians(entity.getYRot())));
 
-            List<Vec3> trajectory = calculateTrajectory(forward, -Math.toRadians(entity.getXRot()), entity.projectileSpeed, 3000, 0);
+            List<Vec3> trajectory = calculateTrajectory(forward, -Math.toRadians(entity.getXRot()), entity.projectileSpeed, 3000, 0, 0.15);
             // Render the trajectory line
             VertexConsumer lineVertexConsumer = multiBufferSource.getBuffer(RenderType.LINES);
             renderBallistaTrajectory(poseStack, lineVertexConsumer, trajectory, 1.0f, 0.0f, 0.0f, 100.0f); // Red line
@@ -71,14 +71,15 @@ public class BallistaRenderer extends EntityRenderer<BallistaEntity> {
 
         poseStack.popPose();
     }
-    public static List<Vec3> calculateTrajectory(Vec3 forward, double yShootVec, float initialVelocity, int steps, double heightOffset) {
+    public static List<Vec3> calculateTrajectory(Vec3 forward, double yShootVec, float initialVelocity, int steps, double heightOffset, double lateralOffset) {
         List<Vec3> trajectory = new ArrayList<>();
 
         double timeStep = 1.0 / 20.0;
-        double gravityPerTick = -0.05;
+        double gravityPerTick = -0.06;
 
-        // Richtung normalisieren und rückwärts skalieren
         Vec3 direction = new Vec3(forward.x, yShootVec, forward.z).normalize().scale(-1);
+
+        Vec3 side = new Vec3(-forward.z, 0, forward.x).normalize().scale(lateralOffset);
 
         for (int i = 0; i < steps; i++) {
             double t = i * timeStep;
@@ -87,12 +88,13 @@ public class BallistaRenderer extends EntityRenderer<BallistaEntity> {
             double dy = direction.y * initialVelocity * t - 0.5 * gravityPerTick * t * t;
             double dz = direction.z * initialVelocity * t;
 
-            Vec3 point = new Vec3(dx, dy + heightOffset, dz);
+            Vec3 point = new Vec3(dx, dy + heightOffset, dz).add(side);
             trajectory.add(point);
         }
 
         return trajectory;
     }
+
 
 
     public static void renderBallistaTrajectory(PoseStack poseStack, VertexConsumer vertexConsumer, List<Vec3> points, float r, float g, float b, float alpha) {
