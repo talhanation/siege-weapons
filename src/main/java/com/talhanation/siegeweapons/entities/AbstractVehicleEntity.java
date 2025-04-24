@@ -12,6 +12,9 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -21,11 +24,14 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
@@ -362,7 +368,51 @@ public abstract class AbstractVehicleEntity extends Entity {
         return false;
     }
 
-    public abstract boolean itemInteraction(Player player, InteractionHand interactionHand);
+    public boolean itemInteraction(Player player, InteractionHand interactionHand){
+        if(this.interactWithNameTag(player)) return true;
+        else return this.interactIronNuggets(player);
+    }
+
+    private boolean interactWithNameTag(@NotNull Player player){
+        if (player.getMainHandItem().is(Items.NAME_TAG) && player.getMainHandItem().hasCustomHoverName() && !player.getCommandSenderWorld().isClientSide){
+            this.setCustomName(player.getMainHandItem().getHoverName());
+            this.setCustomNameVisible(false);
+            if(!player.isCreative()) player.getMainHandItem().shrink(1);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean interactIronNuggets(@NotNull Player player){
+        if (this.getHealth() > 0 && player.getMainHandItem().is(Items.IRON_NUGGET) && player.getInventory().hasAnyMatching(stack -> stack.is(ItemTags.PLANKS))){
+
+            this.repairVehicle((5 + this.level().random.nextInt(5)));
+
+            if(!player.isCreative()){
+                player.getMainHandItem().shrink(1);
+
+                for(int i = 0; i < player.getInventory().getContainerSize(); ++i) {
+                    ItemStack itemStack = player.getInventory().getItem(i);
+                    if (itemStack.is(ItemTags.PLANKS)) {
+                        itemStack.shrink(1);
+                        break;
+                    }
+                }
+            }
+
+            return true;
+        }
+        return false;
+    }
+
+    public void repairVehicle(int repairAmount){
+        this.getCommandSenderWorld().playSound(null, this.getX(), this.getY() + 1, this.getZ(), SoundEvents.WOOD_HIT, SoundSource.BLOCKS, 1F, 0.9F + 0.2F * this.getCommandSenderWorld().getRandom().nextFloat());
+        this.getCommandSenderWorld().playSound(null, this.getX(), this.getY() + 2, this.getZ(), SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 1F, 0.9F + 0.2F * this.getCommandSenderWorld().getRandom().nextFloat());
+
+        float newHealth = this.getHealth() + repairAmount;
+        if(newHealth > 100) newHealth = 100;
+        this.setHealth(newHealth);
+    }
 
     @Override
     public boolean hurt(DamageSource damageSource, float f) {

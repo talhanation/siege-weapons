@@ -38,8 +38,7 @@ public class TransportCartEntity extends AbstractInventoryVehicleEntity {
 
     @Override
     public boolean itemInteraction(Player player, InteractionHand interactionHand) {
-
-        return false;
+        return super.itemInteraction(player, interactionHand);
     }
 
     @Override

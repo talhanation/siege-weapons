@@ -13,6 +13,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
 
@@ -45,14 +46,20 @@ public class KeyEvents {
     public void onMouseInput(InputEvent.MouseButton event) {
         Minecraft minecraft = Minecraft.getInstance();
         LocalPlayer clientPlayerEntity = minecraft.player;
-        boolean rightClickKey = minecraft.options.keyUse.isDown();
-        boolean leftClickKey = minecraft.options.keyAttack.isDown();
+
+        boolean rightClick = event.getButton() == 1 && event.getAction() == GLFW.GLFW_PRESS;
+
+        if (rightClick && clientPlayerEntity.getVehicle() instanceof IShootingWeapon weapon) {
+            weapon.setShowTrajectory(true);
 
 
-        if (clientPlayerEntity == null) return;
+            event.setCanceled(true);
+        }
 
-        if (clientPlayerEntity.getVehicle() instanceof IShootingWeapon weapon) {
-            weapon.setShowTrajectory(rightClickKey);
+        boolean rightRelease = event.getButton() == 1 && event.getAction() == GLFW.GLFW_RELEASE;
+
+        if (rightRelease && clientPlayerEntity.getVehicle() instanceof IShootingWeapon weapon) {
+            weapon.setShowTrajectory(false);
         }
     }
 

@@ -213,7 +213,7 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
             itemStack.shrink(1);
             return true;
         }
-        return false;
+        return super.itemInteraction(player, interactionHand);
     }
 
     @Override

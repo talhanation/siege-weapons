@@ -4,6 +4,10 @@ import com.talhanation.siegeweapons.entities.AbstractVehicleEntity;
 import com.talhanation.siegeweapons.init.ModEntityTypes;
 import com.talhanation.siegeweapons.init.ModItems;
 import com.talhanation.siegeweapons.init.ModSounds;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -12,9 +16,11 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 public class BallistaProjectile extends AbstractArrow {
@@ -62,18 +68,50 @@ public class BallistaProjectile extends AbstractArrow {
             counter++;
         }
 
-
         if (counter > 3200){
             this.discard();
         }
         updateProjectileRotation();
+
     }
+
+    public Direction getDirectionOfImpact() {
+        Vec3 movement = this.getDeltaMovement();
+        if (movement == Vec3.ZERO) {
+            return Direction.UP;
+        }
+
+        return Direction.getNearest(movement.x, movement.y, movement.z);
+    }
+
     @Override
     protected void onHitBlock(BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
         if (!this.level().isClientSide()) {
 
             //TODO: add fire option
+        }
+
+        if (!level().isClientSide && this.inGround) {
+            Direction impactDirection = this.getDirectionOfImpact();
+            Vec3 normal = Vec3.atLowerCornerOf(impactDirection.getNormal()).normalize();
+
+            Vec3 impactPos = this.position().add(normal.scale(0.01));
+
+            for (int i = 0; i < 100; i++) {
+                double spread = 0.1;
+                double baseSpeed = 1.2;
+
+                double dx = normal.x * baseSpeed + (random.nextDouble() - 0.5) * spread;
+                double dy = normal.y * baseSpeed + (random.nextDouble() - 0.5) * spread;
+                double dz = normal.z * baseSpeed + (random.nextDouble() - 0.5) * spread;
+
+                ((ServerLevel) level()).sendParticles(
+                        new BlockParticleOption(ParticleTypes.BLOCK, this.lastState),
+                        impactPos.x, impactPos.y, impactPos.z,
+                        1, dx, dy, dz, 0.05
+                );
+            }
         }
     }
 

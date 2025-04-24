@@ -26,6 +26,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
@@ -70,6 +71,7 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
             if(++loadingTime >= 100){
                 loadingTime = 0;
                 setState(BallistaState.LOADED);
+                tryLoadFromInventory();
                 return;
             }
         }
@@ -84,6 +86,24 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
         updateLoaderRotation();
     }
 
+    private void tryLoadFromInventory() {
+        if(getControllingPassenger() instanceof Player player){
+            for(int i = 0; i < player.getInventory().getContainerSize(); i++){
+                ItemStack stack = player.getInventory().getItem(i);
+                if(loadProjectile(stack)) return;
+            }
+        }
+    }
+
+    private boolean loadProjectile(ItemStack itemStack){
+        if(getState() == BallistaState.LOADED && itemStack.getItem() == ModItems.BALLISTA_PROJECTILE_ITEM.get()){
+            playLoadedSound();
+            setState(BallistaState.PROJECTILE_LOADED);
+            itemStack.shrink(1);
+            return true;
+        }
+        return false;
+    }
 
     public void updateDriverTurnControl() {
         if(getControllingPassenger() != null){
@@ -182,14 +202,8 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
     @Override
     public boolean itemInteraction(Player player, InteractionHand interactionHand) {
         ItemStack itemStack = player.getMainHandItem();
-        BallistaState state = getState();
-        if(state == BallistaState.LOADED && itemStack.getItem() == ModItems.BALLISTA_PROJECTILE_ITEM.get()){
-            playLoadedSound();
-            setState(BallistaState.PROJECTILE_LOADED);
-            itemStack.shrink(1);
-            return true;
-        }
-        return false;
+
+        return loadProjectile(itemStack) || super.itemInteraction(player, interactionHand);
     }
     @Override
     public Vec3 getDriverPosition() {
@@ -212,7 +226,7 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
         Vec3 forward = this.getForward();
         double yShootVec = forward.y();
         this.shoot(forward, yShootVec, this.getControllingPassenger(), projectileSpeed);
-        this.shootCoolDown = 30;
+        this.shootCoolDown = 10;
     }
 
     /*
