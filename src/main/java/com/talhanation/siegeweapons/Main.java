@@ -57,6 +57,7 @@ public class Main {
         ModItems.ITEMS.register(modEventBus);
         ModEntityTypes.ENTITY_TYPES.register(modEventBus);
         ModBlockEntityTypes.BLOCK_ENTITIES.register(modEventBus);
+        ModCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::addCreativeTabs);
 

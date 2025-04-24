@@ -14,5 +14,7 @@
   "block.siegeweapons.siege_table_block" : "Siege Table",
 
   "gui.siegeweapons.craft" : "Craft",
-  "gui.siegeweapons.siegewapontable" : "Siege Weapon Table"
+  "gui.siegeweapons.siegewapontable" : "Siege Weapon Table",
+
+  "itemGroup.siegeweapons.siegeweapons_tab" : "Siege Weapons Tab"
 }
