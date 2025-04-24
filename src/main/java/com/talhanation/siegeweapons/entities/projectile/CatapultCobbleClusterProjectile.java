@@ -16,14 +16,6 @@ public class CatapultCobbleClusterProjectile extends AbstractCatapultProjectile 
         return new CatapultCobbleClusterProjectile(entityType, level);
     }
 
-    public float getDamage(){
-        return 20F;
-    }
-
-    @Override
-    public float getAreaDamage() {
-        return 0.5F;
-    }
     @Override
     public boolean getFireSpread() {
         return false;
@@ -33,17 +25,17 @@ public class CatapultCobbleClusterProjectile extends AbstractCatapultProjectile 
     public boolean getExplode() {
         return true;
     }
-
-    @Override
-    public float getAccuracy() {
-        return 7;
-    }
-
     public CatapultCobbleClusterProjectile(EntityType<? extends CatapultCobbleClusterProjectile> type, Level world) {
         super(type, world);
+        setAreaDamage(0.5F);
+        setHurtDamage(20F);
+        setAccuracy(7F);
     }
     public CatapultCobbleClusterProjectile(Level world, LivingEntity owner, double d1, double d2, double d3) {
         super(ModEntityTypes.COBBLE_CLUSTER_PROJECTILE.get(), owner, d1, d2, d3, world);
+        setAreaDamage(0.5F);
+        setHurtDamage(20F);
+        setAccuracy(7F);
     }
 
     @Override

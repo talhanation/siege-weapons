@@ -11,14 +11,6 @@ public class FirePotProjectile extends AbstractCatapultProjectile {
         return new FirePotProjectile(entityType, level);
     }
 
-    public float getDamage(){
-        return 15F;
-    }
-
-    @Override
-    public float getAreaDamage() {
-        return 1.5F;
-    }
 
     @Override
     public boolean getFireSpread() {
@@ -30,16 +22,17 @@ public class FirePotProjectile extends AbstractCatapultProjectile {
         return true;
     }
 
-    @Override
-    public float getAccuracy() {
-        return 1; //0 = 100%
-    }
-
     public FirePotProjectile(EntityType<? extends FirePotProjectile> type, Level world) {
         super(type, world);
+        setAreaDamage(1.5F);
+        setHurtDamage(15F);
+        setAccuracy(1F);
     }
     public FirePotProjectile(Level world, LivingEntity owner, double d1, double d2, double d3) {
         super(ModEntityTypes.FIRE_POT_PROJECTILE.get(), owner, d1, d2, d3, world);
+        setAreaDamage(1.5F);
+        setHurtDamage(15F);
+        setAccuracy(1F);
     }
 
 }

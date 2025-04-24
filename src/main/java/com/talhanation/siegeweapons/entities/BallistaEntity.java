@@ -167,7 +167,7 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
 
     @Override
     public float getMaxHealth() {
-        return 300;
+        return 200;
     }
 
     @Override

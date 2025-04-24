@@ -64,8 +64,8 @@ public class KeyEvents {
         double scrollDelta = event.getScrollDelta();
 
 
-        if (clientPlayerEntity.getVehicle() instanceof CatapultEntity catapult) {
-            Main.SIMPLE_CHANNEL.sendToServer(new MessageSetCatapultRange((int) scrollDelta * 5));
+        if (clientPlayerEntity.getVehicle() instanceof CatapultEntity catapult && catapult.getShowTrajectory()) {
+            Main.SIMPLE_CHANNEL.sendToServer(new MessageSetCatapultRange((int) scrollDelta * 2));
             event.setCanceled(true);
         }
 

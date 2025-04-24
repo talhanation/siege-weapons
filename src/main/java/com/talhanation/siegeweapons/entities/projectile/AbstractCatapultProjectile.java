@@ -1,18 +1,13 @@
 package com.talhanation.siegeweapons.entities.projectile;
 
-import com.sk89q.worldedit.world.block.BlockType;
-import com.sk89q.worldedit.world.block.BlockTypes;
 import com.talhanation.siegeweapons.entities.AbstractVehicleEntity;
 import com.talhanation.siegeweapons.init.ModSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderSet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.entity.item.PrimedTnt;
-import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -24,9 +19,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.item.FlintAndSteelItem;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
@@ -36,7 +28,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractCatapultProjectile extends AbstractHurtingProjectile {
@@ -45,11 +36,12 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
     public boolean wasShot = false;
     public int counter = 0;
     private float rotation;
-    public abstract float getDamage();
-    public abstract float getAreaDamage();
+
     public abstract boolean getFireSpread();
     public abstract boolean getExplode();
-    public abstract float getAccuracy();
+    public float accuracy;
+    public float hurtDamage;
+    public float areaDamage;
     protected AbstractCatapultProjectile(EntityType<? extends AbstractCatapultProjectile> type, Level world) {
         super(type, world);
     }
@@ -138,6 +130,31 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
             //this.discard();
         }
     }
+
+    public void setAccuracy(float accuracy) {
+        this.accuracy = accuracy;
+    }
+
+    public void setAreaDamage(float areaDamage) {
+        this.areaDamage = areaDamage;
+    }
+
+    public void setHurtDamage(float hurtDamage) {
+        this.hurtDamage = hurtDamage;
+    }
+
+    public float getAreaDamage() {
+        return areaDamage;
+    }
+
+    public float getAccuracy() {
+        return accuracy;
+    }
+
+    public float getHurtDamage() {
+        return hurtDamage;
+    }
+
     @Override
     protected void onHitBlock(BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
@@ -184,7 +201,9 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
             }
 
 
-            hitEntity.hurt(this.damageSources().thrown(this, ownerEntity), (float) getDamage());//TODO: CONFIG
+            hitEntity.hurt(this.damageSources().thrown(this, ownerEntity), (float) getHurtDamage());//TODO: CONFIG
+            this.setAreaDamage(areaDamage/2);
+            this.setHurtDamage(hurtDamage/2);
         }
     }
 

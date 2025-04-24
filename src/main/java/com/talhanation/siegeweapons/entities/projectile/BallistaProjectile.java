@@ -29,7 +29,7 @@ public class BallistaProjectile extends AbstractArrow {
         setCritArrow(true);
         setKnockback(1);
         setPierceLevel((byte) 1);
-        setBaseDamage(25F);
+        setBaseDamage(12.5F);
     }
     public boolean wasShot = false;
     public int counter = 0;
