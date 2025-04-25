@@ -1,6 +1,7 @@
 package com.talhanation.siegeweapons.entities;
 
 import com.talhanation.siegeweapons.Main;
+import com.talhanation.siegeweapons.init.ModSounds;
 import com.talhanation.siegeweapons.math.Kalkuel;
 import com.talhanation.siegeweapons.network.MessageUpdateVehicleControl;
 import net.minecraft.core.particles.ParticleTypes;
@@ -431,19 +432,18 @@ public abstract class AbstractVehicleEntity extends Entity {
 
             boolean bl = damageSource.getEntity() instanceof Player player && player.getAbilities().instabuild && player.isCrouching();
 
-
             if (this.getHealth() <= 0) {
                 kill();
             }
             if(bl){
                 this.discard();
+                return true;
             }
-
-            return true;
-        } else {
-            return true;
         }
+        this.level().playSound(null, this.getX(), this.getY() + 4 , this.getZ(), ModSounds.SIEGEWEAPON_HIT.get(), this.getSoundSource(), 3.3F, 0.8F + 0.4F * this.random.nextFloat());
+        return true;
     }
+
     @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return new ClientboundAddEntityPacket(this);

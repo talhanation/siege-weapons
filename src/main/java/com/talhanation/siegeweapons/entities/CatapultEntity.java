@@ -8,8 +8,6 @@ import com.talhanation.siegeweapons.init.ModSounds;
 import com.talhanation.siegeweapons.inventory.VehicleInventoryMenu;
 import com.talhanation.siegeweapons.network.MessageLoadAndShootWeapon;
 import com.talhanation.siegeweapons.network.MessageOpenGUI;
-import net.minecraft.client.CameraType;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -31,8 +29,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
-
-import java.util.Objects;
 
 public class CatapultEntity extends AbstractInventoryVehicleEntity implements IShootingWeapon {
 
@@ -149,7 +145,7 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
         return (float) Mth.clamp(getAngle() + getAngleRotationAmount() * partialTicks, -0.65, 0.65);
     }
     public float getAngleRotationAmount() {
-        if(this.isTriggering() && this.getState() == CatapultState.SHOT || this.getState() == CatapultState.LOADING) return -0.104F; //return -0.005F; //
+        if(this.isTriggering() && this.getState() == CatapultState.SHOT || this.getState() == CatapultState.LOADING) return -0.005F; // return -0.104F; <-debug
         else if (getState() == CatapultState.SHOOTING) return 0.3F + 0.01F * getRange();
         else return 0;
     }

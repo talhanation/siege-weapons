@@ -1,6 +1,8 @@
 package com.talhanation.siegeweapons.entities.projectile;
 
 import com.talhanation.siegeweapons.init.ModEntityTypes;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -33,6 +35,11 @@ public class FirePotProjectile extends AbstractCatapultProjectile {
         setAreaDamage(1.5F);
         setHurtDamage(15F);
         setAccuracy(1F);
+    }
+
+    @Override
+    public SoundEvent getBlockHitSound() {
+        return SoundEvents.DECORATED_POT_FALL;
     }
 
 }

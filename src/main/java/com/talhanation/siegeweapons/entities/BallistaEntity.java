@@ -177,7 +177,7 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
 
     @Override
     public int getMaxSpeedInKmH() {
-        return 3;
+        return 7;
     }
 
     @Override

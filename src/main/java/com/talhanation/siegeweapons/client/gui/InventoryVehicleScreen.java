@@ -56,12 +56,12 @@ public class InventoryVehicleScreen extends ScreenBase<VehicleInventoryMenu> {
         guiGraphics.drawString(font, vehicle.getName(), 5, 5, FONT_COLOR, false);
 
         guiGraphics.drawString(font, "Type:", leftPos, topPos + gap * 0, FONT_COLOR, false);
-        guiGraphics.drawString(font, "Speed " + unit + ":", leftPos, topPos + gap * 1, FONT_COLOR, false);
+        //guiGraphics.drawString(font, "Speed " + unit + ":", leftPos, topPos + gap * 1, FONT_COLOR, false);
         guiGraphics.drawString(font, "Damage:", leftPos, topPos + gap * 2, FONT_COLOR, false);
         //guiGraphics.drawString(font, "Ammo:", leftPos, topPos + gap * 3, FONT_COLOR, false);
 
         guiGraphics.drawString(font, vehicle.getVehicleTypeName(), leftPos2, topPos + gap * 0, FONT_COLOR, false);
-        guiGraphics.drawString(font, currentSpeed + "/" + maxSpeed, leftPos2, topPos + gap * 1, FONT_COLOR, false);
+        //guiGraphics.drawString(font, currentSpeed + "/" + maxSpeed, leftPos2, topPos + gap * 1, FONT_COLOR, false);
         guiGraphics.drawString(font, dmg*-1 + "%", leftPos2, topPos + gap * 2, FONT_COLOR, false);
         //guiGraphics.drawString(font, dmg + "%", leftPos2, topPos + gap * 2, FONT_COLOR, false);
     }

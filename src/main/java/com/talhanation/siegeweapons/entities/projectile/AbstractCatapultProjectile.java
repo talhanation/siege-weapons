@@ -4,9 +4,11 @@ import com.talhanation.siegeweapons.entities.AbstractVehicleEntity;
 import com.talhanation.siegeweapons.init.ModSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.core.particles.ParticleOptions;
@@ -172,6 +174,12 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
 
             this.remove(RemovalReason.KILLED);
         }
+
+        this.playSound(this.getBlockHitSound(), 3.0F, 1.0F / (this.random.nextFloat() * 0.4F + 0.8F));
+    }
+
+    public SoundEvent getBlockHitSound() {
+        return SoundEvents.GENERIC_EXPLODE;
     }
 
     @Override
@@ -192,12 +200,7 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
 
                 this.doEnchantDamageEffects(livingOwnerEntity, hitEntity);
 
-                if(hitEntity instanceof AbstractVehicleEntity){
-                    this.level().playSound(null, this.getX(), this.getY() + 4 , this.getZ(), ModSounds.SIEGEWEAPON_HIT.get(), this.getSoundSource(), 5.3F, 0.8F + 0.4F * this.random.nextFloat());
-                }
-                else{
-                    this.level().playSound(null, this.getX(), this.getY() + 4 , this.getZ(), SoundEvents.GENERIC_EXPLODE, this.getSoundSource(), 3.3F, 0.8F + 0.4F * this.random.nextFloat());
-                }
+                this.level().playSound(null, this.getX(), this.getY() + 4 , this.getZ(), SoundEvents.GENERIC_EXPLODE, this.getSoundSource(), 3.3F, 0.8F + 0.4F * this.random.nextFloat());
             }
 
 
@@ -208,12 +211,12 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
     }
 
     public void hitParticles(){
-        for (int i = 0; i < 300; ++i) {
+        for (int i = 0; i < 10; ++i) {
             double d0 = this.random.nextGaussian() * 0.03D;
             double d1 = this.random.nextGaussian() * 0.03D;
             double d2 = this.random.nextGaussian() * 0.03D;
             double d3 = 20.0D;
-            this.level().addParticle(ParticleTypes.ASH, this.getX(1.0D) - d0 * d3, this.getRandomY() - d1 * d3, this.getRandomZ(2.0D) - d2 * d3, d0, d1, d2);
+            this.level().addParticle(ParticleTypes.POOF, this.getX(1.0D) - d0 * d3, this.getRandomY() - d1 * d3, this.getRandomZ(2.0D) - d2 * d3, d0, d1, d2);
             this.level().addParticle(ParticleTypes.EXPLOSION, this.getX(1.0D) - d0 * d3, this.getRandomY() - d1 * d3, this.getRandomZ(2.0D) - d2 * d3, d0, d1, d2);
         }
     }

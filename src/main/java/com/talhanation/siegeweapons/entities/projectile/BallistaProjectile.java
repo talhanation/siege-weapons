@@ -15,6 +15,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -73,39 +74,26 @@ public class BallistaProjectile extends AbstractArrow {
 
     }
 
-    public Direction getDirectionOfImpact() {
-        Vec3 movement = this.getDeltaMovement();
-        if (movement == Vec3.ZERO) {
-            return Direction.UP;
-        }
-
-        return Direction.getNearest(movement.x, movement.y, movement.z);
-    }
-
     @Override
-    protected void onHitBlock(@NotNull BlockHitResult blockHitResult) {
-        super.onHitBlock(blockHitResult);
-        //TODO: ADD FIRE OPTION
-        if (!level().isClientSide && this.inGround && lastState != null) {
-            Direction impactDirection = this.getDirectionOfImpact();
-            Vec3 normal = Vec3.atLowerCornerOf(impactDirection.getNormal()).normalize();
-
-            Vec3 impactPos = this.position().add(normal.scale(0.1));
-
-            for (int i = 0; i < 100; i++) {
-                double baseSpeed = 0.35;
-
-                double dx = normal.x * baseSpeed;
-                double dy = normal.y * baseSpeed;
-                double dz = normal.z * baseSpeed;
-
+    protected void onHitBlock(BlockHitResult blockHitResult) {
+        if(!level().isClientSide()){
+            BlockState state = level().getBlockState(blockHitResult.getBlockPos());
+            for (int i = 0; i < 200; ++i) {
+                double d0 = this.random.nextGaussian() * 0.03D;
+                double d1 = this.random.nextGaussian() * 0.03D;
+                double d2 = this.random.nextGaussian() * 0.03D;
+                double d3 = 20.0D;
+                double x = this.getX(1.0D) - d0 * d3;
+                double y = this.getY() - d1 * d3  + i * 0.012;
+                double z = this.getRandomZ(2.0D) - d2 * d3;
                 ((ServerLevel) level()).sendParticles(
-                        new BlockParticleOption(ParticleTypes.BLOCK, this.lastState),
-                        impactPos.x, impactPos.y, impactPos.z,
-                        1, dx, dy, dz, 0.05
+                        new BlockParticleOption(ParticleTypes.BLOCK, state),
+                        x, y, z,
+                        1, 0, 0, 0, 0.05
                 );
             }
         }
+        super.onHitBlock(blockHitResult);
     }
 
     @Override
@@ -128,11 +116,6 @@ public class BallistaProjectile extends AbstractArrow {
             if (ownerEntity instanceof LivingEntity) {
                 if (ownerEntity.getTeam() != null && ownerEntity.getTeam().isAlliedTo(hitEntity.getTeam()) && !ownerEntity.getTeam().isAllowFriendlyFire())
                     return;
-
-
-                if(hitEntity instanceof AbstractVehicleEntity){
-                    this.level().playSound(null, this.getX(), this.getY() + 4 , this.getZ(), ModSounds.SIEGEWEAPON_HIT.get(), this.getSoundSource(), 5.3F, 0.8F + 0.4F * this.random.nextFloat());
-                }
             }
         }
         super.onHitEntity(hitResult);
