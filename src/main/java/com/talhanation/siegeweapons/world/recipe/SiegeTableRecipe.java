@@ -32,7 +32,7 @@ public class SiegeTableRecipe {
     public static final SiegeTableRecipe BALLISTA_BOLT = new SiegeTableRecipe(Map.of(
             Items.OAK_PLANKS, 3,
             Items.FEATHER, 1,
-            Items.IRON_INGOT, 1),
+            Items.IRON_NUGGET, 5),
             10
     );
 
