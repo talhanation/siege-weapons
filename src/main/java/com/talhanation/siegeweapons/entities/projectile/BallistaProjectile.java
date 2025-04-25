@@ -14,9 +14,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -85,26 +83,21 @@ public class BallistaProjectile extends AbstractArrow {
     }
 
     @Override
-    protected void onHitBlock(BlockHitResult blockHitResult) {
+    protected void onHitBlock(@NotNull BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
-        if (!this.level().isClientSide()) {
-
-            //TODO: add fire option
-        }
-
-        if (!level().isClientSide && this.inGround) {
+        //TODO: ADD FIRE OPTION
+        if (!level().isClientSide && this.inGround && lastState != null) {
             Direction impactDirection = this.getDirectionOfImpact();
             Vec3 normal = Vec3.atLowerCornerOf(impactDirection.getNormal()).normalize();
 
-            Vec3 impactPos = this.position().add(normal.scale(0.01));
+            Vec3 impactPos = this.position().add(normal.scale(0.1));
 
             for (int i = 0; i < 100; i++) {
-                double spread = 0.1;
-                double baseSpeed = 1.2;
+                double baseSpeed = 0.35;
 
-                double dx = normal.x * baseSpeed + (random.nextDouble() - 0.5) * spread;
-                double dy = normal.y * baseSpeed + (random.nextDouble() - 0.5) * spread;
-                double dz = normal.z * baseSpeed + (random.nextDouble() - 0.5) * spread;
+                double dx = normal.x * baseSpeed;
+                double dy = normal.y * baseSpeed;
+                double dz = normal.z * baseSpeed;
 
                 ((ServerLevel) level()).sendParticles(
                         new BlockParticleOption(ParticleTypes.BLOCK, this.lastState),
@@ -116,7 +109,7 @@ public class BallistaProjectile extends AbstractArrow {
     }
 
     @Override
-    protected ItemStack getPickupItem() {
+    protected @NotNull ItemStack getPickupItem() {
         return ModItems.BALLISTA_PROJECTILE_ITEM.get().getDefaultInstance();
     }
 
@@ -127,7 +120,7 @@ public class BallistaProjectile extends AbstractArrow {
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult hitResult) {
+    protected void onHitEntity(@NotNull EntityHitResult hitResult) {
         if (!this.level().isClientSide()) {
             Entity hitEntity = hitResult.getEntity();
             Entity ownerEntity = this.getOwner();
@@ -154,7 +147,7 @@ public class BallistaProjectile extends AbstractArrow {
     }
 
     @Override
-    public boolean hurt(DamageSource p_70097_1_, float p_70097_2_) {
+    public boolean hurt(@NotNull DamageSource p_70097_1_, float p_70097_2_) {
         return false;
     }
 }

@@ -79,7 +79,8 @@ public class Main {
                 MessageUpdateSiegeTable.class,
                 MessageToClientUpdateSiegeTableEntity.class,
                 MessageSetCatapultRange.class,
-                MessageOpenGUI.class
+                MessageOpenGUI.class,
+                MessageTryLoadFromHand.class
         };
 
         for (int i = 0; i < messages.length; i++){

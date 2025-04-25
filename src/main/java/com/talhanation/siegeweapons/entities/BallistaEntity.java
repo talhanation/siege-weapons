@@ -26,10 +26,10 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 
 public class BallistaEntity extends AbstractInventoryVehicleEntity implements IShootingWeapon{
 
@@ -71,7 +71,6 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
             if(++loadingTime >= 100){
                 loadingTime = 0;
                 setState(BallistaState.LOADED);
-                tryLoadFromInventory();
                 return;
             }
         }
@@ -86,13 +85,9 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
         updateLoaderRotation();
     }
 
-    private void tryLoadFromInventory() {
-        if(getControllingPassenger() instanceof Player player){
-            for(int i = 0; i < player.getInventory().getContainerSize(); i++){
-                ItemStack stack = player.getInventory().getItem(i);
-                if(loadProjectile(stack)) return;
-            }
-        }
+    public void tryLoadFromHand(Player player) {
+        ItemStack stack = player.getMainHandItem();
+        loadProjectile(stack);
     }
 
     private boolean loadProjectile(ItemStack itemStack){
@@ -160,12 +155,12 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
         if (player instanceof ServerPlayer) {
             NetworkHooks.openScreen((ServerPlayer) player, new MenuProvider() {
                 @Override
-                public Component getDisplayName() {
+                public @NotNull Component getDisplayName() {
                     return BallistaEntity.this.getName();
                 }
 
                 @Override
-                public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player playerEntity) {
+                public AbstractContainerMenu createMenu(int i, @NotNull Inventory playerInventory, @NotNull Player playerEntity) {
                     return new VehicleInventoryMenu(i, BallistaEntity.this, playerInventory);
                 }
             }, packetBuffer -> {packetBuffer.writeUUID(BallistaEntity.this.getUUID());
@@ -203,7 +198,7 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
     public boolean itemInteraction(Player player, InteractionHand interactionHand) {
         ItemStack itemStack = player.getMainHandItem();
 
-        return loadProjectile(itemStack) || super.itemInteraction(player, interactionHand);
+        return super.itemInteraction(player, interactionHand) || loadProjectile(itemStack);
     }
     @Override
     public Vec3 getDriverPosition() {
@@ -212,7 +207,7 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
         return (new Vec3(f, 0.0D, 0.0D + d)).yRot(-this.getYRot() * ((float)Math.PI / 180F) - ((float)Math.PI / 2F));
     }
 
-    protected void positionRider(Entity rider, Entity.MoveFunction moveFunction) {
+    protected void positionRider(@NotNull Entity rider, Entity.@NotNull MoveFunction moveFunction) {
         super.positionRider(rider, moveFunction);
         if (this.hasPassenger(rider)) {
             Vec3 vec = getDriverPosition();
@@ -233,14 +228,14 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
      * Method Important for reflection
      */
 
-    double shootHight = 1.3D;
+    double shootHeight = 1.3D;
      public void shoot(Vec3 shootVec, double yShootVec, LivingEntity driverEntity, float speed){
         if(driverEntity == null){
             if(driver == null) return;
             driverEntity = driver;
         }
 
-        BallistaProjectile projectile = new BallistaProjectile(this.getCommandSenderWorld(), driverEntity, this.getX(), this.getY() + shootHight, this.getZ());
+        BallistaProjectile projectile = new BallistaProjectile(this.getCommandSenderWorld(), driverEntity, this.getX(), this.getY() + shootHeight, this.getZ());
 
         projectile.shoot(shootVec.x(), yShootVec, shootVec.z(), speed, projectile.getAccuracy());
         this.getCommandSenderWorld().addFreshEntity(projectile);
@@ -301,7 +296,6 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
     public boolean getShowTrajectory() {
         return showTrajectory;
     }
-
     public boolean isTriggering() {
         return this.entityData.get(TRIGGERING);
     }

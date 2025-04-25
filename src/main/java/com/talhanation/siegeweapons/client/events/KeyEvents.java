@@ -2,10 +2,13 @@ package com.talhanation.siegeweapons.client.events;
 
 import com.talhanation.siegeweapons.Main;
 import com.talhanation.siegeweapons.entities.AbstractVehicleEntity;
+import com.talhanation.siegeweapons.entities.BallistaEntity;
 import com.talhanation.siegeweapons.entities.CatapultEntity;
 import com.talhanation.siegeweapons.entities.IShootingWeapon;
+import com.talhanation.siegeweapons.init.ModItems;
 import com.talhanation.siegeweapons.network.MessageLoadAndShootWeapon;
 import com.talhanation.siegeweapons.network.MessageSetCatapultRange;
+import com.talhanation.siegeweapons.network.MessageTryLoadFromHand;
 import com.talhanation.siegeweapons.network.MessageUpdateVehicleControl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -47,11 +50,22 @@ public class KeyEvents {
         Minecraft minecraft = Minecraft.getInstance();
         LocalPlayer clientPlayerEntity = minecraft.player;
 
+        if(clientPlayerEntity == null) return;
+
         boolean rightClick = event.getButton() == 1 && event.getAction() == GLFW.GLFW_PRESS;
 
         if (rightClick && clientPlayerEntity.getVehicle() instanceof IShootingWeapon weapon) {
-            weapon.setShowTrajectory(true);
+            if(weapon instanceof BallistaEntity ballista){
+                boolean isState = ballista.getState() == BallistaEntity.BallistaState.LOADED;
+                boolean hand = clientPlayerEntity.getMainHandItem().getItem() == ModItems.BALLISTA_PROJECTILE_ITEM.get();
 
+                if(hand && isState){
+                    Main.SIMPLE_CHANNEL.sendToServer(new MessageTryLoadFromHand());
+                    return;
+                }
+
+            }
+            weapon.setShowTrajectory(true);
 
             event.setCanceled(true);
         }
@@ -69,7 +83,6 @@ public class KeyEvents {
         Minecraft minecraft = Minecraft.getInstance();
         LocalPlayer clientPlayerEntity = minecraft.player;
         double scrollDelta = event.getScrollDelta();
-
 
         if (clientPlayerEntity.getVehicle() instanceof CatapultEntity catapult && catapult.getShowTrajectory()) {
             Main.SIMPLE_CHANNEL.sendToServer(new MessageSetCatapultRange((int) scrollDelta * 2));

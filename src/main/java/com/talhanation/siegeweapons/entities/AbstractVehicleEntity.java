@@ -384,9 +384,9 @@ public abstract class AbstractVehicleEntity extends Entity {
     }
 
     private boolean interactIronNuggets(@NotNull Player player){
-        if (this.getHealth() > 0 && player.getMainHandItem().is(Items.IRON_NUGGET) && player.getInventory().hasAnyMatching(stack -> stack.is(ItemTags.PLANKS))){
-
-            this.repairVehicle((5 + this.level().random.nextInt(5)));
+        if (this.getHealth() < getMaxHealth() && player.getMainHandItem().is(Items.IRON_NUGGET) && player.getInventory().hasAnyMatching(stack -> stack.is(ItemTags.PLANKS))){
+            float repairAmount = this.getMaxHealth() * 0.05F;
+            this.repairVehicle((int) (repairAmount + this.level().random.nextInt(5)));
 
             if(!player.isCreative()){
                 player.getMainHandItem().shrink(1);
@@ -410,7 +410,7 @@ public abstract class AbstractVehicleEntity extends Entity {
         this.getCommandSenderWorld().playSound(null, this.getX(), this.getY() + 2, this.getZ(), SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 1F, 0.9F + 0.2F * this.getCommandSenderWorld().getRandom().nextFloat());
 
         float newHealth = this.getHealth() + repairAmount;
-        if(newHealth > 100) newHealth = 100;
+        if(newHealth > getMaxHealth()) newHealth = getMaxHealth();
         this.setHealth(newHealth);
     }
 

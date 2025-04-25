@@ -8,6 +8,8 @@ import com.talhanation.siegeweapons.init.ModSounds;
 import com.talhanation.siegeweapons.inventory.VehicleInventoryMenu;
 import com.talhanation.siegeweapons.network.MessageLoadAndShootWeapon;
 import com.talhanation.siegeweapons.network.MessageOpenGUI;
+import net.minecraft.client.CameraType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -30,6 +32,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 
+import java.util.Objects;
+
 public class CatapultEntity extends AbstractInventoryVehicleEntity implements IShootingWeapon {
 
     private static final EntityDataAccessor<Float> RANGE = SynchedEntityData.defineId(CatapultEntity.class, EntityDataSerializers.FLOAT);
@@ -42,7 +46,6 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
     private boolean showTrajectory;
     private int loadingTime;
     private int shootCoolDown;
-
     public CatapultEntity(EntityType<? extends AbstractInventoryVehicleEntity> entityType, Level world) {
         super(entityType, world);
     }
@@ -189,31 +192,36 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
 
     @Override
     public boolean itemInteraction(Player player, InteractionHand interactionHand) {
-        ItemStack itemStack = player.getMainHandItem();
-
-        if(getState() == CatapultState.LOADED){
-            if(itemStack.is(Items.COBBLESTONE)){
-                setProjectile(CatapultProjectiles.COBBLE_SHOT);
-            }
-            else if(itemStack.is(ModItems.COBBLE_CLUSTER_ITEM.get())){
-                setProjectile(CatapultProjectiles.BUNDLE_SHOT);
-            }
-            else if(itemStack.is(ModItems.FIRE_POT_ITEM.get())){
-                setProjectile(CatapultProjectiles.FIRE_SHOT);
-            }
-            else if(itemStack.is(ModItems.EXPLOSION_POT_ITEM.get())){
-                setProjectile(CatapultProjectiles.EXPLOSION_SHOT);
-            }
-            else{
-                return false;
-            }
-
-            setState(CatapultState.PROJECTILE_LOADED);
-            playLoadedSound();
-            itemStack.shrink(1);
+        if(super.itemInteraction(player, interactionHand)) {
             return true;
         }
-        return super.itemInteraction(player, interactionHand);
+        else{
+            ItemStack itemStack = player.getMainHandItem();
+
+            if(getState() == CatapultState.LOADED){
+                if(itemStack.is(Items.COBBLESTONE)){
+                    setProjectile(CatapultProjectiles.COBBLE_SHOT);
+                }
+                else if(itemStack.is(ModItems.COBBLE_CLUSTER_ITEM.get())){
+                    setProjectile(CatapultProjectiles.BUNDLE_SHOT);
+                }
+                else if(itemStack.is(ModItems.FIRE_POT_ITEM.get())){
+                    setProjectile(CatapultProjectiles.FIRE_SHOT);
+                }
+                else if(itemStack.is(ModItems.EXPLOSION_POT_ITEM.get())){
+                    setProjectile(CatapultProjectiles.EXPLOSION_SHOT);
+                }
+                else {
+                    return false;
+                }
+
+                setState(CatapultState.PROJECTILE_LOADED);
+                playLoadedSound();
+                itemStack.shrink(1);
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
