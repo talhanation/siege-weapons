@@ -10,6 +10,9 @@ import com.talhanation.siegeweapons.network.MessageToClientUpdateSiegeTableEntit
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -21,13 +24,15 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Random;
+
 //
 public class SiegeTableBlockEntity extends BaseContainerBlockEntity {
     public int finishTime = 1; //20 * 60 * 3; // Example value in ticks
     private int progressTimer = 1;
     private boolean isCrafting = false;
     public SiegeWeapons selection;
-
+    public Random random = new Random();
     public SiegeTableBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntityTypes.SIEGE_TABLE_BLOCK_ENTITY.get(), pos, state);
     }
@@ -139,8 +144,17 @@ public class SiegeTableBlockEntity extends BaseContainerBlockEntity {
             }
 
             level.addFreshEntity(entity);
+            this.playSound(SoundEvents.ANVIL_PLACE, 3.0F, 1.0F / (this.random.nextFloat() * 0.4F + 0.8F));
         }
         this.selection = null;
+    }
+
+    public void playSound(SoundEvent soundEvent, float v, float v1) {
+        this.getLevel().playSound((Player) null, this.getBlockPos().getX(), this.getBlockPos().getY(), this.getBlockPos().getZ(), soundEvent, this.getSoundSource(), v, v1);
+    }
+
+    public SoundSource getSoundSource() {
+        return SoundSource.NEUTRAL;
     }
 
     public boolean getCrafting(){

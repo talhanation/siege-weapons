@@ -14,5 +14,5 @@ public class ModBlocks {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Main.MOD_ID);
 
     public static final RegistryObject<Block> SIEGE_TABLE_BLOCK = BLOCKS.register("siege_table_block",
-            () -> new SiegeTableBlock(BlockBehaviour.Properties.copy(Blocks.FLETCHING_TABLE)));
+            () -> new SiegeTableBlock(BlockBehaviour.Properties.copy(Blocks.ANVIL)));
 }

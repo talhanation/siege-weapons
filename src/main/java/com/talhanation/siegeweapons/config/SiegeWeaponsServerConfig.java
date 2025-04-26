@@ -6,45 +6,99 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.common.Mod;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Mod.EventBusSubscriber
 public class SiegeWeaponsServerConfig {
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static ForgeConfigSpec SERVER;
 
-    public static ForgeConfigSpec.IntValue catapultDamage;
-    public static ForgeConfigSpec.IntValue ballistaDamage;
-    public static ForgeConfigSpec.IntValue fireBallistaDamage;
+    public static ForgeConfigSpec.DoubleValue catapultHealth;
+    public static ForgeConfigSpec.DoubleValue catapultMaxRange;
+    public static ForgeConfigSpec.DoubleValue catapultCobbleClusterDamage;
+    public static ForgeConfigSpec.DoubleValue catapultCobbleDamage;
+    public static ForgeConfigSpec.DoubleValue catapultCobbleDestruction;
+    public static ForgeConfigSpec.DoubleValue firePotRange;
+    public static ForgeConfigSpec.DoubleValue explosionPotDestruction;
+    public static ForgeConfigSpec.DoubleValue ballistaHealth;
+    public static ForgeConfigSpec.DoubleValue ballistaProjectileDamage;
 
     static {
-          BUILDER.comment("Siege Weapons Config:").push("Siege Weapons");
+        BUILDER.comment("Siege Weapons Config:").push("Siege Weapons");
 
-        catapultDamage = BUILDER.comment("""
+        catapultHealth = BUILDER.comment("""
                         
-                        Damage a catapult projectile makes.
+                        Health a catapult has.
+                        \t(takes effect after restart)
+                        \tdefault: 600""")
+                .worldRestart()
+                .defineInRange("catapultHealth", 600D, 0, 1453);
+
+        catapultMaxRange = BUILDER.comment("""
+                        
+                        The max. range a catapult can shoot in percent.
+                        \t(takes effect after restart)
+                        \tdefault: 100""")
+                .worldRestart()
+                .defineInRange("catapultMaxRange", 100D, 0, 100);
+
+        catapultCobbleDamage = BUILDER.comment("""
+                        
+                        Damage a catapult cobblestone projectile makes.
+                        \t(takes effect after restart)
+                        \tdefault: 50""")
+                .worldRestart()
+                .defineInRange("catapultCobbleDamage", 50D, 0, 1453);
+
+        catapultCobbleDestruction = BUILDER.comment("""
+                        
+                        Destruction a catapult cobblestone projectile makes. Reference: 4 = TNT-Block
+                        \t(takes effect after restart)
+                        \tdefault: 2.5""")
+                .worldRestart()
+                .defineInRange("catapultCobbleDestruction", 2.5D, 0, 1453);
+
+        catapultCobbleClusterDamage = BUILDER.comment("""
+                        
+                        Damage a catapult cobblestone cluster projectile makes.
                         \t(takes effect after restart)
                         \tdefault: 20""")
                 .worldRestart()
-                .defineInRange("catapultDamage", 20, 0, 1453);
+                .defineInRange("catapultCobbleClusterDamage", 20D, 0, 1453);
 
-        ballistaDamage = BUILDER.comment("""
+
+        firePotRange = BUILDER.comment("""
+                        
+                        Radius of blocks a fire pot ignites the area.
+                        \t(takes effect after restart)
+                        \tdefault: 2""")
+                .worldRestart()
+                .defineInRange("firePotRange", 2D, 0, 1453);
+
+
+        explosionPotDestruction = BUILDER.comment("""
+                        
+                        Destruction of blocks a fire pot explodes the area on impact. Reference: 4 = TNT-Block
+                        \t(takes effect after restart)
+                        \tdefault: 3.5""")
+                .worldRestart()
+                .defineInRange("explosionPotDestruction", 3.5D, 0, 1453);
+
+        ballistaHealth = BUILDER.comment("""
+                        
+                        Health a Ballista has.
+                        \t(takes effect after restart)
+                        \tdefault: 200""")
+                .worldRestart()
+                .defineInRange("ballistaHealth", 200D, 0, 1453);
+
+        ballistaProjectileDamage = BUILDER.comment("""
                         
                         Damage a ballista projectile makes.
                         \t(takes effect after restart)
-                        \tdefault: 10""")
+                        \tdefault: 20""")
                 .worldRestart()
-                .defineInRange("ballistaDamage", 10, 0, 1453);
+                .defineInRange("ballistaProjectileDamage", 20D, 0, 1453);
 
-        fireBallistaDamage = BUILDER.comment("""
-                        
-                        Damage a fire ballista projectile makes.
-                        \t(takes effect after restart)
-                        \tdefault: 12""")
-                .worldRestart()
-                .defineInRange("ballistaDamage", 12, 0, 1453);
 
 
         //Village Config

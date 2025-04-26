@@ -18,7 +18,7 @@ import java.util.function.Function;
 public enum SiegeWeapons {
     CATAPULT(0, (level) -> new CatapultEntity(ModEntityTypes.CATAPULT.get(), level), SiegeTableRecipe.CATAPULT_RECIPE, 1.25F, 4, 0, 0),
     BALLISTA(1, (level) -> new BallistaEntity(ModEntityTypes.BALLISTA.get(), level), SiegeTableRecipe.BALLISTA_RECIPE, 3.25F, 0, 0, 0),
-    BALLISTA_BOLT(2, (level) -> new ItemEntity(level, 0, 0, 0, ModItems.BALLISTA_PROJECTILE_ITEM.get().getDefaultInstance()), SiegeTableRecipe.BALLISTA_BOLT, 10F, 4, 0, 10),
+    BALLISTA_BOLT(2, (level) -> new ItemEntity(level, 0, 0, 0, ModItems.BALLISTA_PROJECTILE_ITEM.get().getDefaultInstance()), SiegeTableRecipe.BALLISTA_BOLT, 10F, 4, 5, 10),
     COBBLE_CLUSTER(3, (level) -> new ItemEntity(level, 0, 0, 0, ModItems.COBBLE_CLUSTER_ITEM.get().getDefaultInstance()), SiegeTableRecipe.COBBLE_CLUSTER, 15F, 5, 10, 0),
     FIRE_POT(4, (level) -> new ItemEntity(level, 0, 0, 0, ModItems.FIRE_POT_ITEM.get().getDefaultInstance()), SiegeTableRecipe.FIRE_POT, 15F, 5, 10, 0),
     EXPLOSION_POT(5, (level) -> new ItemEntity(level, 0, 0, 0, ModItems.EXPLOSION_POT_ITEM.get().getDefaultInstance()), SiegeTableRecipe.EXPLOSION_POT, 15F, 5, 10, 0);
