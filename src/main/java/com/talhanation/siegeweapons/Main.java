@@ -68,7 +68,7 @@ public class Main {
     private void setup(final FMLCommonSetupEvent event) {
         MinecraftForge.EVENT_BUS.register(new ServerSideEvents());
 
-        //MinecraftForge.EVENT_BUS.register(new UpdateChecker());
+        MinecraftForge.EVENT_BUS.register(new UpdateChecker());
         MinecraftForge.EVENT_BUS.register(this);
 
         SIMPLE_CHANNEL = CommonRegistry.registerChannel(Main.MOD_ID, "default");
