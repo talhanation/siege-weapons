@@ -108,7 +108,7 @@ public class SiegeTableScreen extends ScreenBase<SiegeTableMenu> {
 
 
         if(selection != null) {
-            guiGraphics.drawString(font, selection.getEntityInClient().getName(), leftPos + 62, topPos + 17, FONT_COLOR, false);
+            guiGraphics.drawString(font, selection.getRecipe().getCraftingAmount() + "x " + selection.getEntityInClient().getName().getString(), leftPos + 62, topPos + 17, FONT_COLOR, false);
             EntityInScreenRenderer.renderEntityInInventoryRotating(guiGraphics,leftPos + 30 + selection.renderXOffset(), topPos + 45 + selection.renderYOffset(), 5, selection.getEntityInClient(), 1.0F, selection.getRenderScale());
 
             if(tableEntity != null && tableEntity.getCrafting()){

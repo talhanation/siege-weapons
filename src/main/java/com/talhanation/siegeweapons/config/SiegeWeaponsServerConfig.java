@@ -6,6 +6,10 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.common.Mod;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 @Mod.EventBusSubscriber
 public class SiegeWeaponsServerConfig {
@@ -17,7 +21,7 @@ public class SiegeWeaponsServerConfig {
     public static ForgeConfigSpec.DoubleValue catapultCobbleClusterDamage;
     public static ForgeConfigSpec.DoubleValue catapultCobbleDamage;
     public static ForgeConfigSpec.DoubleValue catapultCobbleDestruction;
-    public static ForgeConfigSpec.DoubleValue firePotRange;
+    public static ForgeConfigSpec.IntValue firePotRange;
     public static ForgeConfigSpec.DoubleValue explosionPotDestruction;
     public static ForgeConfigSpec.DoubleValue ballistaHealth;
     public static ForgeConfigSpec.DoubleValue ballistaProjectileDamage;
@@ -45,9 +49,9 @@ public class SiegeWeaponsServerConfig {
                         
                         Damage a catapult cobblestone projectile makes.
                         \t(takes effect after restart)
-                        \tdefault: 50""")
+                        \tdefault: 65""")
                 .worldRestart()
-                .defineInRange("catapultCobbleDamage", 50D, 0, 1453);
+                .defineInRange("catapultCobbleDamage", 65D, 0, 1453);
 
         catapultCobbleDestruction = BUILDER.comment("""
                         
@@ -61,9 +65,9 @@ public class SiegeWeaponsServerConfig {
                         
                         Damage a catapult cobblestone cluster projectile makes.
                         \t(takes effect after restart)
-                        \tdefault: 20""")
+                        \tdefault: 25""")
                 .worldRestart()
-                .defineInRange("catapultCobbleClusterDamage", 20D, 0, 1453);
+                .defineInRange("catapultCobbleClusterDamage", 25D, 0, 1453);
 
 
         firePotRange = BUILDER.comment("""
@@ -72,7 +76,7 @@ public class SiegeWeaponsServerConfig {
                         \t(takes effect after restart)
                         \tdefault: 2""")
                 .worldRestart()
-                .defineInRange("firePotRange", 2D, 0, 1453);
+                .defineInRange("firePotRange", 2, 0, 1453);
 
 
         explosionPotDestruction = BUILDER.comment("""
@@ -100,25 +104,22 @@ public class SiegeWeaponsServerConfig {
                 .defineInRange("ballistaProjectileDamage", 20D, 0, 1453);
 
 
-
-        //Village Config
-        /*
+        //Crafting Config
+/*
         BUILDER.pop();
-        BUILDER.comment("Siege Weapons Village Config:").push("Villages");
+        BUILDER.comment("Siege Weapons Crafting Config:").push("Crafting");
 
-        RecruitTablesPOIReleasing = BUILDER.comment("""
-                        
-                        Should Villager Recruits that were created with Tables release the POI for other Villagers?
-                        True -> allows multiple villagers to become a recruit with one table.
-                        False -> only one villager can become a recruit with one table.
+        ballistaRecipe = BUILDER.comment("""
+
+                        List of foods that recruits should not eat.
                         \t(takes effect after restart)
-                        \tdefault: true""")
+                        \tFood items in this list will not be eaten by recruits and also not be picked up from upkeep.""")
                 .worldRestart()
-                .define("RecruitTablesPOIReleasing", true);
-
-          */
+                .define("FoodBlackList", FOOD_BLACKLIST);
+*/
         SERVER = BUILDER.build();
     }
+
 
     public static void loadConfig(ForgeConfigSpec spec, Path path) {
         CommentedFileConfig configData = CommentedFileConfig.builder(path)

@@ -1,10 +1,8 @@
 package com.talhanation.siegeweapons.entities.projectile;
 
-import com.talhanation.siegeweapons.entities.AbstractVehicleEntity;
-import com.talhanation.siegeweapons.init.ModSounds;
+import com.talhanation.siegeweapons.config.SiegeWeaponsServerConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -42,8 +40,8 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
     public abstract boolean getFireSpread();
     public abstract boolean getExplode();
     public float accuracy;
-    public float hurtDamage;
-    public float areaDamage;
+    public double hurtDamage;
+    public double areaDamage;
     protected AbstractCatapultProjectile(EntityType<? extends AbstractCatapultProjectile> type, Level world) {
         super(type, world);
     }
@@ -137,15 +135,15 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
         this.accuracy = accuracy;
     }
 
-    public void setAreaDamage(float areaDamage) {
-        this.areaDamage = areaDamage;
+    public void setAreaDamage(double areaDamage) {
+        this.areaDamage = (float) areaDamage;
     }
 
-    public void setHurtDamage(float hurtDamage) {
+    public void setHurtDamage(double hurtDamage) {
         this.hurtDamage = hurtDamage;
     }
 
-    public float getAreaDamage() {
+    public double getAreaDamage() {
         return areaDamage;
     }
 
@@ -153,7 +151,7 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
         return accuracy;
     }
 
-    public float getHurtDamage() {
+    public double getHurtDamage() {
         return hurtDamage;
     }
 
@@ -165,10 +163,10 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
             if(!isInWater()){
                 BlockPos pos = blockHitResult.getBlockPos();
                 if(getFireSpread()){
-                    igniteArea(this.level(), pos, 2, 2);
+                    igniteArea(this.level(), pos, SiegeWeaponsServerConfig.firePotRange.get(), SiegeWeaponsServerConfig.firePotRange.get());
                 }
                 if(getExplode()) {
-                    this.level().explode(this.getOwner(), this.getX(), this.getY(), this.getZ(), getAreaDamage(), getFireSpread(), Level.ExplosionInteraction.MOB);
+                    this.level().explode(this.getOwner(), this.getX(), this.getY(), this.getZ(), (float) getAreaDamage(), getFireSpread(), Level.ExplosionInteraction.MOB);
                 }
             }
 
@@ -189,14 +187,18 @@ public abstract class AbstractCatapultProjectile extends AbstractHurtingProjecti
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult hitResult) {
+    protected void onHitEntity(@NotNull EntityHitResult hitResult) {
         super.onHitEntity(hitResult);
         if (!this.level().isClientSide()) {
             Entity hitEntity = hitResult.getEntity();
             Entity ownerEntity = this.getOwner();
+            if(ownerEntity == null) return;
 
-            if (ownerEntity instanceof LivingEntity livingOwnerEntity) {
-                if(ownerEntity.getTeam() != null && ownerEntity.getTeam().isAlliedTo(hitEntity.getTeam()) && !ownerEntity.getTeam().isAllowFriendlyFire()) return;
+            if(hitEntity.isVehicle()){
+                 if(hitEntity.getControllingPassenger() != null && ownerEntity.getTeam() != null && ownerEntity.isAlliedTo(hitEntity.getControllingPassenger()) && !ownerEntity.getTeam().isAllowFriendlyFire()) return;
+            }
+            else if (ownerEntity instanceof LivingEntity livingOwnerEntity) {
+                if(ownerEntity.getTeam() != null && ownerEntity.isAlliedTo(hitEntity) && !ownerEntity.getTeam().isAllowFriendlyFire()) return;
 
                 this.doEnchantDamageEffects(livingOwnerEntity, hitEntity);
 

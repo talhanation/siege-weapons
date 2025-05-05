@@ -1,5 +1,6 @@
 package com.talhanation.siegeweapons.entities.projectile;
 
+import com.talhanation.siegeweapons.config.SiegeWeaponsServerConfig;
 import com.talhanation.siegeweapons.entities.AbstractVehicleEntity;
 import com.talhanation.siegeweapons.init.ModEntityTypes;
 import com.talhanation.siegeweapons.init.ModItems;
@@ -34,7 +35,7 @@ public class BallistaProjectile extends AbstractArrow {
         setCritArrow(true);
         setKnockback(1);
         setPierceLevel((byte) 1);
-        setBaseDamage(12.5F);
+        setBaseDamage(SiegeWeaponsServerConfig.ballistaProjectileDamage.get());
     }
     public boolean wasShot = false;
     public int counter = 0;
@@ -112,9 +113,13 @@ public class BallistaProjectile extends AbstractArrow {
         if (!this.level().isClientSide()) {
             Entity hitEntity = hitResult.getEntity();
             Entity ownerEntity = this.getOwner();
+            if(ownerEntity == null) return;
 
-            if (ownerEntity instanceof LivingEntity) {
-                if (ownerEntity.getTeam() != null && ownerEntity.getTeam().isAlliedTo(hitEntity.getTeam()) && !ownerEntity.getTeam().isAllowFriendlyFire())
+            if(hitEntity.isVehicle()){
+                if(hitEntity.getControllingPassenger() != null && ownerEntity.getTeam() != null && ownerEntity.isAlliedTo(hitEntity.getControllingPassenger()) && !ownerEntity.getTeam().isAllowFriendlyFire()) return;
+            }
+            else if (ownerEntity instanceof LivingEntity) {
+                if (ownerEntity.getTeam() != null && ownerEntity.isAlliedTo(hitEntity) && !ownerEntity.getTeam().isAllowFriendlyFire())
                     return;
             }
         }

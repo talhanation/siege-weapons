@@ -2,6 +2,7 @@ package com.talhanation.siegeweapons.entities;
 
 import com.talhanation.siegeweapons.Main;
 import com.talhanation.siegeweapons.ModTexts;
+import com.talhanation.siegeweapons.config.SiegeWeaponsServerConfig;
 import com.talhanation.siegeweapons.entities.projectile.*;
 import com.talhanation.siegeweapons.init.ModItems;
 import com.talhanation.siegeweapons.init.ModSounds;
@@ -238,8 +239,8 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
     }
 
     @Override
-    public float getMaxHealth() {
-        return 600;//TODO: CONFIG
+    public double getMaxHealth() {
+        return SiegeWeaponsServerConfig.catapultHealth.get();//TODO: CONFIG
     }
 
     public Component getVehicleTypeName(){
@@ -411,10 +412,9 @@ public class CatapultEntity extends AbstractInventoryVehicleEntity implements IS
     }
 
     public float getCalcRange() {
-        float range = getRange();
+        float range = (float) (getRange() * SiegeWeaponsServerConfig.catapultMaxRange.get()/100);
         return 1.5F + 2.0F * range * 0.01F;
     }
-
 
     public enum CatapultState {
         LOADING(0),

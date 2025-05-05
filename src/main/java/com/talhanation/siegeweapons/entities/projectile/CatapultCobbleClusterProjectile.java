@@ -1,5 +1,6 @@
 package com.talhanation.siegeweapons.entities.projectile;
 
+import com.talhanation.siegeweapons.config.SiegeWeaponsServerConfig;
 import com.talhanation.siegeweapons.init.ModEntityTypes;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -31,12 +32,12 @@ public class CatapultCobbleClusterProjectile extends AbstractCatapultProjectile 
     }
     public CatapultCobbleClusterProjectile(EntityType<? extends CatapultCobbleClusterProjectile> type, Level world) {
         super(type, world);
-        setHurtDamage(25F);
+        setHurtDamage(SiegeWeaponsServerConfig.catapultCobbleClusterDamage.get());
         setAccuracy(7F);
     }
     public CatapultCobbleClusterProjectile(Level world, LivingEntity owner, double d1, double d2, double d3) {
         super(ModEntityTypes.COBBLE_CLUSTER_PROJECTILE.get(), owner, d1, d2, d3, world);
-        setHurtDamage(25F);
+        setHurtDamage(SiegeWeaponsServerConfig.catapultCobbleClusterDamage.get());
         setAccuracy(7F);
     }
 

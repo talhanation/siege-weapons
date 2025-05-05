@@ -1,5 +1,6 @@
 package com.talhanation.siegeweapons.entities.projectile;
 
+import com.talhanation.siegeweapons.config.SiegeWeaponsServerConfig;
 import com.talhanation.siegeweapons.init.ModEntityTypes;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -25,7 +26,7 @@ public class ExplosionPotProjectile extends AbstractCatapultProjectile {
 
     public ExplosionPotProjectile(EntityType<? extends ExplosionPotProjectile> type, Level world) {
         super(type, world);
-        setAreaDamage(3.5F);
+        setAreaDamage(SiegeWeaponsServerConfig.explosionPotDestruction.get());
         setHurtDamage(10F);
         setAccuracy(1F);
     }

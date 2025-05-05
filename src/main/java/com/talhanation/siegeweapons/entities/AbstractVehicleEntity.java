@@ -20,6 +20,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -59,7 +60,7 @@ public abstract class AbstractVehicleEntity extends Entity {
 
     public abstract int getMaxPassengerSize();
     public abstract int getMaxSpeedInKmH();
-    public abstract float getMaxHealth();
+    public abstract double getMaxHealth();
     public abstract Component getVehicleTypeName();
 
     public AbstractVehicleEntity(EntityType<?> type, Level level) {
@@ -72,7 +73,7 @@ public abstract class AbstractVehicleEntity extends Entity {
         this.entityData.define(LEFT, false);
         this.entityData.define(RIGHT, false);
         this.entityData.define(SPEED, 0F);
-        this.entityData.define(HEALTH, getMaxHealth());
+        this.entityData.define(HEALTH, (float) getMaxHealth());
     }
 
     @Override
@@ -204,7 +205,7 @@ public abstract class AbstractVehicleEntity extends Entity {
     }
 
     @Override
-    protected boolean canAddPassenger(Entity entity) {
+    protected boolean canAddPassenger(@NotNull Entity entity) {
         return this.getPassengers().size() < getMaxPassengerSize();
     }
 
@@ -386,7 +387,7 @@ public abstract class AbstractVehicleEntity extends Entity {
 
     private boolean interactIronNuggets(@NotNull Player player){
         if (this.getHealth() < getMaxHealth() && player.getMainHandItem().is(Items.IRON_NUGGET) && player.getInventory().hasAnyMatching(stack -> stack.is(ItemTags.PLANKS))){
-            float repairAmount = this.getMaxHealth() * 0.05F;
+            float repairAmount = (float) (this.getMaxHealth() * 0.05F);
             this.repairVehicle((int) (repairAmount + this.level().random.nextInt(5)));
 
             if(!player.isCreative()){
@@ -410,18 +411,18 @@ public abstract class AbstractVehicleEntity extends Entity {
         this.getCommandSenderWorld().playSound(null, this.getX(), this.getY() + 1, this.getZ(), SoundEvents.WOOD_HIT, SoundSource.BLOCKS, 1F, 0.9F + 0.2F * this.getCommandSenderWorld().getRandom().nextFloat());
         this.getCommandSenderWorld().playSound(null, this.getX(), this.getY() + 2, this.getZ(), SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 1F, 0.9F + 0.2F * this.getCommandSenderWorld().getRandom().nextFloat());
 
-        float newHealth = this.getHealth() + repairAmount;
+        double newHealth = this.getHealth() + repairAmount;
         if(newHealth > getMaxHealth()) newHealth = getMaxHealth();
-        this.setHealth(newHealth);
+        this.setHealth((float) newHealth);
     }
 
     @Override
-    public boolean hurt(DamageSource damageSource, float f) {
+    public boolean hurt(@NotNull DamageSource damageSource, float f) {
         if (this.isInvulnerableTo(damageSource)) {
             return false;
         }
         else if (!this.getCommandSenderWorld().isClientSide() && !this.isRemoved()) {
-            if(this.isInLava() || this.isOnFire()) f = f / 20;
+            if((damageSource.is(DamageTypes.IN_FIRE) || damageSource.is(DamageTypes.ON_FIRE)) && tickCount % 20 != 0) return false;
 
             float health = this.getHealth();
             float newHealth = health - f;
@@ -429,7 +430,7 @@ public abstract class AbstractVehicleEntity extends Entity {
             this.setHealth(newHealth);
             this.markHurt();
             this.gameEvent(GameEvent.ENTITY_DAMAGE, damageSource.getEntity());
-
+            if(f > 10)this.level().playSound(null, this.getX(), this.getY() + 4 , this.getZ(), ModSounds.SIEGEWEAPON_HIT.get(), this.getSoundSource(), 3.3F, 0.8F + 0.4F * this.random.nextFloat());
             boolean bl = damageSource.getEntity() instanceof Player player && player.getAbilities().instabuild && player.isCrouching();
 
             if (this.getHealth() <= 0) {
@@ -440,7 +441,6 @@ public abstract class AbstractVehicleEntity extends Entity {
                 return true;
             }
         }
-        this.level().playSound(null, this.getX(), this.getY() + 4 , this.getZ(), ModSounds.SIEGEWEAPON_HIT.get(), this.getSoundSource(), 3.3F, 0.8F + 0.4F * this.random.nextFloat());
         return true;
     }
 
@@ -449,7 +449,7 @@ public abstract class AbstractVehicleEntity extends Entity {
         return new ClientboundAddEntityPacket(this);
     }
 
-    public Vec3 getDismountLocationForPassenger(LivingEntity passenger) {
+    public Vec3 getDismountLocationForPassenger(@NotNull LivingEntity passenger) {
         Vec3 vec = getDriverPosition();
         return new Vec3(this.getX() + vec.x, this.getY(), this.getZ() + vec.z);
     }

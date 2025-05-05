@@ -2,6 +2,7 @@ package com.talhanation.siegeweapons.entities;
 
 import com.talhanation.siegeweapons.Main;
 import com.talhanation.siegeweapons.ModTexts;
+import com.talhanation.siegeweapons.config.SiegeWeaponsServerConfig;
 import com.talhanation.siegeweapons.entities.projectile.*;
 import com.talhanation.siegeweapons.init.ModItems;
 import com.talhanation.siegeweapons.init.ModSounds;
@@ -181,8 +182,8 @@ public class BallistaEntity extends AbstractInventoryVehicleEntity implements IS
     }
 
     @Override
-    public float getMaxHealth() {
-        return 200;
+    public double getMaxHealth() {
+        return SiegeWeaponsServerConfig.ballistaHealth.get();
     }
 
     @Override

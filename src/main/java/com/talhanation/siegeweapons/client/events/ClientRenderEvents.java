@@ -35,15 +35,18 @@ public class ClientRenderEvents {
     private static final int LINE_SPACING = 2;
     private static final int BASE_Y_OFFSET = 50;
     @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
     public void onPlayerMountVehicle(EntityMountEvent event) {
-        Entity entity = event.getEntityBeingMounted();
+        Entity vehicle = event.getEntityBeingMounted();
+        Entity passenger = event.getEntityMounting();
+        Entity clientPlayer = Minecraft.getInstance().player;
 
-        if (event.getEntityMounting() instanceof Player player && event.isMounting()) {
+        if (event.isMounting() && passenger instanceof Player player && clientPlayer != null && clientPlayer.getUUID().equals(player.getUUID())) {
             List<Component> tips = null;
             Minecraft mc = Minecraft.getInstance();
             String loadShoot = mc.options.keyJump.getTranslatedKeyMessage().getString();
             String aim = mc.options.keyUse.getTranslatedKeyMessage().getString();
-            if (entity instanceof CatapultEntity catapult) {
+            if (vehicle instanceof CatapultEntity catapult) {
 
                 tips = List.of(
                         Component.literal("[" + aim + " + Mouse Wheel] - ").append(ModTexts.CATAPULT_RANGE),
@@ -58,7 +61,7 @@ public class ClientRenderEvents {
                 }
             }
 
-            else if(entity instanceof BallistaEntity){
+            else if(vehicle instanceof BallistaEntity){
                 tips = List.of(
                         Component.literal("[" + aim + " + " + ModTexts.BALLISTA_BOLT.getString() +  "] - ").append(ModTexts.BALLISTA_RELOAD),
                         Component.literal("[" + loadShoot + "] - ").append(ModTexts.VEHICLE_LOAD_SHOOT),
@@ -66,16 +69,18 @@ public class ClientRenderEvents {
                 );
             }
 
-            if (player.level().isClientSide && tips != null) {
+            if (player.level().isClientSide() && tips != null) {
                 TipManager.showTips(tips);
             }
         }
     }
     @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
     public void onClientTick(TickEvent.ClientTickEvent event){
         TipManager.tick();
     }
     @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
     public void onRenderGui(RenderGuiEvent.Post event) {
         List<Component> tips = TipManager.getCurrentTips();
         float alpha = TipManager.getFadeAlpha();
@@ -89,7 +94,7 @@ public class ClientRenderEvents {
             int screenHeight = event.getWindow().getGuiScaledHeight();
 
             int color = (int)(alpha * 255) << 24 | 0xFFFFFF;
-            int yStart = screenHeight / 2 + 150;
+            int yStart = (int) (screenHeight / 1.25F);
 
             for (int i = 0; i < tips.size(); i++) {
                 Component line = tips.get(i);
@@ -109,6 +114,7 @@ public class ClientRenderEvents {
     }
 
     @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
     public void onRenderGuiPre(RenderGuiOverlayEvent.Pre event) {
         if (Minecraft.getInstance().player.getVehicle() instanceof AbstractVehicleEntity) {
             Minecraft.getInstance().gui.setOverlayMessage(Component.empty(), false);
