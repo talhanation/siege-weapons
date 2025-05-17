@@ -93,9 +93,7 @@ public class SiegeTableScreen extends ScreenBase<SiegeTableMenu> {
 
         this.craftButton = new ExtendedButton(leftPos + 79, topPos + 50, 71, 20, ModTexts.CRAFT,
                 button -> {
-                    selection.getRecipe().consumeMaterials(playerInventory);
-
-                    Main.SIMPLE_CHANNEL.sendToServer(new MessageUpdateSiegeTable(blockPos, selection.getIndex(),true));
+                    Main.SIMPLE_CHANNEL.sendToServer(new MessageUpdateSiegeTable(blockPos, selection.getIndex(),true, player.getUUID()));
                 });
         this.craftButton.active = tableEntity != null && !tableEntity.getCrafting() && selection.getRecipe().hasRequiredMaterials(playerInventory);
         addRenderableWidget(this.craftButton);
@@ -147,7 +145,7 @@ public class SiegeTableScreen extends ScreenBase<SiegeTableMenu> {
     public void onClose() {
         super.onClose();
         if(this.tableEntity != null && selection != null){
-            Main.SIMPLE_CHANNEL.sendToServer(new MessageUpdateSiegeTable(blockPos, selection.getIndex(), false));
+            Main.SIMPLE_CHANNEL.sendToServer(new MessageUpdateSiegeTable(blockPos, selection.getIndex(), false, player.getUUID()));
         }
     }
 
