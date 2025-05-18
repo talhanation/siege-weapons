@@ -21,10 +21,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -36,6 +34,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public abstract class AbstractVehicleEntity extends Entity {
 
@@ -95,6 +94,7 @@ public abstract class AbstractVehicleEntity extends Entity {
             this.zo = getZ();
         }
         super.tick();
+        this.updatePush();
         tickLerp();
         this.updateSmokeWhenLowHealth();
         this.updateGravity();
@@ -104,6 +104,50 @@ public abstract class AbstractVehicleEntity extends Entity {
         this.control(driver, xRot, yRot);
         move(MoverType.SELF, getDeltaMovement());
         updateWheelRotation();
+    }
+
+    private void updatePush() {
+        List<Entity> list = this.level().getEntities(this, this.getBoundingBox().inflate((double)0.3F, (double)-0.01F, (double)0.3F), EntitySelector.pushableBy(this));
+        if (!list.isEmpty()) {
+            for (Entity entity : list) {
+                if (!entity.hasPassenger(this)) {
+                    this.push(entity);
+                }
+            }
+        }
+    }
+
+    public void push(Entity entity) {
+        float pushForce = 0.05F + this.getSpeed();
+        if (!this.isPassengerOfSameVehicle(entity)) {
+            if (!entity.noPhysics && !this.noPhysics) {
+                double d0 = entity.getX() - this.getX();
+                double d1 = entity.getZ() - this.getZ();
+                double d2 = Mth.absMax(d0, d1);
+                if (d2 >= (double)0.01F) {
+                    d2 = Math.sqrt(d2);
+                    d0 /= d2;
+                    d1 /= d2;
+                    double d3 = 1.0D / d2;
+                    if (d3 > 1.0D) {
+                        d3 = 1.0D;
+                    }
+
+                    d0 *= d3;
+                    d1 *= d3;
+                    d0 *= pushForce;
+                    d1 *= pushForce;
+                    if (!this.isVehicle() && this.isPushable()) {
+                        this.push(-d0, 0.0D, -d1);
+                    }
+
+                    if (!entity.isVehicle() && entity.isPushable()) {
+                        entity.push(d0, 0.0D, d1);
+                    }
+                }
+
+            }
+        }
     }
 
     private void updateSmokeWhenLowHealth() {
@@ -291,7 +335,10 @@ public abstract class AbstractVehicleEntity extends Entity {
     }
 
     public static boolean canVehicleCollide(Entity entity, Entity entity2) {
-        return (entity2.canBeCollidedWith() || entity2.isPushable()) && !entity.isPassengerOfSameVehicle(entity2);
+        boolean entity2CanBeCollidedWith = entity2.canBeCollidedWith();
+        boolean entity2isPushable = entity2.isPushable();
+        boolean isNotSamePassenger = !entity2.isPassengerOfSameVehicle(entity);
+        return (entity2CanBeCollidedWith || entity2isPushable) && isNotSamePassenger;
     }
 
     public boolean canBeCollidedWith() {
