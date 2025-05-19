@@ -15,6 +15,8 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -461,6 +463,18 @@ public abstract class AbstractVehicleEntity extends Entity {
         double newHealth = this.getHealth() + repairAmount;
         if(newHealth > getMaxHealth()) newHealth = getMaxHealth();
         this.setHealth((float) newHealth);
+    }
+
+    public boolean isInvulnerableTo(DamageSource damageSource) {
+        return this.isRemoved() || this.isInvulnerable()
+                && !damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && !damageSource.isCreativePlayer()
+                || damageSource.is(DamageTypes.CACTUS)
+                || damageSource.is(DamageTypes.FREEZE)
+                || damageSource.is(DamageTypes.HOT_FLOOR)
+                || damageSource.is(DamageTypes.THORNS)
+                || damageSource.is(DamageTypeTags.IS_FIRE) && this.fireImmune()
+                || damageSource.is(DamageTypeTags.IS_FALL) && this.getType().is(EntityTypeTags.FALL_DAMAGE_IMMUNE);
+
     }
 
     @Override
