@@ -1,6 +1,6 @@
 # siegeweapons
-This Mod adds medieval siege weaopons into Minecraft.
+This Mod adds medieval siege weapons into Minecraft.
 
-TODO: link to modrinth
+https://modrinth.com/mod/siegeweapons
 
 All Rights Reserved unless otherwise explicitly stated.
